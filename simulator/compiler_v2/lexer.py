@@ -37,7 +37,7 @@ class ArduinoLexer(Lexer):
         'true': 'TRUE',
         'false': 'FALSE',
     }
-    tokens = { 'ID', 'NUMBER', 'STRING', 'CHAR', 'CHAR_CONST', 'BOOL_CONST' } | set(keywords.values())
+    tokens = { 'ID', 'NUMBER', 'STRING', 'CHAR', 'CHAR_CONST', 'BOOL_CONST','EQUAL','SEMICOLON', 'NOT_EQUAL' } | set(keywords.values())
     pass
 
 
@@ -84,10 +84,38 @@ class ArduinoLexer(Lexer):
         self.index = 0
         pass
     
+    @_(r'=')
+    def EQUAL(self, t):
+        return t
+    
+    @_(r'!=')
+    def NOT_EQUAL(self, t):
+        return t
+    
+    @_(r';')
+    def SEMICOLON(self, t):
+        return t
+    
     @_(r'[\(\)\{\}\[\];,\.=\+\-\*\/\%\!\<\>\&\|\^\~]')
     def SYMBOL(self, t):
         return t
+
     
+    def salida(self,t):
+        Lexer = ArduinoLexer()
+        list_strings = []
+        for token in Lexer.tokenize(t):
+            result = f'#{token.lineno} {token.type} '
+            if token.type == 'OBJECTID':
+                result += f"{token.value}"
+            elif token.type == 'BOOL_CONST':
+                result += "true" if token.value else "false"
+            elif token.type == 'CHAR_CONST':
+                result += f"'{token.value}'"
+            else:
+                result += f"{token.value}"
+            list_strings.append(result)
+        return list_strings
     
     
 
