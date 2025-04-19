@@ -37,9 +37,11 @@ class ArduinoLexer(Lexer):
         'true': 'TRUE',
         'false': 'FALSE',
     }
-    tokens = { 'ID', 'NUMBER', 'STRING', 'CHAR', 'CHAR_CONST', 'BOOL_CONST','EQUAL','SEMICOLON', 'NOT_EQUAL' } | set(keywords.values())
+    tokens = { 'ID', 'NUMBER', 'STRING', 'CHAR', 'CHAR_CONST', 'BOOL_CONST','EQUAL','SEMICOLON', 'NOT_EQUAL','#INCLUDE', 'STRING_CONST' } | set(keywords.values())
     pass
 
+    def __init__(self):
+        self.include = False # Esta para diferenciar entre el string_const y el string
 
     @_(r'//.*')
     def LINE_COMMENT(self, t):
@@ -59,14 +61,26 @@ class ArduinoLexer(Lexer):
         t.value = int(t.value)
         return t
     
+    @_(r'\".*?\"|<.*?>')
+    def STRING_CONST(self, t):
+        if self.include:
+            self.include = False
+            t.value = t.value[1:-1]
+            return t
+        else:
+            self.error(t)
+    
     @_(r'\".*?\"')
     def STRING(self, t):
-        t.value = t.value[1:-1]  # Remove quotes
-        return t
+        if not self.include:
+            t.value = t.value[1:-1]
+            return t
+        else:
+            self.error(t)
     
     @_(r'\'[^\']\'')
     def CHAR_CONST(self, t):
-        t.value = t.value[1:-1]  # Remove quotes
+        t.value = t.value[1:-1]  
         return t
     
     @_(r'\b(true|false)\b')
@@ -96,6 +110,15 @@ class ArduinoLexer(Lexer):
     def SEMICOLON(self, t):
         return t
     
+    @_(r'#include')
+    def INCLUDE(self, t):
+        return t
+    
+    @_(r'"[^"]*"')
+    def STRING_CONST(self, t):
+        t.value = t.value[1:-1]  
+        return t
+    
     @_(r'[\(\)\{\}\[\];,\.=\+\-\*\/\%\!\<\>\&\|\^\~]')
     def SYMBOL(self, t):
         return t
@@ -122,6 +145,8 @@ class ArduinoLexer(Lexer):
 
 if __name__ == '__main__':
     data = '''
+    #include <Arduino.h>
+    
     int main() {
         // This is a line comment
         /* This is a block comment */

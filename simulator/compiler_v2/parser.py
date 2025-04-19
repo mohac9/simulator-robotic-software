@@ -13,6 +13,36 @@ class ArduinoParser(Parser):
     
     
     #Grammar rules
+    
+    #Top level rules
+    
+    @_('include_list program_code')
+    def program(self, p):
+        return ('program', p.include_list, p.program_code)
+    
+    @_('')
+    def include_list(self, p):
+        return []
+
+    @_('include_list include')
+    def include_list(self, p):
+        return p.include_list + [p.include]
+    
+    @_('#INCLUDE STRING_CONST')
+    def include(self, p):
+        return ('include', p.STRING_CONST)
+    
+    @_('')
+    def program_code(self, p):
+        return []
+    
+    @_('program_code statement')
+    def program_code(self, p):
+        return p.program_code + [p.statement]
+    
+    
+        
+    #Expression rules
     @_('expression')
     def statement(self, p):
         return p.expression
@@ -32,6 +62,10 @@ class ArduinoParser(Parser):
     @_('var_type ID EQUAL expression SEMICOLON')
     def statement(self, p):
         return ('declare_assign', p.var_type, p.ID, p.expression)
+    
+   
+    
+    
     
     #Data types
     @_('INT')
@@ -62,6 +96,11 @@ class ArduinoParser(Parser):
     def var_type(self, p):
         return p.ID
     
+    
+
+    #Conversion functions
+    
+    
     #Symbols
     @_('EQUAL')
     def symbol(self, p):
@@ -80,7 +119,9 @@ class ArduinoParser(Parser):
     #Variable declaration
 
 if __name__ == '__main__':
-    data = ''' int i = 0; '''
+    data = ''' 
+    #include "Arduino.h"
+    int i = 0; '''
     lexer = ArduinoLexer()
     print("----------------------------------")
     for i in lexer.tokenize(data):
