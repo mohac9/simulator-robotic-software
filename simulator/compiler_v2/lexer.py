@@ -37,7 +37,8 @@ class ArduinoLexer(Lexer):
         'true': 'TRUE',
         'false': 'FALSE',
     }
-    tokens = { 'ID', 'NUMBER', 'STRING', 'CHAR', 'CHAR_CONST', 'BOOL_CONST','EQUAL','SEMICOLON', 'NOT_EQUAL','#INCLUDE', 'STRING_CONST' } | set(keywords.values())
+    tokens = { 'ID', 'NUMBER', 'STRING', 'CHAR', 'CHAR_CONST', 'BOOL_CONST','EQUAL','SEMICOLON', 'NOT_EQUAL','INCLUDE', 'STRING_CONST', 'CONST', 'STATIC',
+              'LBRACKET', 'RBRACKET','LBRACE', 'RBRACE','COMMA','DEFINE','LPAREN','RPAREN'} | set(keywords.values())
     pass
 
     def __init__(self):
@@ -112,17 +113,54 @@ class ArduinoLexer(Lexer):
     
     @_(r'#include')
     def INCLUDE(self, t):
+        self.include = True
         return t
     
-    @_(r'"[^"]*"')
-    def STRING_CONST(self, t):
-        t.value = t.value[1:-1]  
+    @_(r'\bconst\b')
+    def CONST(self, t):
+        return t
+    
+    @_(r'\bstatic\b')
+    def STATIC(self, t):
+        return t
+    
+    @_(r'\[')
+    def LBRACKET(self, t):
+        return t
+    
+    @_(r'\]')
+    def RBRACKET(self, t):
+        return t
+    
+    @_(r'\{')
+    def LBRACE(self, t):
+        return t
+    
+    @_(r'\}')
+    def RBRACE(self, t):
+        return t
+    
+    @_(r'\(')
+    def LPAREN(self, t):
+        return t
+    
+    @_(r'\)')
+    def RPAREN(self, t):
         return t
     
     @_(r'[\(\)\{\}\[\];,\.=\+\-\*\/\%\!\<\>\&\|\^\~]')
     def SYMBOL(self, t):
         return t
 
+    @_(r'\,')
+    def COMMA(self, t):
+        return t
+    
+    @_(r'\#define')
+    def DEFINE(self, t):
+        return t
+    
+    
     
     def salida(self,t):
         Lexer = ArduinoLexer()

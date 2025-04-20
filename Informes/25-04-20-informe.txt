@@ -1,0 +1,11 @@
+[Logrado]
+Se ha avanzado en el parser, aunque no se ha llegado a terminar quedan los bucles, sentencias y castings. 
+
+[Objetivos semana siguiente]
+Terminar el parser, mockup de la interfaz, iniciar desarrollo del depurador y el debugger.
+
+[Objetivos opcionales]
+En el parser añadir una función que convierta en un árbol mas desarrollado.
+
+[Observaciones]
+El desarrollo del parser ha llevado mas tiempo del esperado.
