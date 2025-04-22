@@ -36,9 +36,33 @@ class ArduinoLexer(Lexer):
         'bool': 'BOOL',
         'true': 'TRUE',
         'false': 'FALSE',
+        'switch': 'SWITCH',
+        'case': 'CASE',
+        'default': 'DEFAULT',
+        'LOW': 'LOW',
+        'HIGH': 'HIGH',
+        'ANALOG_PIN': 'ANALOG_PIN',
+        'INPUT': 'INPUT',
+        'INPUT_PULLUP': 'INPUT_PULLUP',
+        'OUTPUT': 'OUTPUT',
+        'HEX_CONST': 'HEX_CONST',
+        'OCTAL_CONST': 'OCTAL_CONST',
+        'BINARY_CONST': 'BINARY_CONST',
+        'INT_CONST': 'INT_CONST',
+        'FLOAT_CONST': 'FLOAT_CONST',
+        'CHAR_CONST': 'CHAR_CONST',
+        'STRING_CONST': 'STRING_CONST',
+        'ID': 'ID'
+        
     }
     tokens = { 'ID', 'NUMBER', 'STRING', 'CHAR', 'CHAR_CONST', 'BOOL_CONST','EQUAL','SEMICOLON', 'NOT_EQUAL','INCLUDE', 'STRING_CONST', 'CONST', 'STATIC',
-              'LBRACKET', 'RBRACKET','LBRACE', 'RBRACE','COMMA','DEFINE','LPAREN','RPAREN'} | set(keywords.values())
+              'LBRACKET', 'RBRACKET','LBRACE', 'RBRACE','COMMA','DEFINE','LPAREN','RPAREN','BREAK','RETURN',
+              'CONTINUE', 'WHILE','DO','FOR','CASE','COLON','DEFAULT','IF','SWITCH','ELSE'
+              ,'AND','OR','NOT','EQ','NE','LT','LE','GT','GE','PLUS','MINUS','MULTIPLY','DIVIDE','MODULUS',
+              'BITWISE_AND','BITWISE_OR','BITWISE_XOR','BITWISE_NOT','BITWISE_LEFT_SHIFT','BITWISE_RIGHT_SHIFT',
+              'UNSIGNED_INT','SIGNED_INT','FLOAT','DOUBLE','LONG','SHORT','BYTE','WORD','UNSIGNED_LONG','UNSIGNED_CHAR',
+              'SIZE_T','BOOLEAN'
+              } | set(keywords.values())
     pass
 
     def __init__(self):
@@ -148,9 +172,7 @@ class ArduinoLexer(Lexer):
     def RPAREN(self, t):
         return t
     
-    @_(r'[\(\)\{\}\[\];,\.=\+\-\*\/\%\!\<\>\&\|\^\~]')
-    def SYMBOL(self, t):
-        return t
+    
 
     @_(r'\,')
     def COMMA(self, t):
@@ -160,7 +182,193 @@ class ArduinoLexer(Lexer):
     def DEFINE(self, t):
         return t
     
+    @_(r'\bbreak\b')
+    def BREAK(self, t):
+        return t
     
+    @_(r'\breturn\b')
+    def RETURN(self, t):
+        return t
+    
+    @_(r'\bcontinue\b')
+    def CONTINUE(self, t):
+        return t
+    
+    @_(r'\bwhile\b')
+    def WHILE(self, t):
+        return t
+    
+    @_(r'\bdo\b')
+    def DO(self, t):
+        return t
+    
+    @_(r'\bfor\b')
+    def FOR(self, t):
+        return t
+    
+    @_(r'\bcase\b')
+    def CASE(self, t):
+        return t
+    
+    @_(r'\:')
+    def COLON(self, t):
+        return t
+    
+    @_(r'\bdefault\b')
+    def DEFAULT(self, t):
+        return t
+    
+    @_(r'\bswitch\b')
+    def SWITCH(self, t):
+        return t
+    
+    @_(r'\bif\b')
+    def IF(self, t):
+        return t
+    
+    @_(r'\belse\b')
+    def ELSE(self, t):
+        return t
+    
+    @_(r'\&\&')
+    def AND(self, t):
+        return t
+    
+    @_(r'\|\|')
+    def OR(self, t):
+        return t
+    
+    @_(r'\!')
+    def NOT(self, t):
+        return t
+    
+    @_(r'\=\=')
+    def EQ(self, t):
+        return t
+    
+    @_(r'\!\=')
+    def NE(self, t):
+        return t
+    
+    @_(r'\<')
+    def LT(self, t):
+        return t
+    
+    @_(r'\<=')
+    def LE(self, t):
+        return t
+    
+    @_(r'\>')
+    def GT(self, t):
+        return t
+    
+    @_(r'\>=')
+    def GE(self, t):
+        return t
+    
+    @_(r'\+')
+    def PLUS(self, t):
+        return t
+    
+    @_(r'\-')
+    def MINUS(self, t):
+        return t
+    
+    @_(r'\*')
+    def MULTIPLY(self, t):
+        return t
+    
+    @_(r'\/')
+    def DIVIDE(self, t):
+        return t
+    
+    @_(r'\%')
+    def MODULUS(self, t):
+        return t
+    
+    @_(r'\&')
+    def BITWISE_AND(self, t):
+        return t
+    
+    @_(r'\|')
+    def BITWISE_OR(self, t):
+        return t
+    
+    @_(r'\^')
+    def BITWISE_XOR(self, t):
+        return t
+    
+    @_(r'\~')
+    def BITWISE_NOT(self, t):
+        return t
+    
+    @_(r'\<\<')
+    def BITWISE_LEFT_SHIFT(self, t):
+        return t
+    
+    @_(r'\>\>')
+    def BITWISE_RIGHT_SHIFT(self, t):
+        return t
+    
+    @_(r'\bunsigned\b')
+    def UNSIGNED_INT(self, t):
+        return t
+    
+    @_(r'\bsigned\b')
+    def SIGNED_INT(self, t):
+        return t
+    
+    @_(r'\bfloat\b')
+    def FLOAT(self, t):
+        return t
+    
+    @_(r'\bdouble\b')
+    def DOUBLE(self, t):
+        return t
+    
+    @_(r'\blong\b')
+    def LONG(self, t):
+        return t
+    
+    @_(r'\bshort\b')
+    def SHORT(self, t):
+        return t
+    
+    @_(r'\bbyte\b')
+    def BYTE(self, t):
+        return t
+    
+    @_(r'\bword\b')
+    def WORD(self, t):
+        return t
+    
+    @_(r'\bint\b')
+    def INT(self, t):
+        return t
+    
+    @_(r'\bunsigned long\b')
+    def UNSIGNED_LONG(self, t):
+        return t
+    
+    @_(r'\bunsigned char\b')
+    def UNSIGNED_CHAR(self, t):
+        return t
+    
+    @_(r'\bsize_t\b')
+    def SIZE_T(self, t):
+        return t
+    
+    @_(r'\bboolean\b')
+    def BOOLEAN(self, t):
+        return t
+    
+
+  
+
+    
+    @_(r'[\(\)\{\}\[\];,\.=\+\-\*\/\%\!\<\>\&\|\^\~]')
+    def SYMBOL(self, t):
+        return t
     
     def salida(self,t):
         Lexer = ArduinoLexer()
