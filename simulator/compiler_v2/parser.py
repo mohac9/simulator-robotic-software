@@ -15,6 +15,9 @@ class ArduinoParser(Parser):
     #Grammar rules
     
     #Top level rules
+    @_('LBRACE RBRACE')
+    def program(self, p):
+        return ('program', [])
     
     @_('include_list program_code_list')
     def program(self, p):
@@ -91,7 +94,6 @@ class ArduinoParser(Parser):
     def array_declaration(self, p):
         return ('array_declare', p.var_type, p.ID, p.array_index, None)
     
-    @_('')
     
     #Array rules
     @_('LBRACKET expression RBRACKET')
@@ -507,7 +509,10 @@ class ArduinoParser(Parser):
     def var_type(self, p):
          return p[0]
 
-    #Conversion functions
+   #Parenthesis rules
+    @_('LPAREN expression RPAREN')
+    def expression(self, p):
+        return p.expression
     
     
     #Symbols
@@ -526,16 +531,28 @@ class ArduinoParser(Parser):
     @_('NUMBER')
     def expression(self, p):
         return ('int_const', p.NUMBER)
+
+def print_tree(node, indent=0):
+    if isinstance(node, tuple):
+        print('  ' * indent + str(node[0]) + '{')
+        for child in node[1:]:
+            print_tree(child, indent + 1)
+        print('  ' * indent + '}')
+    elif isinstance(node, list):
+        for item in node:
+            print_tree(item, indent)
+    else:
+        print('  ' * indent + str(node)) 
     
-    
-    
+
         
-    #Variable declaration
+# Convertir el string en un arbol de sintaxis
 
 if __name__ == '__main__':
     data = ''' 
     #include "Arduino.h"
-    int i = 0; '''
+    int a = 0;
+    '''
     lexer = ArduinoLexer()
     print("----------------------------------")
     for i in lexer.tokenize(data):
@@ -543,4 +560,6 @@ if __name__ == '__main__':
     print("----------------------------------")
     parser = ArduinoParser()
     result = parser.parse(lexer.tokenize(data))
-    print(result)
+    print_tree(result)
+    
+    

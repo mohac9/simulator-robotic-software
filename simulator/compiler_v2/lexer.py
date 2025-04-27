@@ -392,18 +392,7 @@ class ArduinoLexer(Lexer):
 if __name__ == '__main__':
     data = '''
     #include <Arduino.h>
-    
-    int main() {
-        // This is a line comment
-        /* This is a block comment */
-        int x = 10;
-        float y = 20.5;
-        char z = 'a';
-        bool flag = true;
-        if (x < y) {
-            x = x + 1;
-        }
-        return 0;
+    a + b;
     }
     '''
     
