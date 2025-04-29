@@ -154,6 +154,7 @@ class ArduinoParser(Parser):
     @_('assignment SEMICOLON')
     def sentence(self, p):
         return ('assign',p.assignment)
+        
     
     @_('expression SEMICOLON')
     def sentence(self, p):
@@ -217,7 +218,7 @@ class ArduinoParser(Parser):
     #Conditional sentences
     @_('IF LPAREN expression RPAREN code_block LPAREN ELSE code_block RPAREN')
     def conditional_sentence(self, p):
-        return ('if_else', p.expression, p.sentence_list0, p.sentence_list1)
+        return ('if_else', p.expression, p.sentence_list, p.sentence_list1)
     
     @_('IF LPAREN expression RPAREN code_block')
     def conditional_sentence(self, p):

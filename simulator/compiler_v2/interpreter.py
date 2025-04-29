@@ -17,6 +17,8 @@ class ArduinoInterpreter:
         except Exception as e:
             print(f"Error: {e}")
         
+
+
     #Retorna el valor de una variable
     def visitLiteralExpression(self, node):
        return node.value
@@ -84,10 +86,8 @@ class ArduinoInterpreter:
         
 #Parte de los statement
     def statement(self, node):
-        if node.type == 'ASSIGNMENT':
+        if node.type == 'assignment':
             self.visitAssignmentStatement(node)
-        elif node.type == 'PRINT':
-            self.visitPrintStatement(node)
         elif node.type == 'IF':
             self.visitIfStatement(node)
         elif node.type == 'WHILE':
@@ -99,15 +99,30 @@ class ArduinoInterpreter:
         else:
             raise Exception(f"Unknown statement type: {node.type}")
     
-    def printStatement(self, node):
-        value = self.evaluate(node.expression)
-        print(value)
+    #Tengo que preguntar a Domingo sobre la implementacion del statement del print
 
     def assignmentStatement(self, node):
         name = node.name
-        value = self.evaluate(node.expression)
-        self.variables[name] = value
-        return value
+        value = self.evaluate(node.value)
+        if name in self.variables:
+            self.variables[name] = value
+        else:
+            raise Exception(f"Variable '{name}' not defined.")
+        
+    
+    def visitIfStatement(self, node):
+        condition = self.evaluate(node.condition)
+        if condition:
+            self.statement(node.then_branch)
+        elif node.else_branch:
+            self.statement(node.else_branch)
+
+    def visitWhileStatement(self, node):
+        while self.evaluate(node.expression):
+            self.statement(node.sentence_list)
+        
+   
+    
     
 #TODO: Implementar la gestion de errores
 
