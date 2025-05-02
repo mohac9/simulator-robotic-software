@@ -88,18 +88,21 @@ class ArduinoInterpreter:
     def statement(self, node):
         if node.type == 'assignment':
             self.visitAssignmentStatement(node)
-        elif node.type == 'IF':
+        elif node.type == 'if':
             self.visitIfStatement(node)
-        elif node.type == 'WHILE':
+        elif node.type == 'while':
             self.visitWhileStatement(node)
-        elif node.type == 'FOR':
+        elif node.type == 'do_while':
+            self.visitDoWhileStatement(node)
+        elif node.type == 'for':
             self.visitForStatement(node)
         elif node.type == 'BLOCK':
             self.visitBlockStatement(node)
         else:
             raise Exception(f"Unknown statement type: {node.type}")
     
-    #Tengo que preguntar a Domingo sobre la implementacion del statement del print
+    #El print se hace llamando a la GUI, no se hace en el interpreter
+    
 
     def assignmentStatement(self, node):
         name = node.name
@@ -120,7 +123,20 @@ class ArduinoInterpreter:
     def visitWhileStatement(self, node):
         while self.evaluate(node.expression):
             self.statement(node.sentence_list)
+
+    def visitDoWhileStatement(self, node):
+        while True:
+            self.statement(node.sentence_list)
+            if self.evaluate(node.expression):
+                break
         
+    def visitForStatement(self, node):
+        for initializer in node.initializer:
+            self.statement(initializer)
+        while self.evaluate(node.condition):
+            self.statement(node.sentence_list)
+            for increment in node.increment:
+                self.statement(increment)
    
     
     

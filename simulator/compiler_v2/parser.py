@@ -183,7 +183,11 @@ class ArduinoParser(Parser):
     #Assignment rules
     @_('expression EQUAL expression')
     def assignment(self, p):
-        return ('assign', p.expression0, p.expression1)
+        return {
+            'type': 'assignment',
+            'left': p.expression0,
+            'right': p.expression1
+        }
     
     #Iterative and conditional sentences
     @_('WHILE LPAREN expression RPAREN LBRACE code_block RBRACE')
