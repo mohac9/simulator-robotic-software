@@ -192,15 +192,31 @@ class ArduinoParser(Parser):
     #Iterative and conditional sentences
     @_('WHILE LPAREN expression RPAREN LBRACE code_block RBRACE')
     def iteration_sentence(self, p):
-        return ('while', p.expression, p.sentence_list)
+        return {
+            'type': 'while',
+            'condition': p.expression,
+            'body': p.sentence_list
+        }
+        
     
     @_('DO code_block WHILE LPAREN expression RPAREN SEMICOLON')
     def iteration_sentence(self, p):
-        return ('do_while', p.expression, p.sentence_list)
+        return {
+            'type': 'do_while',
+            'condition': p.expression,
+            'body': p.sentence_list
+        }
+
     
     @_('FOR LPAREN simple_declaration_optional SEMICOLON expression_optional SEMICOLON expression_optional RPAREN code_block')
     def iteration_sentence(self, p):
-        return ('for', p.simple_declaration_optional, p.expression_optional0, p.expression_optional1, p.sentence_list)
+        return {
+            'type': 'for',
+            'initializer': p.simple_declaration_optional,
+            'condition': p.expression_optional,
+            'increment': p.expression_optional,
+            'body': p.code_block
+        }
     
     #Auxiliary rules, allows me to ot repeat the for rule several times
     @_('')

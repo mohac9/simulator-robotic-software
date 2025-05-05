@@ -96,7 +96,7 @@ class ArduinoInterpreter:
             self.visitDoWhileStatement(node)
         elif node.type == 'for':
             self.visitForStatement(node)
-        elif node.type == 'BLOCK':
+        elif node.type == 'code_block':
             self.visitBlockStatement(node)
         else:
             raise Exception(f"Unknown statement type: {node.type}")
@@ -137,7 +137,11 @@ class ArduinoInterpreter:
             self.statement(node.sentence_list)
             for increment in node.increment:
                 self.statement(increment)
-   
+
+    def visitBlockStatement(self, node):
+        for statement in node.statements:
+            self.statement(statement)
+
     
     
 #TODO: Implementar la gestion de errores
