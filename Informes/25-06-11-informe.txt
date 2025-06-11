@@ -1,0 +1,9 @@
+[Logrado]
+Implementación usando meta clases de los tipos de c++
+
+[Dudas]
+-Como realizar una versión más reducida del método cast
+-Es correcto que el bool sea una subclase de número
+-Preguntar sobre las estructuras de datos a implementar, en especial las que no están en el parser(stack)
+-Planificación para Julio
+

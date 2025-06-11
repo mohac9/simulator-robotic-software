@@ -113,13 +113,13 @@ class ArduinoParser(Parser):
     def define_macro(self, p):
         return ('macro_definition', p.ID, p.array_elements)
     
-    #Function rules
+    #Function rules @dataclasses
     @_('var_type ID LPAREN function_args RPAREN LBRACE sentence_list RBRACE')
     def function(self, p):
         return ('function', p.var_type, p.ID, p.function_args, p.sentence_list)
     
     @_('var_type ID LPAREN RPAREN LBRACE sentence_list RBRACE')
-    def function(self, p):
+    def function(self, p):  
         return ('function', p.var_type, p.ID, [], p.sentence_list)
     
     @_('function_args COMMA declaration')

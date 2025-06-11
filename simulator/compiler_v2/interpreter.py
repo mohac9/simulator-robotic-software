@@ -20,7 +20,7 @@ class ArduinoInterpreter:
 
 
     #Retorna el valor de una variable
-    def visitLiteralExpression(self, node):
+    def visitLiteralExpression(self, node): #TODO: Quitar los vistors y hacer un nuevo fichero para cada clase. Para reducir tamaño de la clase Paser e interpreter
        return node.value
    
     def visitGroupingExpression(self, node):
