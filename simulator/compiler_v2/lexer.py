@@ -4,6 +4,8 @@ from sly import Lexer
 import os
 import re
 import sys
+import typesArduino
+    
 
 def comentario(t):
     if t.value.startswith('/*'):

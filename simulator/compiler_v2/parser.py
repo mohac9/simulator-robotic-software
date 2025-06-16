@@ -1,6 +1,7 @@
 import re
 from sly import Parser
 from lexer import ArduinoLexer
+import typesArduino
 
 class ArduinoParser(Parser):
     
@@ -188,6 +189,7 @@ class ArduinoParser(Parser):
             'left': p.expression0,
             'right': p.expression1
         }
+        
     
     #Iterative and conditional sentences
     @_('WHILE LPAREN expression RPAREN LBRACE code_block RBRACE')
@@ -413,7 +415,8 @@ class ArduinoParser(Parser):
 
     @_('expression PLUS expression')
     def expression(self, p):
-        return ('sum', p.expression0, p.expression1)
+        #return ('sum', p.expression0, p.expression1)
+        return typesArduino.binary_operation(p.expression0, p.expression1, add) #Usar objetos de TypesArduino
 
     @_('expression MINUS expression')
     def expression(self, p):

@@ -99,6 +99,9 @@ class Int(Number):
         elif target_type == 'Double':
             return Double(float(self.value))
         return self
+    
+    def __type__(self, env=None):
+        return 'Int'
 
 class Float(Number):
     def __init__(self, value):
@@ -167,7 +170,7 @@ class Char(BaseType):
         return f"Char('{self.value}')"
     
     def cast_to(self, target_type):
-        pass #I have to ask Domingo how I DRY it
+        pass 
 
 class String(BaseType):
     def __init__(self, value):
@@ -181,6 +184,56 @@ class String(BaseType):
     
     def cast_to(self, target_type):
         pass 
+
+#May be separated in another file
+
+class binary_operation:
+    def __init__(self, left, right, operation):
+        self.left = left
+        self.right = right
+        self.operation = operation
+    
+    def execute(self):
+        return self.left.binary_operation(self.right, self.operation)
+    
+    def __str__(self):
+        return f"BinaryOperation({self.left}, {self.right}, {self.operation})"
+    
+    # This method return a string with the type
+    def __type__(self, env=None):
+        left_type = self.left.__type__()
+        right_type = self.right.__type__()
+
+        if left_type == right_type:
+            return left_type
+        
+
+
+class assignment:
+    def __init__(self, variable, value):
+        self.variable = variable
+        self.value = value
+    
+    def execute(self):
+        if isinstance(self.variable, str):
+            # Assuming a global scope for simplicity
+            globals()[self.variable] = self.value
+        else:
+            raise TypeError("Variable must be a string representing the variable name")
+    
+    def __str__(self):
+        return f"Assignment({self.variable}, {self.value})"
+    
+
+class Object():
+    def __init__(self, value):
+        self.name = value
+
+    
+    def __type__(self,env=None):
+
+        return env[self.name]
+
 
 
 

@@ -4,148 +4,65 @@ import lexer
 class ArduinoInterpreter:
     def __init__(self, code):
         self.code = code
-        self.variables = {}
+        self.variables = {} #Ponerlos en una clase con getter y setter
+        self.variables_contents = {} #Ponerlos en una clase con getter y setter
         self.current_line = 0
         self.lines = []
         self.had_runtime_error = False
+    
+    def visit(self,node): #
+        node_type = node['type']
+        if node_type == 'Program':
+            self.visit_program(node) 
+        
+    def visit_program(self, node):
+        pass
 
-    #TODO
-    def interpret(self,node):
-        try:
-            value = evaluate(node)
-            print(value)
-        except Exception as e:
-            print(f"Error: {e}")
+    def visit_assignment(self, node):
+        var_name = self.visit_expression(node['left'])
+        if var_name.node_type != 'ID': #Cambiar mas tarde
+            raise RuntimeError(f"Left side of assignment must be a variable, got {var_name.node_type}.")
+        if var_name in self.variables:
+            raise RuntimeError(f"Variable '{var_name}' already defined.")
+        
+        if node['right'].__type__(self.variables) != self.variables[var_name]:
+            raise RuntimeError(f"Type mismatch: cannot assign {node['right'].__type__()} to {self.variables[var_name].__type__(self.variables)}.")
+        
+        contenido = self.visit_expression(node['right'])
+        self.variables[var_name] = contenido
+
+    def visit_simple_declaration(self, node):
+        var_name = node['name']
+        var_type = node['type']
+        var_content = node['content']
+        
+        
+        if var_name in self.variables:
+            raise RuntimeError(f"Variable '{var_name}' already defined.")
+        
+        self.variables[var_name] = var_type
+
+        if var_content.__type__(self.variables) != var_type:
+            raise RuntimeError(f"Type mismatch: cannot assign {var_content.__type__()} to {var_type}.")
+        
+        self.variables_contents[var_name] = self.visit_expression(var_content)
+
+        
         
 
 
-    #Retorna el valor de una variable
-    def visitLiteralExpression(self, node): #TODO: Quitar los vistors y hacer un nuevo fichero para cada clase. Para reducir tamaño de la clase Paser e interpreter
-       return node.value
-   
-    def visitGroupingExpression(self, node):
-        return self.evaluate(node.expression)
-    
-    def evaluate(self,node):
-        return node.accept(self)
-    
-    def visitUnaryExpression(self, node):
-        right = self.evaluate(node.right)
-        self.checkNumberOperand(node, right)
-        if node.operator.type == 'MINUS':
-            return -right
-        else:
-            return right
-        
-    def visitBinaryExpression(self, node):
-        left = self.evaluate(node.left)
-        right = self.evaluate(node.right)
-        self.checkNumberOperands(node, left, right)
-        
-        if node.operator.type == 'PLUS':
-            return left + right
-        elif node.operator.type == 'MINUS':
-            return left - right
-        elif node.operator.type == 'MULTIPLY':
-            return left * right
-        elif node.operator.type == 'DIVIDE':
-            return left / right
-        elif node.operator.type == 'MODULUS':
-            return left % right
-        elif node.operator.type == 'AND':
-            return left and right
-        elif node.operator.type == 'OR':   
-            return left or right
-        elif node.operator.type == 'EQ':
-            return left == right
-        elif node.operator.type == 'NE':
-            return left != right
-        elif node.operator.type == 'LT':
-            return left < right
-        elif node.operator.type == 'LE':
-            return left <= right
-        elif node.operator.type == 'GT':
-            return left > right
-        elif node.operator.type == 'GE':
-            return left >= right
-        else:
-            raise Exception(f"Unknown operator: {node.operator.type}")
-        
-    
-    def checkNumberOperand(self, node, operand):
-        if isinstance(operand, (int, float)):
-            return True
-        else:
-            raise Exception(f"Operand must be a number: {operand}")
-    
-    def checkNumberOperands(self, node, left, right):
-        if isinstance(left, (int, float)) and isinstance(right, (int, float)):
-            return True
-        else:
-            raise Exception(f"Operands must be numbers: {left}, {right}")
-        
-#Parte de los statement
-    def statement(self, node):
-        if node.type == 'assignment':
-            self.visitAssignmentStatement(node)
-        elif node.type == 'if':
-            self.visitIfStatement(node)
-        elif node.type == 'while':
-            self.visitWhileStatement(node)
-        elif node.type == 'do_while':
-            self.visitDoWhileStatement(node)
-        elif node.type == 'for':
-            self.visitForStatement(node)
-        elif node.type == 'code_block':
-            self.visitBlockStatement(node)
-        else:
-            raise Exception(f"Unknown statement type: {node.type}")
-    
-    #El print se hace llamando a la GUI, no se hace en el interpreter
-    
 
-    def assignmentStatement(self, node):
-        name = node.name
-        value = self.evaluate(node.value)
-        if name in self.variables:
-            self.variables[name] = value
-        else:
-            raise Exception(f"Variable '{name}' not defined.")
+
         
-    
-    def visitIfStatement(self, node):
-        condition = self.evaluate(node.condition)
-        if condition:
-            self.statement(node.then_branch)
-        elif node.else_branch:
-            self.statement(node.else_branch)
-
-    def visitWhileStatement(self, node):
-        while self.evaluate(node.expression):
-            self.statement(node.sentence_list)
-
-    def visitDoWhileStatement(self, node):
-        while True:
-            self.statement(node.sentence_list)
-            if self.evaluate(node.expression):
-                break
         
-    def visitForStatement(self, node):
-        for initializer in node.initializer:
-            self.statement(initializer)
-        while self.evaluate(node.condition):
-            self.statement(node.sentence_list)
-            for increment in node.increment:
-                self.statement(increment)
-
-    def visitBlockStatement(self, node):
-        for statement in node.statements:
-            self.statement(statement)
+        
 
     
-    
-#TODO: Implementar la gestion de errores
+ 
+        
+
+ 
 
        
-   
+
     
