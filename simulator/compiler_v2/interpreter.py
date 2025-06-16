@@ -1,11 +1,14 @@
 import parser
 import lexer
+import typesArduino as ta
+
+        
+
 
 class ArduinoInterpreter:
     def __init__(self, code):
         self.code = code
-        self.variables = {} #Ponerlos en una clase con getter y setter
-        self.variables_contents = {} #Ponerlos en una clase con getter y setter
+        env = Environment()
         self.current_line = 0
         self.lines = []
         self.had_runtime_error = False
@@ -19,43 +22,22 @@ class ArduinoInterpreter:
         pass
 
     def visit_assignment(self, node):
-        var_name = self.visit_expression(node['left'])
-        if var_name.node_type != 'ID': #Cambiar mas tarde
-            raise RuntimeError(f"Left side of assignment must be a variable, got {var_name.node_type}.")
-        if var_name in self.variables:
-            raise RuntimeError(f"Variable '{var_name}' already defined.")
-        
-        if node['right'].__type__(self.variables) != self.variables[var_name]:
-            raise RuntimeError(f"Type mismatch: cannot assign {node['right'].__type__()} to {self.variables[var_name].__type__(self.variables)}.")
-        
-        contenido = self.visit_expression(node['right'])
-        self.variables[var_name] = contenido
+        if node.__class__() == ta.assignment:
+            node.execute(self.variables)
+        else:
+            raise RuntimeError(f"Unknown assignment type: {node.__class__()}.")
 
     def visit_simple_declaration(self, node):
-        var_name = node['name']
-        var_type = node['type']
-        var_content = node['content']
+        if node.__class__() == ta.simple_declaration:
+            node.execute(self.variables)
+        else:
+            raise RuntimeError(f"Unknown simple declaration type: {node.__class__()}.")
         
-        
-        if var_name in self.variables:
-            raise RuntimeError(f"Variable '{var_name}' already defined.")
-        
-        self.variables[var_name] = var_type
-
-        if var_content.__type__(self.variables) != var_type:
-            raise RuntimeError(f"Type mismatch: cannot assign {var_content.__type__()} to {var_type}.")
-        
-        self.variables_contents[var_name] = self.visit_expression(var_content)
-
-        
-        
-
-
-
-
-        
-        
-        
+    def visit_expression(self, node):
+        if node.__class__() == ta.binary_operation:
+            return node.execute()
+        else:
+            raise RuntimeError(f"Unknown expression type: {node.__class__()}.")
 
     
  

@@ -1,3 +1,4 @@
+import environment 
 
 class Metatype(type):
     _types = {}
@@ -63,6 +64,20 @@ class Number(BaseType): #I'm not sure if this is needed
         return self.binary_operation(other, lambda a, b: Number(a.value ** b.value))
     def __neg__(self):
         return Number(-self.value)
+
+    # Bitwise operators
+    def __bit_shift_r__(self, other):
+        return self.binary_operation(other, lambda a, b: Number(a.value >> b.value))
+    def __bit_shift_l__(self, other):
+        return self.binary_operation(other, lambda a, b: Number(a.value << b.value))
+    
+    def __bitwise_and__(self, other):
+        return self.binary_operation(other, lambda a, b: Number(a.value & b.value))
+    def __bitwise_or__(self, other):
+        return self.binary_operation(other, lambda a, b: Number(a.value | b.value))
+    def __bitwise_xor__(self, other):
+        return self.binary_operation(other, lambda a, b: Number(a.value ^ b.value))
+    
     
     
     # Comparison operators
@@ -92,7 +107,7 @@ class Number(BaseType): #I'm not sure if this is needed
 class Int(Number):
     def __init__(self, value):
         self.value = int(value)
-
+        
     def cast_to(self, target_type):
         if target_type == 'Float':
             return Float(float(self.value))
@@ -186,7 +201,7 @@ class String(BaseType):
         pass 
 
 #May be separated in another file
-
+#-------------- Not basic types ---------------
 class binary_operation:
     def __init__(self, left, right, operation):
         self.left = left
@@ -214,16 +229,41 @@ class assignment:
         self.variable = variable
         self.value = value
     
-    def execute(self):
-        if isinstance(self.variable, str):
-            # Assuming a global scope for simplicity
-            globals()[self.variable] = self.value
-        else:
-            raise TypeError("Variable must be a string representing the variable name")
-    
+    def execute(self, env):
+        if self.variable not in env.variables:
+            raise RuntimeError(f"Variable '{self.variable}' is not defined.")
+        
+        var_type = env.get_variable_type(self.variable)
+        value_type = self.value.__type__(env)
+
+        if var_type != value_type:
+            raise RuntimeError(f"Type mismatch: cannot assign {value_type} to {var_type}.")
+        
+        env.modify_variable(self.variable, self.value)
+
     def __str__(self):
         return f"Assignment({self.variable}, {self.value})"
     
+class simple_declaration:
+    def __init__(self,name,var_type, content=None):
+        self.name = name
+        self.var_type = var_type
+        self.content = content
+    def execute(self, env):
+        env.set_variable(self.name, self.var_type)
+        if self.content is not None:
+            content_type = self.content.__type__(env)
+            if content_type != self.var_type:
+                raise RuntimeError(f"Type mismatch: cannot assign {content_type} to {self.var_type}.")
+            env.set_variable_contents(self.name, self.content)
+            
+class program:
+    def __init__(self,include_list,program_code):
+        self.include_list = include_list
+        self.program_code = program_code
+        
+    def execute(self, env):
+        pass
 
 class Object():
     def __init__(self, value):
@@ -245,9 +285,7 @@ if __name__ == "__main__":
     double1 = Double(10.5)
     bool1 = Bool(True)
     
-    print(int1 + int2)  # Should print Number(15)
-    print(float1 + double1)  # Should print Float(16.0)
-    print(bool1 and Bool(False))  # Should print Bool(False)
-    
-    print(int1.cast_to('Float'))  # Should print Float(5.0)
-    print(float1.cast_to('Int'))  # Should print Int(5)
+    # Example usage of binary_operation using Int's __add__ method
+    op = binary_operation(int1, float1, Number.__add__)
+    result = op.execute()
+    print(result)

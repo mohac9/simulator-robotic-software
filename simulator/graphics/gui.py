@@ -1422,6 +1422,8 @@ class ButtonBar(tk.Frame):
         self.stop_button.on_click_finish()
 
     def __load_images(self):
+        print("-----------------")
+        print(__file__)
         self.exec_img = tk.PhotoImage(file="buttons/exec.png")
         self.exec_whi_img = tk.PhotoImage(file="buttons/exec_w.png")
         self.exec_yel_img = tk.PhotoImage(file="buttons/exec_y.png")

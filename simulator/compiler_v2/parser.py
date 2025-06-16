@@ -1,7 +1,8 @@
 import re
 from sly import Parser
 from lexer import ArduinoLexer
-import typesArduino
+import typesArduino as ta
+
 
 class ArduinoParser(Parser):
     
@@ -77,7 +78,7 @@ class ArduinoParser(Parser):
     @_('var_type ID EQUAL expression ')
     def simple_declaration(self, p):
         return ('simple_declaration', p.var_type, p.ID, p.expression)
-    
+
     @_('var_type ID')
     def simple_declaration(self, p):
         return ('simple_declaration', p.var_type, p.ID, None)
@@ -184,11 +185,7 @@ class ArduinoParser(Parser):
     #Assignment rules
     @_('expression EQUAL expression')
     def assignment(self, p):
-        return {
-            'type': 'assignment',
-            'left': p.expression0,
-            'right': p.expression1
-        }
+        return ta.assignment(p.expression0, p.expression1)
         
     
     #Iterative and conditional sentences
@@ -415,65 +412,65 @@ class ArduinoParser(Parser):
 
     @_('expression PLUS expression')
     def expression(self, p):
-        #return ('sum', p.expression0, p.expression1)
-        return typesArduino.binary_operation(p.expression0, p.expression1, add) #Usar objetos de TypesArduino
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__add__) #Usar objetos de TypesArduino
 
     @_('expression MINUS expression')
     def expression(self, p):
-        return ('sub', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0,p.expression1,ta.Number.__sub__)
 
     @_('expression BITWISE_RIGHT_SHIFT expression')
     def expression(self, p):
-        return ('bit_shift_r', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__bit_shift_r__)
 
     @_('expression BITWISE_LEFT_SHIFT expression')
     def expression(self, p):
-        return ('bit_shift_l', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__bit_shift_l__)
 
     @_('expression LT expression')
     def expression(self, p):
-        return ('less_than', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__lt__)
 
     @_('expression LE expression')
     def expression(self, p):
-        return ('less_than_eq', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__le__)
 
     @_('expression GT expression')
     def expression(self, p):
-        return ('greater_than', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__gt__)
 
     @_('expression GE expression')
     def expression(self, p):
-        return ('greater_than_eq', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__ge__)
 
     @_('expression EQ expression')
     def expression(self, p):
-        return ('equal', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__eq__)
 
     @_('expression NE expression')
     def expression(self, p):
-        return ('ne', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__ne__)
 
     @_('expression BITWISE_AND expression')
     def expression(self, p):
-        return ('bitwise_and', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__bitwise_and__)
 
     @_('expression BITWISE_XOR expression')
     def expression(self, p):
-        return ('bitwise_xor', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__bitwise_xor__)
 
     @_('expression BITWISE_OR expression')
     def expression(self, p):
-        return ('bitwise_or', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__bitwise_or__)
 
     @_('expression AND expression')
     def expression(self, p):
-        return ('logical_and', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__and__)
 
     @_('expression OR expression')
     def expression(self, p):
-        return ('logical_or', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__or__)
 
+    #TODO: Change later to use objects from typesArduino
     @_('expression compound_operator expression')
     def expression(self, p):
         return ('compound_assignment', p.expression0, p.compound_operator, p.expression1)
@@ -575,7 +572,7 @@ def print_tree(node, indent=0):
 if __name__ == '__main__':
     data = ''' 
     #include "Arduino.h"
-    int a = 0;
+    int a = 0 + 2;
     '''
     lexer = ArduinoLexer()
     print("----------------------------------")
