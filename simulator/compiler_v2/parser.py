@@ -77,13 +77,13 @@ class ArduinoParser(Parser):
     
     @_('var_type ID EQUAL expression ')
     def simple_declaration(self, p):
-        return ('simple_declaration', p.var_type, p.ID, p.expression)
+        return ta.simple_declaration(p.ID, p.var_type, p.expression)
 
     @_('var_type ID')
     def simple_declaration(self, p):
-        return ('simple_declaration', p.var_type, p.ID, None)
-    
-    
+        return ta.simple_declaration(p.ID, p.var_type, None)
+
+
     @_('var_type ID array_index EQUAL expression')
     def array_declaration(self, p):
         return ('array_declaration_asg_expr', p.var_type, p.ID, p.array_index, p.expression)
@@ -384,31 +384,32 @@ class ArduinoParser(Parser):
 
     @_('PLUS PLUS expression')
     def expression(self, p):
-        return ('increment', p.expression)
+        return ta.unary_operation(p.expression, ta.Number.__next__)
 
     @_('MINUS MINUS expression')
     def expression(self, p):
-        return ('decrement', p.expression)
+        return ta.unary_operation(p.expression, ta.Number.__prev__)
+        
 
     @_('NOT expression')
     def expression(self, p):
-        return ('not', p.expression)
+        return ta.unary_operation(p.expression, ta.Bool.__not__)
 
     @_('BITWISE_NOT expression')
     def expression(self, p):
-        return ('bitwise_not', p.expression)
+        return ta.unary_operation(p.expression, ta.Number.__bitwise_not__)
 
     @_('expression MULTIPLY expression')
     def expression(self, p):
-        return ('mul', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__mul__)
 
     @_('expression DIVIDE expression')
     def expression(self, p):
-        return ('div', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__truediv__)
 
     @_('expression MODULUS expression')
     def expression(self, p):
-        return ('mod', p.expression0, p.expression1)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__mod__)
 
     @_('expression PLUS expression')
     def expression(self, p):
@@ -533,7 +534,7 @@ class ArduinoParser(Parser):
    #Parenthesis rules
     @_('LPAREN expression RPAREN')
     def expression(self, p):
-        return p.expression
+        return ta.parenthesis(p.expression)
     
     
     #Symbols
@@ -572,7 +573,11 @@ def print_tree(node, indent=0):
 if __name__ == '__main__':
     data = ''' 
     #include "Arduino.h"
-    int a = 0 + 2;
+    for(int i = 0; i < 10; i++) {
+        int a = 5;
+        int b = 10;
+        int c = a + b;
+    }
     '''
     lexer = ArduinoLexer()
     print("----------------------------------")

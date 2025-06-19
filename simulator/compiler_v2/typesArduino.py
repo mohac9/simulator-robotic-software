@@ -10,6 +10,8 @@ class Metatype(type):
     @classmethod
     def get_type(cls, name):
         return cls._types.get[name]
+    
+    
 
 
 class BaseType(metaclass=Metatype):
@@ -18,6 +20,14 @@ class BaseType(metaclass=Metatype):
     
     def __str__(self):
         return self.__class__.__name__ # for debugging purposes
+    
+
+class parserTypes:
+    def __init__(self):
+        self.children = []
+        
+    def children(self):
+        return self.children
     
     
 type_priority = { 
@@ -64,6 +74,18 @@ class Number(BaseType): #I'm not sure if this is needed
         return self.binary_operation(other, lambda a, b: Number(a.value ** b.value))
     def __neg__(self):
         return Number(-self.value)
+    
+    # Arithmetic unary operators
+
+    def __abs__(self):
+        return Number(abs(self.value))
+    
+    def __prev__(self):
+        return Number(self.value - 1)
+    
+    def __next__(self):
+        return Number(self.value + 1)
+    
 
     # Bitwise operators
     def __bit_shift_r__(self, other):
@@ -78,7 +100,8 @@ class Number(BaseType): #I'm not sure if this is needed
     def __bitwise_xor__(self, other):
         return self.binary_operation(other, lambda a, b: Number(a.value ^ b.value))
     
-    
+    def __bitwise__not__(self):
+        return Number(~self.value)
     
     # Comparison operators
     def __eq__(self, other):
@@ -202,11 +225,25 @@ class String(BaseType):
 
 #May be separated in another file
 #-------------- Not basic types ---------------
-class binary_operation:
+
+class unary_operation(parserTypes):
+    def __init__(self, operand, operation):
+        self.operand = operand
+        self.operation = operation
+        self.children = [operand]
+    
+    def execute(self):
+        return self.operand.unary_operation(self.operation)
+    def __str__(self):
+        return f"UnaryOperation({self.operand}, {self.operation})"
+
+
+class binary_operation(parserTypes):
     def __init__(self, left, right, operation):
         self.left = left
         self.right = right
         self.operation = operation
+        self.children = [left, right]
     
     def execute(self):
         return self.left.binary_operation(self.right, self.operation)
@@ -224,10 +261,22 @@ class binary_operation:
         
 
 
-class assignment:
+class assignment(parserTypes):
     def __init__(self, variable, value):
         self.variable = variable
         self.value = value
+        self.children = [variable,value]
+        
+    def __type__(self, env=None):
+        if self.variable not in env.variables:
+            raise RuntimeError(f"Variable '{self.variable}' is not defined.")
+        var_type = env.get_variable_type(self.variable)
+        value_type = self.value.__type__(env)
+        if var_type != value_type:
+            raise RuntimeError(f"Type mismatch: cannot assign {value_type} to {var_type}.")
+        return var_type
+    
+    
     
     def execute(self, env):
         if self.variable not in env.variables:
@@ -249,6 +298,22 @@ class simple_declaration:
         self.name = name
         self.var_type = var_type
         self.content = content
+        
+    def __type__(self, env=None):
+        return self.var_type
+    
+    def __var_name__(self, env=None):
+        return self.name
+    
+    def __var_content__(self, env=None):
+        if self.content is not None:
+            return self.content.__type__(env)
+        return None
+    
+    def __change_content__(self, content, env=None):
+        self.content = content
+        
+        
     def execute(self, env):
         env.set_variable(self.name, self.var_type)
         if self.content is not None:
@@ -257,7 +322,26 @@ class simple_declaration:
                 raise RuntimeError(f"Type mismatch: cannot assign {content_type} to {self.var_type}.")
             env.set_variable_contents(self.name, self.content)
             
-class program:
+    def __str__(self):
+        return f"SimpleDeclaration(name={self.name}, type={self.var_type}, content={self.content})"
+          
+          
+class parenthesis(parserTypes):
+    def __init__(self, expression):
+        self.expression = expression
+        self.children = [expression]
+
+    def execute(self):
+        return self.expression.execute()
+
+    def __str__(self):
+        return f"Parenthesis({self.expression})"
+
+    def __type__(self, env=None):
+        return self.expression.__type__(env)
+
+  
+class program(parserTypes):
     def __init__(self,include_list,program_code):
         self.include_list = include_list
         self.program_code = program_code
@@ -274,7 +358,26 @@ class Object():
 
         return env[self.name]
 
+class for_loop(parserTypes):
+    def __init__(self, init, condition, increment, body):
+        self.init = init
+        self.condition = condition
+        self.increment = increment
+        self.body = body
+        self.children = [init, condition, increment, body]
 
+    def execute(self, env):
+        # Execute initialization
+        self.init.execute(env)
+
+        while self.condition.execute().value:
+            # Execute the body of the loop
+            self.body.execute(env)
+            # Execute increment
+            self.increment.execute(env)
+
+    def __str__(self):
+        return f"ForLoop(init={self.init}, condition={self.condition}, increment={self.increment}, body={self.body})"
 
 
 

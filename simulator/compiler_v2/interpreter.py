@@ -1,6 +1,7 @@
 import parser
 import lexer
 import typesArduino as ta
+import environment
 
         
 
@@ -8,20 +9,21 @@ import typesArduino as ta
 class ArduinoInterpreter:
     def __init__(self, code):
         self.code = code
-        env = Environment()
+        env = environment.Environment()
         self.current_line = 0
         self.lines = []
         self.had_runtime_error = False
     
     def visit(self,node): #
-        node_type = node['type']
-        if node_type == 'Program':
-            self.visit_program(node) 
+        if isinstance(node, ta.program):
+            self.visit_program(node)
+        
         
     def visit_program(self, node):
         pass
 
     def visit_assignment(self, node):
+        
         if node.__class__() == ta.assignment:
             node.execute(self.variables)
         else:
