@@ -57,6 +57,9 @@ class ArduinoParser(Parser):
     def program_code(self, p):
         return ('macro_definition', p.define_macro)   
     
+    @_('sentence_list')
+    def program_code(self, p):
+        return ('sentence_list', p.sentence_list)
     
     #Declaration rules
     @_('simple_declaration')
@@ -237,14 +240,14 @@ class ArduinoParser(Parser):
     #Conditional sentences
     @_('IF LPAREN expression RPAREN code_block LPAREN ELSE code_block RPAREN')
     def conditional_sentence(self, p):
-        return ('if_else', p.expression, p.sentence_list, p.sentence_list1)
+        return ta.if_statement(p.expression, p.code_block0, p.code_block1)
     
     @_('IF LPAREN expression RPAREN code_block')
     def conditional_sentence(self, p):
-        return ('if', p.expression, p.sentence_list)
-    
-    #May be necessary to add a if else  
-    
+        return ta.if_statement(p.expression, p.code_block)
+
+    #May be necessary to add a if else
+
     @_('SWITCH LPAREN expression RPAREN LBRACE case_sentence_list RBRACE')
     def conditional_sentence(self, p):
         return ('switch', p.expression, p.case_sentence_list)
@@ -572,12 +575,9 @@ def print_tree(node, indent=0):
 
 if __name__ == '__main__':
     data = ''' 
-    #include "Arduino.h"
-    for(int i = 0; i < 10; i++) {
-        int a = 5;
-        int b = 10;
-        int c = a + b;
-    }
+    switch (x) {
+        case 1:
+        }
     '''
     lexer = ArduinoLexer()
     print("----------------------------------")

@@ -42,11 +42,9 @@ class ArduinoInterpreter:
             raise RuntimeError(f"Unknown expression type: {node.__class__()}.")
 
     
- 
-        
-
- 
-
-       
-
+    def visit_if_statement(self, node):
+        if node.__class__() == ta.if_statement:
+            node.execute(self.variables)
+        else:
+            raise RuntimeError(f"Unknown if statement type: {node.__class__()}.")
     

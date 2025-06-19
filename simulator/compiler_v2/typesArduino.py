@@ -12,9 +12,13 @@ class Metatype(type):
         return cls._types.get[name]
     
     
+    
+    
 
 
 class BaseType(metaclass=Metatype):
+    
+    
     def __add__(self, other):
         return NotImplemented
     
@@ -56,6 +60,9 @@ class Number(BaseType): #I'm not sure if this is needed
     def binary_operation(self, other, operation):
         a, b = promote(self,other)
         return operation(a,b)
+    
+    def __value__(self):
+        return self.value
     
     # Arithmetic operators
     def __add__(self, other):
@@ -152,6 +159,9 @@ class Float(Number):
             return Double(float(self.value))
         return self
     
+    def __type__(self, env=None):
+        return 'Float'
+    
     def __str__(self):
         return f"Float({self.value})"
     
@@ -165,6 +175,9 @@ class Double(Number):
         elif target_type == 'Float':
             return Float(float(self.value))
         return self
+    
+    def __type__(self, env=None):
+        return 'Double'
     
     def __str__(self):
         return f"Double({self.value})"
@@ -197,6 +210,9 @@ class Bool(Number):  #I think that is more convinient to have Bool as a subclass
             return Double(1.0 if self.value else 0.0)
         return self
     
+    def __type__(self, env=None):
+        return 'Bool'
+    
 class Char(BaseType):
     def __init__(self, value):
         if isinstance(value, str) and len(value) == 1:
@@ -209,6 +225,9 @@ class Char(BaseType):
     
     def cast_to(self, target_type):
         pass 
+    
+    def __type__(self, env=None):
+        return 'Char'
 
 class String(BaseType):
     def __init__(self, value):
@@ -223,6 +242,8 @@ class String(BaseType):
     def cast_to(self, target_type):
         pass 
 
+    def __type__(self, env=None):
+        return 'String'
 #May be separated in another file
 #-------------- Not basic types ---------------
 
@@ -357,6 +378,38 @@ class Object():
     def __type__(self,env=None):
 
         return env[self.name]
+    
+    
+#Control structures
+class if_statement(parserTypes):
+    def __init__(self, condition, body, else_body=None):
+        self.condition = condition
+        self.body = body
+        self.else_body = else_body
+        self.children = [condition, body, else_body] if else_body else [condition, body]
+        
+    def execute(self, env):
+        condition_result = self.condition.execute()
+        if condition_result.__type__() != 'Bool':
+            raise RuntimeError(f"Condition must be of type 'Bool', got {condition_result.__type__()}.")
+        
+        if condition_result.__value__():
+            # Execute the body if the condition is true
+            self.body.execute(env)
+        elif self.else_body:
+            # Execute the else body if the condition is false
+            if self.else_body.__type__() is not None:
+                self.else_body.execute(env)
+                
+    def __str__(self):
+        return f"IfStatement(condition={self.condition}, body={self.body},else_body={self.else_body})"
+    
+#TODO: Add support for switch statements
+class switch_statement(parserTypes):
+    def __init__(self, expression, cases):
+        self.expression = expression
+        self.cases = cases  
+
 
 class for_loop(parserTypes):
     def __init__(self, init, condition, increment, body):
@@ -367,13 +420,31 @@ class for_loop(parserTypes):
         self.children = [init, condition, increment, body]
 
     def execute(self, env):
-        # Execute initialization
-        self.init.execute(env)
+        #Check types
+        if self.condition.__type__() != 'Bool':
+            raise RuntimeError(f"Condition must be of type 'Bool', got {self.condition.__type__()}.")
+        
+        if self.init.__class__.__name__ != 'assignment':
+            raise RuntimeError(f"Initialization must be an assignment, got {self.init.__class__.__name__}.")
 
-        while self.condition.execute().value:
-            # Execute the body of the loop
+        if self.init.__type__(env) != 'Int': #This may be any number type, but for now we will use Int
+            raise RuntimeError(f"Initialization must be of type 'Number', got {self.init.__type__(env)}.")
+        
+        # Execute the initialization
+        self.init.execute(env)
+        while True:
+            # Check the loop condition
+            condition_result = self.condition.execute()
+            if condition_result.__type__() != 'Bool':
+                raise RuntimeError(f"Condition must be of type 'Bool', got {condition_result.__type__()}.")
+
+            if not condition_result.__value__():
+                break
+
+            # Execute the body
             self.body.execute(env)
-            # Execute increment
+
+            # Execute the increment
             self.increment.execute(env)
 
     def __str__(self):
@@ -387,7 +458,10 @@ if __name__ == "__main__":
     float1 = Float(5.5)
     double1 = Double(10.5)
     bool1 = Bool(True)
+    bool2 = bool1.__not__()
+    print(bool1, bool2)
     
+   
     # Example usage of binary_operation using Int's __add__ method
     op = binary_operation(int1, float1, Number.__add__)
     result = op.execute()
