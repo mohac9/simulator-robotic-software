@@ -25,13 +25,16 @@ class BaseType(metaclass=Metatype):
     def __str__(self):
         return self.__class__.__name__ # for debugging purposes
     
+    def children(self):
+        return None
+    
 
 class parserTypes:
     def __init__(self):
-        self.children = []
+        self.children_list = []
         
     def children(self):
-        return self.children
+        return self.children_list
     
     
 type_priority = { 
@@ -244,6 +247,16 @@ class String(BaseType):
 
     def __type__(self, env=None):
         return 'String'
+    
+    
+class Object():
+    def __init__(self, value):
+        self.name = value
+
+    
+    def __type__(self,env=None):
+
+        return env[self.name]
 #May be separated in another file
 #-------------- Not basic types ---------------
 
@@ -251,7 +264,7 @@ class unary_operation(parserTypes):
     def __init__(self, operand, operation):
         self.operand = operand
         self.operation = operation
-        self.children = [operand]
+        self.children_list = [operand]
     
     def execute(self):
         return self.operand.unary_operation(self.operation)
@@ -264,7 +277,7 @@ class binary_operation(parserTypes):
         self.left = left
         self.right = right
         self.operation = operation
-        self.children = [left, right]
+        self.children_list = [left, right]
     
     def execute(self):
         return self.left.binary_operation(self.right, self.operation)
@@ -286,7 +299,7 @@ class assignment(parserTypes):
     def __init__(self, variable, value):
         self.variable = variable
         self.value = value
-        self.children = [variable,value]
+        self.children_list = [variable,value]
         
     def __type__(self, env=None):
         if self.variable not in env.variables:
@@ -296,6 +309,8 @@ class assignment(parserTypes):
         if var_type != value_type:
             raise RuntimeError(f"Type mismatch: cannot assign {value_type} to {var_type}.")
         return var_type
+    
+    
     
     
     
@@ -314,12 +329,34 @@ class assignment(parserTypes):
     def __str__(self):
         return f"Assignment({self.variable}, {self.value})"
     
-class simple_declaration:
+#Auxiliary class to combine declarations
+class declaration(parserTypes):
+    def __init__(self, declaration):
+        self.declaration = declaration
+        self.children_list = [declaration]
+        
+    def execute(self, env):
+        declaration_types = ['simple_declaration', 'array_declaration', 'struct_declaration']
+        if self.declaration.__class__.__name__ not in declaration_types:
+            raise RuntimeError(f"Invalid declaration type: {self.declaration.__class__.__name__}. Expected one of {declaration_types}.")
+        self.declaration.execute(env)
+    
+    def __str__(self):
+        return f"Declaration({self.declaration})"
+    
+    def children(self):
+        return self.children_list
+    
+    def __type__(self, env=None):
+        return self.declaration.__type__(env)
+    
+class simple_declaration(parserTypes):
     def __init__(self,name,var_type, content=None):
         self.name = name
         self.var_type = var_type
         self.content = content
-        
+        self.children_list = [name, var_type, content] if content else [name, var_type]
+
     def __type__(self, env=None):
         return self.var_type
     
@@ -346,50 +383,120 @@ class simple_declaration:
     def __str__(self):
         return f"SimpleDeclaration(name={self.name}, type={self.var_type}, content={self.content})"
           
+    def children(self):
+        return self.children_list
           
 class parenthesis(parserTypes):
     def __init__(self, expression):
         self.expression = expression
-        self.children = [expression]
+        self.children_list = [expression]
 
-    def execute(self):
-        return self.expression.execute()
+    def execute(self,env):
+        return self.expression.execute(env)
 
     def __str__(self):
         return f"Parenthesis({self.expression})"
 
     def __type__(self, env=None):
         return self.expression.__type__(env)
+    
+    def children(self):
+        return self.children_list
 
   
 class program(parserTypes):
-    def __init__(self,include_list,program_code):
+    def __init__(self,include_list,program_code_list):
         self.include_list = include_list
-        self.program_code = program_code
+        self.program_code_list = program_code_list
+        self.children_list = [include_list, program_code_list]
         
     def execute(self, env):
         pass
-
-class Object():
-    def __init__(self, value):
-        self.name = value
-
     
-    def __type__(self,env=None):
+    def children(self):
+        return self.children_list
+    
+    def __str__(self):
+        return f"Program(include_list={self.include_list}, program_code_list={self.program_code_list})"
+    
+class program_code_list(parserTypes):
+    def __init__(self, code_list):
+        self.code_list = code_list
+        self.children_list = code_list
 
-        return env[self.name]
+    def execute(self, env):
+        for code in self.code_list:
+            code.execute(env)
+            
+    def __str__(self):
+        return f"ProgramCodeList({len(self.code_list)} elements)"
+    
+    def append(self, code):
+        if not isinstance(code, program_code):
+            raise RuntimeError(f"Expected a 'program_code' type, got {code.__class__.__name__}.")
+        self.code_list.append(code)
+        self.children_list.append(code)
+    
+    def children(self):
+        return self.children_list
+
+
+
+class program_code(parserTypes):
+    def __init__(self, code):
+        self.code = code
+        self.children_list = [code]
+    
+    def execute(self, env):
+        #Later we will add type checking and other features
+        return self.code.execute(env)
+    
+    def __str__(self):
+        return str(self.code)
     
     
+class include_list(parserTypes):
+    def __init__(self, includes):
+        self.includes = includes
+        self.children_list = includes
+
+    def execute(self, env):
+        for include in self.includes:
+            include.execute(env)
+    
+    def __str__(self):
+        return "IncludeList"
+    
+    def children(self):
+        return self.children_list
+    
+    def append(self, include):
+        if not isinstance(include, include):
+            raise RuntimeError(f"Expected an 'include' type, got {include.__class__.__name__}.")
+        self.includes.append(include)
+        self.children_list.append(include)
+
+class include(parserTypes):
+    def __init__(self, include_name):
+        self.include_name = include_name
+        self.children_list  = [include_name]
+    def execute(self, env):
+        if self.include_name.__type__(env) != 'String':
+            raise RuntimeError(f"Include name must be a string, got {self.include_name.__type__(env)}.")
+        #TODO: Implement include functionality
+    def children(self):
+        return  self.children_list
+
 #Control structures
 class if_statement(parserTypes):
     def __init__(self, condition, body, else_body=None):
         self.condition = condition
         self.body = body
         self.else_body = else_body
-        self.children = [condition, body, else_body] if else_body else [condition, body]
+        self.children_list = [condition, body, else_body] if else_body else [condition, body]
         
     def execute(self, env):
-        condition_result = self.condition.execute()
+        condition_result = self.condition.execute(env)
         if condition_result.__type__() != 'Bool':
             raise RuntimeError(f"Condition must be of type 'Bool', got {condition_result.__type__()}.")
         
@@ -417,7 +524,7 @@ class for_loop(parserTypes):
         self.condition = condition
         self.increment = increment
         self.body = body
-        self.children = [init, condition, increment, body]
+        self.children_list = [init, condition, increment, body]
 
     def execute(self, env):
         #Check types
@@ -434,7 +541,7 @@ class for_loop(parserTypes):
         self.init.execute(env)
         while True:
             # Check the loop condition
-            condition_result = self.condition.execute()
+            condition_result = self.condition.execute(env)
             if condition_result.__type__() != 'Bool':
                 raise RuntimeError(f"Condition must be of type 'Bool', got {condition_result.__type__()}.")
 
@@ -449,6 +556,8 @@ class for_loop(parserTypes):
 
     def __str__(self):
         return f"ForLoop(init={self.init}, condition={self.condition}, increment={self.increment}, body={self.body})"
+    
+
 
 
 

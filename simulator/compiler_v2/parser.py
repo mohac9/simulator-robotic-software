@@ -2,6 +2,8 @@ import re
 from sly import Parser
 from lexer import ArduinoLexer
 import typesArduino as ta
+import interpreter
+
 
 
 class ArduinoParser(Parser):
@@ -19,35 +21,37 @@ class ArduinoParser(Parser):
     #Top level rules
     @_('LBRACE RBRACE')
     def program(self, p):
-        return ('program', [])
+        return ta.program([], [])
     
     @_('include_list program_code_list')
     def program(self, p):
-        return ('program', p.include_list, p.program_code_list)
-    
+        return ta.program(p.include_list, p.program_code_list)
+        
     @_('')
     def include_list(self, p):
-        return []
+        return ta.include_list([])
 
     @_('include_list include')
     def include_list(self, p):
-        return p.include_list + [p.include]
-    
+        p.include_list.append(p.include)
+        return p.include_list
+
     @_('INCLUDE STRING_CONST')
     def include(self, p):
-        return ('include', p.STRING_CONST)
+        return ta.include(p.STRING_CONST)
     
     @_('')
     def program_code_list(self, p):
-        return []
+        return ta.program_code_list([])
     
     @_('program_code_list program_code')
     def program_code_list(self, p):
-        return p.program_code_list + [p.program_code]
+        p.program_code_list.append(p.program_code)
+        return p.program_code_list
     
     @_('declaration SEMICOLON')
     def program_code(self, p):
-        return ('declaration', p.declaration)
+        return ta.program_code(p.declaration)
     
     @_('function')
     def program_code(self, p):
@@ -64,8 +68,9 @@ class ArduinoParser(Parser):
     #Declaration rules
     @_('simple_declaration')
     def declaration(self, p):
-        return ('simple_declaration', p.simple_declaration)
+        return ta.declaration(p.simple_declaration)
     
+    #TODO: Change this to a ta.* return
     @_('array_declaration')
     def declaration(self, p):
         return ('array_declaration', p.array_declaration)
@@ -569,15 +574,27 @@ def print_tree(node, indent=0):
     else:
         print('  ' * indent + str(node)) 
     
+    
+def print_tree_v2(node, indent=0):
+    print(' ' * indent, node)
+    try:
+        children_list = node.children()
+    except AttributeError:
+        return
+    if children_list:
+        for child in children_list:
+            print_tree_v2(child, indent + 2)
+    else:
+        print(' ' * (indent + 2), 'No children')
+    
+    
 
         
 # Convertir el string en un arbol de sintaxis
 
 if __name__ == '__main__':
     data = ''' 
-    switch (x) {
-        case 1:
-        }
+    int i = 0;
     '''
     lexer = ArduinoLexer()
     print("----------------------------------")
@@ -586,6 +603,9 @@ if __name__ == '__main__':
     print("----------------------------------")
     parser = ArduinoParser()
     result = parser.parse(lexer.tokenize(data))
-    print_tree(result)
+    #print_tree(result)
+    print("----------------------------------")
+    print_tree_v2(result)
+    interpreter = interpreter.ArduinoInterpreter(result)
     
-    
+   

@@ -15,36 +15,15 @@ class ArduinoInterpreter:
         self.had_runtime_error = False
     
     def visit(self,node): #
-        if isinstance(node, ta.program):
-            self.visit_program(node)
+        node.execute(self.env)
         
-        
-    def visit_program(self, node):
-        pass
-
-    def visit_assignment(self, node):
-        
-        if node.__class__() == ta.assignment:
-            node.execute(self.variables)
-        else:
-            raise RuntimeError(f"Unknown assignment type: {node.__class__()}.")
-
-    def visit_simple_declaration(self, node):
-        if node.__class__() == ta.simple_declaration:
-            node.execute(self.variables)
-        else:
-            raise RuntimeError(f"Unknown simple declaration type: {node.__class__()}.")
-        
-    def visit_expression(self, node):
-        if node.__class__() == ta.binary_operation:
-            return node.execute()
-        else:
-            raise RuntimeError(f"Unknown expression type: {node.__class__()}.")
-
+    def get_variables(self):
+        return self.env.variables
     
-    def visit_if_statement(self, node):
-        if node.__class__() == ta.if_statement:
-            node.execute(self.variables)
-        else:
-            raise RuntimeError(f"Unknown if statement type: {node.__class__()}.")
+    def run():
+        pass
+        
+        
+        
+        
     

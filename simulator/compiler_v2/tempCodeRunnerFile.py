@@ -1,1 +1,1 @@
-Serial.println(c);
+declaration
