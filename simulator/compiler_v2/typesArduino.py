@@ -11,6 +11,8 @@ class Metatype(type):
     def get_type(cls, name):
         return cls._types.get[name]
     
+    def execute(self, env):
+        return self
     
     
     
@@ -27,6 +29,9 @@ class BaseType(metaclass=Metatype):
     
     def children(self):
         return None
+    
+    def execute(self, env): #For easier implementation of the interpreter
+        return self
     
 
 class parserTypes:
@@ -249,7 +254,7 @@ class String(BaseType):
         return 'String'
     
     
-class Object():
+class Object(Metatype):
     def __init__(self, value):
         self.name = value
 
@@ -257,6 +262,13 @@ class Object():
     def __type__(self,env=None):
 
         return env[self.name]
+    
+    def __str__(self):
+        return f"Object({self.name})"
+    
+    def execute(self, env):
+        return self
+    
 #May be separated in another file
 #-------------- Not basic types ---------------
 
@@ -266,7 +278,7 @@ class unary_operation(parserTypes):
         self.operation = operation
         self.children_list = [operand]
     
-    def execute(self):
+    def execute(self,env):
         return self.operand.unary_operation(self.operation)
     def __str__(self):
         return f"UnaryOperation({self.operand}, {self.operation})"
@@ -279,8 +291,19 @@ class binary_operation(parserTypes):
         self.operation = operation
         self.children_list = [left, right]
     
-    def execute(self):
-        return self.left.binary_operation(self.right, self.operation)
+    def execute(self,env):
+        print(self.left)
+        print(self.right)
+        left_value = self.left.execute(env)
+        right_value = self.right.execute(env)
+        
+        print("_______________________________________________________")
+        print(left_value)
+        print(right_value)
+        print(left_value.binary_operation(right_value, self.operation))
+        print("_______________________________________________________")
+        
+        return left_value.binary_operation(right_value, self.operation)
     
     def __str__(self):
         return f"BinaryOperation({self.left}, {self.right}, {self.operation})"
@@ -310,10 +333,6 @@ class assignment(parserTypes):
             raise RuntimeError(f"Type mismatch: cannot assign {value_type} to {var_type}.")
         return var_type
     
-    
-    
-    
-    
     def execute(self, env):
         if self.variable not in env.variables:
             raise RuntimeError(f"Variable '{self.variable}' is not defined.")
@@ -336,6 +355,7 @@ class declaration(parserTypes):
         self.children_list = [declaration]
         
     def execute(self, env):
+        print(f"Executing declaration: {self.declaration}")
         declaration_types = ['simple_declaration', 'array_declaration', 'struct_declaration']
         if self.declaration.__class__.__name__ not in declaration_types:
             raise RuntimeError(f"Invalid declaration type: {self.declaration.__class__.__name__}. Expected one of {declaration_types}.")
@@ -373,12 +393,43 @@ class simple_declaration(parserTypes):
         
         
     def execute(self, env):
-        env.set_variable(self.name, self.var_type)
         if self.content is not None:
-            content_type = self.content.__type__(env)
-            if content_type != self.var_type:
-                raise RuntimeError(f"Type mismatch: cannot assign {content_type} to {self.var_type}.")
-            env.set_variable_contents(self.name, self.content)
+            content = self.content.execute(env)
+            print("??????????????????????????????????????????????????????????")
+            print(content)
+            print("??????????????????????????????????????????????????????????")
+            content = self.type_conversion(content, self.var_type)
+            env.set_variable(self.name, self.var_type, content)
+        else:
+            env.set_variable(self.name, self.var_type)
+            
+    def type_conversion(self,object, target_type):
+        og_type = object.__class__.__name__.lower() # Original type of the object
+        print(object)
+        print(f"Original type: {og_type}, Target type: {target_type}")
+        
+        if og_type == target_type:
+            return object
+        print(f"Converting {object.__class__} to {target_type}")
+        if og_type != 'Object':
+            
+            raise RuntimeError(f"Cannot convert {object.__class__.__name__} to {target_type}. Only 'Object' type can be converted.")
+        
+        if target_type == 'Int':
+            return Int(int(object.name))
+        elif target_type == 'Float':
+            return Float(float(object.name))
+        elif target_type == 'Double':
+            return Double(float(object.name))
+        elif target_type == 'Bool':
+            return Bool(bool(object.name))
+        elif target_type == 'Char':
+            return Char(str(object.name)[0])
+        elif target_type == 'String':
+            return String(str(object.name))
+        else:
+            raise RuntimeError(f"Unsupported type conversion from {object.__class__.__name__} to {target_type}.")                     
+
             
     def __str__(self):
         return f"SimpleDeclaration(name={self.name}, type={self.var_type}, content={self.content})"
@@ -411,7 +462,10 @@ class program(parserTypes):
         self.children_list = [include_list, program_code_list]
         
     def execute(self, env):
-        pass
+        # Execute includes first
+        self.include_list.execute(env)
+        # Then execute the program code
+        self.program_code_list.execute(env)
     
     def children(self):
         return self.children_list
@@ -422,7 +476,6 @@ class program(parserTypes):
 class program_code_list(parserTypes):
     def __init__(self, code_list):
         self.code_list = code_list
-        self.children_list = code_list
 
     def execute(self, env):
         for code in self.code_list:
@@ -435,10 +488,9 @@ class program_code_list(parserTypes):
         if not isinstance(code, program_code):
             raise RuntimeError(f"Expected a 'program_code' type, got {code.__class__.__name__}.")
         self.code_list.append(code)
-        self.children_list.append(code)
     
     def children(self):
-        return self.children_list
+        return self.code_list
 
 
 
@@ -571,7 +623,5 @@ if __name__ == "__main__":
     print(bool1, bool2)
     
    
-    # Example usage of binary_operation using Int's __add__ method
-    op = binary_operation(int1, float1, Number.__add__)
-    result = op.execute()
-    print(result)
+    
+    

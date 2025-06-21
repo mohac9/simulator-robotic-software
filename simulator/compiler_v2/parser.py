@@ -337,7 +337,7 @@ class ArduinoParser(Parser):
     
     @_('INT_CONST')
     def expression(self, p):
-        return ('int_const', p.INT_CONST)
+        return ta.Int(p.INT_CONST)
     
     @_('FLOAT_CONST')
     def expression(self, p):
@@ -353,7 +353,7 @@ class ArduinoParser(Parser):
     
     @_('ID')
     def expression(self, p):
-        return ('id', p.ID)
+        return ta.Object(p.ID)
     
     @_('ID LPAREN expression_list RPAREN')
     def expression(self, p):
@@ -560,7 +560,13 @@ class ArduinoParser(Parser):
     
     @_('NUMBER')
     def expression(self, p):
-        return ('int_const', p.NUMBER)
+        # Determinar si es entero o flotante
+        if '.' in str(p.NUMBER) or 'e' in str(p.NUMBER).lower():
+            return ta.Int(p.NUMBER)  # Es flotante
+        else:
+            return ta.Int(p.NUMBER)    # Es entero
+        
+            
 
 def print_tree(node, indent=0):
     if isinstance(node, tuple):

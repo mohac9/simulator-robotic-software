@@ -394,7 +394,7 @@ class ArduinoLexer(Lexer):
 if __name__ == '__main__':
     data = '''
     #include <Arduino.h>
-    a + b;
+    int i = 10.05;
     }
     '''
     

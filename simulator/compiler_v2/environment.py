@@ -4,16 +4,12 @@ class Environment:
         self.variables_contents = {} #Key: variable name, Value: variable content
         self.parent_env = parent_env
         
-    def set_variable(self, name, var_type, content):
+    def set_variable(self, name, var_type, content=None):
         if name in self.variables:
             raise RuntimeError(f"Variable '{name}' already defined.")
         self.variables[name] = var_type
         self.variables_contents[name] = content
         
-    def set_variable(self,name,var_type):
-        if name in self.variables:
-            raise RuntimeError(f"Variable '{name}' already defined.")
-        self.variables[name] = var_type
         
     def get_variable_type(self,name):
         return  self.variables[name]
@@ -27,6 +23,11 @@ class Environment:
     def cast_type(self,name,new_type):
         self.variables[name] = name
         
+    def get_all_variables(self):
+        return [
+            {"name": name, "type": self.variables[name], "content": self.variables_contents[name]}
+            for name in self.variables
+        ]
     #TODO: Search parents variables for env inside functions
     def search_parents(self,name):
         pass
