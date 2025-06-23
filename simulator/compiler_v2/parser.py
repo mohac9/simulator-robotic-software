@@ -560,6 +560,7 @@ class ArduinoParser(Parser):
     
     @_('NUMBER')
     def expression(self, p):
+        print("Pasa por NUMBER")
         # Determinar si es entero o flotante
         if '.' in str(p.NUMBER) or 'e' in str(p.NUMBER).lower():
             return ta.Int(p.NUMBER)  # Es flotante

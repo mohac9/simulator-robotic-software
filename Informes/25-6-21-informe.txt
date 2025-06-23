@@ -1,0 +1,6 @@
+[Logrado]
+- Funcionalidad de declaraciones simples
+- Cambio de la estructura del interprete
+[Objetivos]
+-Conseguir que funcionen todas las expresiones en el interprete
+-Implementar una clase función

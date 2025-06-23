@@ -50,7 +50,7 @@ class ArduinoInterpreter:
 
 if __name__ == '__main__':
     code = """
-    int a = 10;
+    int a = 10 + 1;
     """
     interpreter = ArduinoInterpreter(code)
     interpreter.show_tree()

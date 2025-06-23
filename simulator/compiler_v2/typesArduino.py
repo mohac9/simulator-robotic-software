@@ -74,49 +74,49 @@ class Number(BaseType): #I'm not sure if this is needed
     
     # Arithmetic operators
     def __add__(self, other):
-        return self.binary_operation(other, lambda a, b: Number(a.value + b.value))
+        return self.binary_operation(other, lambda a, b: (a.value + b.value))
     def __sub__(self, other):
-        return self.binary_operation(other, lambda a, b: Number(a.value - b.value))
+        return self.binary_operation(other, lambda a, b: (a.value - b.value))
     def __mul__(self, other):
-        return self.binary_operation(other, lambda a, b: Number(a.value * b.value))
+        return self.binary_operation(other, lambda a, b: (a.value * b.value))
     def __truediv__(self, other):
-        return self.binary_operation(other, lambda a, b: Number(a.value / b.value))
+        return self.binary_operation(other, lambda a, b: (a.value / b.value))
     def __floordiv__(self, other):
-        return self.binary_operation(other, lambda a, b: Number(a.value // b.value))
+        return self.binary_operation(other, lambda a, b: (a.value // b.value))
     def __mod__(self, other):
-        return self.binary_operation(other, lambda a, b: Number(a.value % b.value))
+        return self.binary_operation(other, lambda a, b: (a.value % b.value))
     def __pow__(self, other):
-        return self.binary_operation(other, lambda a, b: Number(a.value ** b.value))
+        return self.binary_operation(other, lambda a, b: (a.value ** b.value))
     def __neg__(self):
-        return Number(-self.value)
+        return (-self.value)
     
     # Arithmetic unary operators
 
     def __abs__(self):
-        return Number(abs(self.value))
+        return (abs(self.value))
     
     def __prev__(self):
-        return Number(self.value - 1)
+        return (self.value - 1)
     
     def __next__(self):
-        return Number(self.value + 1)
+        return (self.value + 1)
     
 
     # Bitwise operators
     def __bit_shift_r__(self, other):
-        return self.binary_operation(other, lambda a, b: Number(a.value >> b.value))
+        return self.binary_operation(other, lambda a, b: (a.value >> b.value))
     def __bit_shift_l__(self, other):
-        return self.binary_operation(other, lambda a, b: Number(a.value << b.value))
+        return self.binary_operation(other, lambda a, b: (a.value << b.value))
     
     def __bitwise_and__(self, other):
-        return self.binary_operation(other, lambda a, b: Number(a.value & b.value))
+        return self.binary_operation(other, lambda a, b: (a.value & b.value))
     def __bitwise_or__(self, other):
-        return self.binary_operation(other, lambda a, b: Number(a.value | b.value))
+        return self.binary_operation(other, lambda a, b: (a.value | b.value))
     def __bitwise_xor__(self, other):
-        return self.binary_operation(other, lambda a, b: Number(a.value ^ b.value))
+        return self.binary_operation(other, lambda a, b: (a.value ^ b.value))
     
     def __bitwise__not__(self):
-        return Number(~self.value)
+        return (~self.value)
     
     # Comparison operators
     def __eq__(self, other):
@@ -293,7 +293,7 @@ class binary_operation(parserTypes):
     
     def execute(self,env):
         print(self.left)
-        print(self.right)
+        
         left_value = self.left.execute(env)
         right_value = self.right.execute(env)
         
