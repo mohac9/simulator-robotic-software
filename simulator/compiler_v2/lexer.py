@@ -57,7 +57,7 @@ class ArduinoLexer(Lexer):
         'ID': 'ID'
         
     }
-    tokens = { 'ID', 'NUMBER', 'STRING', 'CHAR', 'CHAR_CONST', 'BOOL_CONST','EQUAL','SEMICOLON', 'NOT_EQUAL','INCLUDE', 'STRING_CONST', 'CONST', 'STATIC',
+    tokens = { 'ID', 'INT_CONST', 'STRING', 'CHAR', 'CHAR_CONST', 'BOOL_CONST','EQUAL','SEMICOLON', 'NOT_EQUAL','INCLUDE', 'STRING_CONST', 'CONST', 'STATIC',
               'LBRACKET', 'RBRACKET','LBRACE', 'RBRACE','COMMA','DEFINE','LPAREN','RPAREN','BREAK','RETURN',
               'CONTINUE', 'WHILE','DO','FOR','CASE','COLON','DEFAULT','IF','SWITCH','ELSE'
               ,'AND','OR','NOT','EQ','NE','LT','LE','GT','GE','PLUS','MINUS','MULTIPLY','DIVIDE','MODULUS',
@@ -83,8 +83,13 @@ class ArduinoLexer(Lexer):
         t.type = self.keywords.get(t.value, 'ID')
         return t
     
+    @_(r'\d+\.\d+')
+    def FLOAT_CONST(self, t):
+        t.value = float(t.value)
+        return t
+
     @_(r'\d+')
-    def NUMBER(self, t):
+    def INT_CONST(self, t):
         t.value = int(t.value)
         return t
     
@@ -364,6 +369,7 @@ class ArduinoLexer(Lexer):
     def BOOLEAN(self, t):
         return t
     
+    
 
   
 
@@ -394,7 +400,7 @@ class ArduinoLexer(Lexer):
 if __name__ == '__main__':
     data = '''
     #include <Arduino.h>
-    int i = 10.05;
+    int i = 10;
     }
     '''
     

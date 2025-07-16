@@ -18,7 +18,7 @@ class Environment:
         return self.variables_contents[name]
     
     def modify_variable(self,name,content):
-        self.variables_content[name] = content
+        self.variables_contents[name] = content
         
     def cast_type(self,name,new_type):
         self.variables[name] = name

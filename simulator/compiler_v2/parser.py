@@ -2,7 +2,6 @@ import re
 from sly import Parser
 from lexer import ArduinoLexer
 import typesArduino as ta
-import interpreter
 
 
 
@@ -53,17 +52,21 @@ class ArduinoParser(Parser):
     def program_code(self, p):
         return ta.program_code(p.declaration)
     
+    @_('assignment SEMICOLON')
+    def program_code(self, p):  #May contradict the grammar
+        return ta.program_code(p.assignment)
+    
     @_('function')
     def program_code(self, p):
-        return ('function_definition', p.function)     
+        return ta.program_code(p.function)    
     
     @_('define_macro')
     def program_code(self, p):
-        return ('macro_definition', p.define_macro)   
+        return ta.program_code(p.define_macro)
     
     @_('sentence_list')
     def program_code(self, p):
-        return ('sentence_list', p.sentence_list)
+        return ta.program_code(p.sentence_list)
     
     #Declaration rules
     @_('simple_declaration')
@@ -142,41 +145,47 @@ class ArduinoParser(Parser):
     
     @_('sentence_list sentence') 
     def sentence_list(self, p):
-        return p.sentence_list + [p.sentence]
+        new_sentences = p.sentence_list.sentences.copy()
+        new_sentences.append(p.sentence)
+        return ta.sentence_list(new_sentences)
+        
     
     @_('')
     def sentence_list(self, p):
-        return []
+        return ta.sentence_list([])
     
     #Sentence rules
     @_('declaration SEMICOLON')
     def sentence(self, p):
-        return ('dec',p.declaration)
+        return ta.sentence(p.declaration)
+        
     
     @_('iteration_sentence')
     def sentence(self, p):
-        return ('it_sent',p.iteration_sentence)
+        return ta.sentence(p.iteration_sentence)
+        
     
     @_('conditional_sentence')
     def sentence(self, p):
-        return ('cond_sent',p.conditional_sentence)
+        return ta.sentence(p.conditional_sentence)
     
     @_('assignment SEMICOLON')
     def sentence(self, p):
-        return ('assign',p.assignment)
+        return ta.sentence(p.assignment)
         
     
     @_('expression SEMICOLON')
     def sentence(self, p):
-        return ('expr',p.expression)      
+        return ta.sentence(p.expression)     
     
     @_('define_macro')
     def sentence(self, p):
-        return ('def_macro',p.define_macro)
+        return ta.sentence(p.define_macro)
     
     @_('RETURN expression SEMICOLON')
     def sentence(self, p):
-        return ('return', p.expression)
+        pass
+        
     
     @_('RETURN SEMICOLON')
     def sentence(self, p):
@@ -191,9 +200,9 @@ class ArduinoParser(Parser):
         return ('continue', None)
     
     #Assignment rules
-    @_('expression EQUAL expression')
+    @_('ID EQUAL expression')
     def assignment(self, p):
-        return ta.assignment(p.expression0, p.expression1)
+        return ta.assignment(p.ID, p.expression)
         
     
     #Iterative and conditional sentences
@@ -255,7 +264,7 @@ class ArduinoParser(Parser):
 
     @_('SWITCH LPAREN expression RPAREN LBRACE case_sentence_list RBRACE')
     def conditional_sentence(self, p):
-        return ('switch', p.expression, p.case_sentence_list)
+        return ta.switch_statement(p.expression, p.case_sentence_list)
     
     
     
@@ -263,18 +272,18 @@ class ArduinoParser(Parser):
     #Case sentence
     @_('')
     def case_sentence_list(self, p):
-        return []
+        return ta.case_sentence_list([])
     
     @_('case_sentence case_sentence_list')
     def case_sentence_list(self, p):
-        return [p.case_sentence] + p.case_sentence_list
+        return ta.case_sentence_list.append(p.case_sentence_list, p.case_sentence)
     
     
     @_('CASE expression COLON sentence_list')
     def case_sentence(self, p):
-        return ('case', p.expression, p.sentence_list)
+        return ta.case_sentence(p.expression, p.sentence_list)
     
-    @_('DEFAULT COLON sentence_list')
+    @_('DEFAULT COLON sentence_list') # Ask how to implement this
     def case_sentence(self, p):
         return ('default', p.sentence_list)
     
@@ -283,10 +292,10 @@ class ArduinoParser(Parser):
     @_('LBRACE sentence_list RBRACE')
     def code_block(self, p):
         return p.sentence_list
-    
+       
     @_('LBRACE RBRACE') #I'm not sure of this one
     def code_block(self, p):
-        return []
+        return ta.sentence_list([])
     
     
     
@@ -297,7 +306,14 @@ class ArduinoParser(Parser):
     #Expression rules
     @_('BOOL_CONST')
     def expression(self, p):
-        return ('bool_const', p.BOOL_CONST)
+        return ta.Bool(p.BOOL_CONST)
+    
+    @_('TRUE')
+    def expression(self, p):
+        return ta.Bool(True)
+    @_('FALSE')
+    def expression(self, p):
+        return ta.Bool(False)
     
     @_('LOW')
     def expression(self, p):
@@ -341,7 +357,7 @@ class ArduinoParser(Parser):
     
     @_('FLOAT_CONST')
     def expression(self, p):
-        return ('float_const', p.FLOAT_CONST)
+        return ta.Float(p.FLOAT_CONST)
     
     @_('CHAR_CONST')
     def expression(self, p):
@@ -409,23 +425,25 @@ class ArduinoParser(Parser):
 
     @_('expression MULTIPLY expression')
     def expression(self, p):
-        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__mul__)
+        return ta.binary_operation(p.expression0, p.expression1, lambda a, b: a.__mul__(b))
 
     @_('expression DIVIDE expression')
     def expression(self, p):
-        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__truediv__)
+        return ta.binary_operation(p.expression0, p.expression1, lambda a, b: a.__truediv__(b))
 
     @_('expression MODULUS expression')
     def expression(self, p):
-        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__mod__)
+        return ta.binary_operation(p.expression0, p.expression1, lambda a, b: a.__mod__(b))
 
     @_('expression PLUS expression')
     def expression(self, p):
-        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__add__) #Usar objetos de TypesArduino
+        print("***************")
+        print("Expression:", p[0], p[2])
+        return ta.binary_operation(p.expression0, p.expression1, lambda a, b: a.__add__(b)) #Usar objetos de TypesArduino
 
     @_('expression MINUS expression')
     def expression(self, p):
-        return ta.binary_operation(p.expression0,p.expression1,ta.Number.__sub__)
+        return ta.binary_operation(p.expression0,p.expression1, lambda a, b: a.__sub__(b)) #Usar objetos de TypesArduino
 
     @_('expression BITWISE_RIGHT_SHIFT expression')
     def expression(self, p):
@@ -557,17 +575,7 @@ class ArduinoParser(Parser):
     @_('SEMICOLON')
     def symbol(self, p):
         return p.SEMICOLON    
-    
-    @_('NUMBER')
-    def expression(self, p):
-        print("Pasa por NUMBER")
-        # Determinar si es entero o flotante
-        if '.' in str(p.NUMBER) or 'e' in str(p.NUMBER).lower():
-            return ta.Int(p.NUMBER)  # Es flotante
-        else:
-            return ta.Int(p.NUMBER)    # Es entero
-        
-            
+
 
 def print_tree(node, indent=0):
     if isinstance(node, tuple):
@@ -601,7 +609,9 @@ def print_tree_v2(node, indent=0):
 
 if __name__ == '__main__':
     data = ''' 
-    int i = 0;
+    int a = 5;
+    int b = 10;
+    a = a + 2;
     '''
     lexer = ArduinoLexer()
     print("----------------------------------")
@@ -613,6 +623,5 @@ if __name__ == '__main__':
     #print_tree(result)
     print("----------------------------------")
     print_tree_v2(result)
-    interpreter = interpreter.ArduinoInterpreter(result)
     
    

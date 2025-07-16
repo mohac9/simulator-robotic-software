@@ -74,49 +74,69 @@ class Number(BaseType): #I'm not sure if this is needed
     
     # Arithmetic operators
     def __add__(self, other):
-        return self.binary_operation(other, lambda a, b: (a.value + b.value))
+        value = self.binary_operation(other, lambda a, b: (a.value + b.value))
+        return self.__class__(value)
     def __sub__(self, other):
-        return self.binary_operation(other, lambda a, b: (a.value - b.value))
+        value = self.binary_operation(other, lambda a, b: (a.value - b.value))
+        return self.__class__(value)
     def __mul__(self, other):
-        return self.binary_operation(other, lambda a, b: (a.value * b.value))
+        value = self.binary_operation(other, lambda a, b: (a.value * b.value))
+        return self.__class__(value)
     def __truediv__(self, other):
-        return self.binary_operation(other, lambda a, b: (a.value / b.value))
+        value = self.binary_operation(other, lambda a, b: (a.value / b.value))
+        return self.__class__(value)
     def __floordiv__(self, other):
-        return self.binary_operation(other, lambda a, b: (a.value // b.value))
+        value = self.binary_operation(other, lambda a, b: (a.value // b.value))
+        return self.__class__(value)
     def __mod__(self, other):
-        return self.binary_operation(other, lambda a, b: (a.value % b.value))
+        value = self.binary_operation(other, lambda a, b: (a.value % b.value))
+        return self.__class__(value)
     def __pow__(self, other):
-        return self.binary_operation(other, lambda a, b: (a.value ** b.value))
+        value = self.binary_operation(other, lambda a, b: (a.value ** b.value))
+        return self.__class__(value)
     def __neg__(self):
-        return (-self.value)
+        value = self.binary_operation(self, lambda a, b: (-a.value))
+        return self.__class__(value)
     
     # Arithmetic unary operators
 
     def __abs__(self):
-        return (abs(self.value))
+        value = abs(self.value)
+        return self.__class__(value)
     
     def __prev__(self):
-        return (self.value - 1)
+        value = self.value - 1
+        return self.__class__(value)
     
     def __next__(self):
-        return (self.value + 1)
+        value = self.value + 1
+        return self.__class__(value)
     
 
     # Bitwise operators
     def __bit_shift_r__(self, other):
-        return self.binary_operation(other, lambda a, b: (a.value >> b.value))
+        result = self.binary_operation(other, lambda a, b: (a.value >> b.value))
+        return self.__class__(result)
+
     def __bit_shift_l__(self, other):
-        return self.binary_operation(other, lambda a, b: (a.value << b.value))
+        result = self.binary_operation(other, lambda a, b: (a.value << b.value))
+        return self.__class__(result)
     
     def __bitwise_and__(self, other):
-        return self.binary_operation(other, lambda a, b: (a.value & b.value))
+        result = self.binary_operation(other, lambda a, b: (a.value & b.value))
+        return self.__class__(result)
+
     def __bitwise_or__(self, other):
-        return self.binary_operation(other, lambda a, b: (a.value | b.value))
+        result = self.binary_operation(other, lambda a, b: (a.value | b.value))
+        return self.__class__(result)
+
     def __bitwise_xor__(self, other):
-        return self.binary_operation(other, lambda a, b: (a.value ^ b.value))
+        result = self.binary_operation(other, lambda a, b: (a.value ^ b.value))
+        return self.__class__(result)
     
     def __bitwise__not__(self):
-        return (~self.value)
+        result = ~self.value
+        return self.__class__(result)
     
     # Comparison operators
     def __eq__(self, other):
@@ -155,6 +175,9 @@ class Int(Number):
     
     def __type__(self, env=None):
         return 'Int'
+    
+    def __str__(self):
+        return f"Int({self.value})"
 
 class Float(Number):
     def __init__(self, value):
@@ -172,6 +195,7 @@ class Float(Number):
     
     def __str__(self):
         return f"Float({self.value})"
+    
     
 class Double(Number):
     def __init__(self, value):
@@ -254,20 +278,28 @@ class String(BaseType):
         return 'String'
     
     
-class Object(Metatype):
+class Object(BaseType):
     def __init__(self, value):
         self.name = value
 
     
     def __type__(self,env=None):
-
+        if self.name not in env.variables:
+            raise RuntimeError(f"Variable '{self.name}' is not defined.")
         return env[self.name]
     
     def __str__(self):
         return f"Object({self.name})"
     
+    def __name__(self):
+        return self.name
+    
     def execute(self, env):
-        return self
+        if self.name not in env.variables:
+            raise RuntimeError(f"Variable '{self.name}' is not defined.")
+        contents = env.get_variable_contents(self.name)
+        print(f"Executing Object: {self.name} with contents: {contents}")
+        return env.get_variable_contents(self.name) 
     
 #May be separated in another file
 #-------------- Not basic types ---------------
@@ -297,13 +329,9 @@ class binary_operation(parserTypes):
         left_value = self.left.execute(env)
         right_value = self.right.execute(env)
         
-        print("_______________________________________________________")
-        print(left_value)
-        print(right_value)
-        print(left_value.binary_operation(right_value, self.operation))
-        print("_______________________________________________________")
-        
-        return left_value.binary_operation(right_value, self.operation)
+        result = self.operation(left_value, right_value)
+        print(f"Executing binary operation: {self.left} {self.operation.__name__} {self.right} = {result}")
+        return result
     
     def __str__(self):
         return f"BinaryOperation({self.left}, {self.right}, {self.operation})"
@@ -316,37 +344,69 @@ class binary_operation(parserTypes):
         if left_type == right_type:
             return left_type
         
+def type_conversion(object, target_type):
+    original_type = object.__class__.__name__.lower() 
+    print(f"Original type: {original_type}, Target type: {target_type}")
+    number_types = {"int", "float", "double", "bool"}
+    
+    if original_type == target_type:
+        return object
+    
+    if original_type in number_types:
+        if target_type == 'int':
+            return Int(int(object.value))
+        elif target_type == 'float':
+            return Float(float(object.value))
+        elif target_type == 'double':
+            return Double(float(object.value))
+        elif target_type == 'bool':
+            return Bool(bool(object.value))
+        
+    if original_type == "string":
+        if target_type == 'char':
+            return Char(str(object.value)[0]) # This may be erroneous for c++ implementations
+        
+    if original_type == "char":
+        if target_type == 'string':
+            return String(str(object.value))
+
+    
+    raise RuntimeError(f"Cannot convert {original_type} to {target_type}. Only 'Object' type can be converted.")
+    
 
 
 class assignment(parserTypes):
-    def __init__(self, variable, value):
-        self.variable = variable
+    def __init__(self, name, value):
+        self.name = name
         self.value = value
-        self.children_list = [variable,value]
+        self.children_list = [name,value]
+        
         
     def __type__(self, env=None):
-        if self.variable not in env.variables:
+        if self.name not in env.variables:
             raise RuntimeError(f"Variable '{self.variable}' is not defined.")
-        var_type = env.get_variable_type(self.variable)
+        
+        var_type = env.get_variable_type(self.name)
         value_type = self.value.__type__(env)
         if var_type != value_type:
             raise RuntimeError(f"Type mismatch: cannot assign {value_type} to {var_type}.")
         return var_type
     
     def execute(self, env):
-        if self.variable not in env.variables:
+
+
+        if self.name not in env.variables:
             raise RuntimeError(f"Variable '{self.variable}' is not defined.")
         
-        var_type = env.get_variable_type(self.variable)
-        value_type = self.value.__type__(env)
 
-        if var_type != value_type:
-            raise RuntimeError(f"Type mismatch: cannot assign {value_type} to {var_type}.")
-        
-        env.modify_variable(self.variable, self.value)
+
+        var_type = env.get_variable_type(self.name)
+        execute_value = self.value.execute(env)
+        converted_value = type_conversion(execute_value, var_type)
+        env.modify_variable(self.name,converted_value)
 
     def __str__(self):
-        return f"Assignment({self.variable}, {self.value})"
+        return f"Assignment({self.name}, {self.value})"
     
 #Auxiliary class to combine declarations
 class declaration(parserTypes):
@@ -395,10 +455,7 @@ class simple_declaration(parserTypes):
     def execute(self, env):
         if self.content is not None:
             content = self.content.execute(env)
-            print("??????????????????????????????????????????????????????????")
-            print(content)
-            print("??????????????????????????????????????????????????????????")
-            content = self.type_conversion(content, self.var_type)
+            content = type_conversion(content, self.var_type)
             env.set_variable(self.name, self.var_type, content)
         else:
             env.set_variable(self.name, self.var_type)
@@ -488,6 +545,7 @@ class program_code_list(parserTypes):
         if not isinstance(code, program_code):
             raise RuntimeError(f"Expected a 'program_code' type, got {code.__class__.__name__}.")
         self.code_list.append(code)
+        return self
     
     def children(self):
         return self.code_list
@@ -505,6 +563,43 @@ class program_code(parserTypes):
     
     def __str__(self):
         return str(self.code)
+    
+
+class sentence_list(parserTypes):
+    def __init__(self, sentences):
+        self.sentences = sentences
+        self.children_list = sentences
+
+    def execute(self, env):
+        for sentence in self.sentences:
+            sentence.execute(env)
+        
+    def __str__(self):
+        return f"SentenceList({len(self.sentences)} sentences)"
+    
+
+    def append(self, sentence_item):
+        if not isinstance(sentence_item, sentence):
+            raise RuntimeError(f"Expected a 'sentence' type, got {sentence_item.__class__.__name__}.")
+        self.sentences.append(sentence_item)
+        self.children_list.append(sentence_item)
+        return self
+
+
+    
+
+class sentence(parserTypes):
+    def __init__(self, sentence):
+        self.sentence = sentence
+        self.children_list = [sentence]
+
+    def execute(self, env):
+        return self.sentence.execute(env)
+    
+    def __str__(self):
+        return f"Sentence({self.sentence})"
+
+        
     
     
 class include_list(parserTypes):
@@ -527,6 +622,7 @@ class include_list(parserTypes):
             raise RuntimeError(f"Expected an 'include' type, got {include.__class__.__name__}.")
         self.includes.append(include)
         self.children_list.append(include)
+        return self
 
 class include(parserTypes):
     def __init__(self, include_name):
@@ -567,7 +663,52 @@ class if_statement(parserTypes):
 class switch_statement(parserTypes):
     def __init__(self, expression, cases):
         self.expression = expression
-        self.cases = cases  
+        self.cases = cases 
+
+    def execute(self, env):
+        evaluated_expression = self.expression.execute(env)
+        if evaluated_expression.__type__() not in ['Int', 'String', 'Char']:
+            raise RuntimeError(f"Switch expression must be of type 'Int', 'String' or 'Char', got {evaluated_expression.__type__()}.")
+        
+        self.cases.execute(env)
+        
+    pass
+
+class case_list(parserTypes):
+    def __init__(self, cases):
+        self.cases = cases
+        self.children_list = cases
+
+    def execute(self, env):
+        for case in self.cases:
+            case.execute(env)
+    
+    def __str__(self):
+        return f"CaseList({len(self.cases)} cases)"
+    
+    def append(self, case_statement):
+        if not isinstance(case_statement, sentence_list):
+            raise RuntimeError(f"Expected a 'case_statement' type, got {case_statement.__class__.__name__}.")
+        self.cases.append(case_statement)
+        self.children_list.append(case_statement)
+        return self
+
+class case_statement(parserTypes):
+    def __init__(self, expression, body):
+        self.expression = expression
+        self.body = body
+        self.children_list = [expression, body]
+
+    def execute(self, env):
+        evaluated_expression = self.expression.execute(env)
+        if evaluated_expression.__type__() not in ['Int', 'String', 'Char']:
+            raise RuntimeError(f"Case expression must be of type 'Int', 'String' or 'Char', got {evaluated_expression.__type__()}.")
+        
+        self.body.execute(env)
+
+    def __str__(self):
+        return f"CaseStatement(expression={self.expression}, body={self.body})"
+
 
 
 class for_loop(parserTypes):
@@ -605,7 +746,7 @@ class for_loop(parserTypes):
 
             # Execute the increment
             self.increment.execute(env)
-
+    
     def __str__(self):
         return f"ForLoop(init={self.init}, condition={self.condition}, increment={self.increment}, body={self.body})"
     
@@ -617,10 +758,8 @@ if __name__ == "__main__":
     int1 = Int(5)
     int2 = Int(10)
     float1 = Float(5.5)
-    double1 = Double(10.5)
-    bool1 = Bool(True)
-    bool2 = bool1.__not__()
-    print(bool1, bool2)
+    op1sum = binary_operation(int1, float1, lambda a, b: a.__add__(b))
+    print(op1sum.execute(environment.Environment()))  # Should print Int(15)
     
    
     

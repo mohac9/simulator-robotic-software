@@ -1,0 +1,22 @@
+[Resumen reunión anterior]
+Enseñada implementación de tipos del interprete
+No se mostro la ejecución del programa
+
+
+[Logrado]
+Se han solucionado varios bugs del parser y el interprete:
+	- Assignación  de tipos erronea
+	- Problemas con la ejecución de listas
+	- Errores con los cambios de tipo
+	- Problemas con la gramatica de expresiones relacionadas con listas
+
+No se ha llegado a terminar todos los tipos del TypesArduino quedan funciones y bucles, ni tampoco el mockup
+
+
+
+[Dudas]
+- Donde implementar el conteo de lineas para el depurador, opciones:
+	- Añadir un parametro linea y añadir +1 a cada expresión ejecutada con gramatica que termine en semicolon o {}, habria que añadir algo para lineas vacias
+	- Contar por lineas en el lexer y asignar un parametro linea para cada clase
+- Implementación de los puntos de ruptura, si hay que reutilizar el lexer
+- Reducir complejidad del código para tratar errores

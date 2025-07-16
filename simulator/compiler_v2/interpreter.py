@@ -49,11 +49,20 @@ class ArduinoInterpreter:
     
 
 if __name__ == '__main__':
+    # Binary operations are correctly handled
+    # Variables are correctly defined and assigned
+    # Type conversion is correctly handled(Internally)
     code = """
-    int a = 10 + 1;
+    int a = 5;
+    int b = 10;
+    a = a + 2;
+    if( a < b ) {
+        b = b  + 1;
+    }
+    
     """
     interpreter = ArduinoInterpreter(code)
-    interpreter.show_tree()
+    #interpreter.show_tree()
     interpreter.run(interpreter.parser_object)
     interpreter.get_variables()
 
