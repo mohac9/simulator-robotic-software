@@ -52,13 +52,14 @@ if __name__ == '__main__':
     # Binary operations are correctly handled
     # Variables are correctly defined and assigned
     # Type conversion is correctly handled(Internally)
+    # Break are correctly implemented
     code = """
     int a = 5;
-    int b = 10;
-    a = a + 2;
-    if( a < b ) {
-        b = b  + 1;
+    for (int i = 0; i < 2; i++ ){
+        a = a + 1;
     }
+        
+
     
     """
     interpreter = ArduinoInterpreter(code)

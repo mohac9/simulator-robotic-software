@@ -193,7 +193,7 @@ class ArduinoParser(Parser):
     
     @_('BREAK SEMICOLON')
     def sentence(self, p):
-        return ta.break_statement()
+        return ('break', None)
     
     @_('CONTINUE SEMICOLON')
     def sentence(self, p):
@@ -274,11 +274,9 @@ class ArduinoParser(Parser):
     def case_sentence_list(self, p):
         return ta.case_sentence_list([])
     
-    @_('case_sentence_list case_sentence')
+    @_('case_sentence case_sentence_list')
     def case_sentence_list(self, p):
-        return p.case_sentence_list.append(p.case_sentence)
-        
-        
+        return ta.case_sentence_list.append(p.case_sentence_list, p.case_sentence)
     
     
     @_('CASE expression COLON sentence_list')
@@ -287,9 +285,9 @@ class ArduinoParser(Parser):
     
     @_('DEFAULT COLON sentence_list') # Ask how to implement this
     def case_sentence(self, p):
-        return ta.case_sentence(None, p.sentence_list)  # Default case, no expression, just the body
-
-
+        return ('default', p.sentence_list)
+    
+    
     #Code block
     @_('LBRACE sentence_list RBRACE')
     def code_block(self, p):
@@ -439,6 +437,8 @@ class ArduinoParser(Parser):
 
     @_('expression PLUS expression')
     def expression(self, p):
+        print("***************")
+        print("Expression:", p[0], p[2])
         return ta.binary_operation(p.expression0, p.expression1, lambda a, b: a.__add__(b)) #Usar objetos de TypesArduino
 
     @_('expression MINUS expression')
@@ -608,15 +608,11 @@ def print_tree_v2(node, indent=0):
 # Convertir el string en un arbol de sintaxis
 
 if __name__ == '__main__':
-    data = code = """
+    data = ''' 
     int a = 5;
-    void setup() {
-    if (a > 3){
-        a = 10;
-    }
-    
-    }
-    """
+    int b = 10;
+    a = a + 2;
+    '''
     lexer = ArduinoLexer()
     print("----------------------------------")
     for i in lexer.tokenize(data):

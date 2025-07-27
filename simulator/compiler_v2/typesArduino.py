@@ -664,51 +664,83 @@ class switch_statement(parserTypes):
     def __init__(self, expression, cases):
         self.expression = expression
         self.cases = cases 
+        self.children_list = [expression, cases]
 
     def execute(self, env):
         evaluated_expression = self.expression.execute(env)
         if evaluated_expression.__type__() not in ['Int', 'String', 'Char']:
             raise RuntimeError(f"Switch expression must be of type 'Int', 'String' or 'Char', got {evaluated_expression.__type__()}.")
         
-        self.cases.execute(env)
+        self.cases.execute(env,evaluated_expression)
         
     pass
 
-class case_list(parserTypes):
+class case_sentence_list(parserTypes):
     def __init__(self, cases):
         self.cases = cases
         self.children_list = cases
+        
 
-    def execute(self, env):
+    def execute(self, env, switch_expression):
+        flag_break = False
         for case in self.cases:
-            case.execute(env)
-    
+            try:
+                case.execute(env,switch_expression)
+            except BreakException:
+                break
+            
+        
+            
     def __str__(self):
         return f"CaseList({len(self.cases)} cases)"
     
     def append(self, case_statement):
-        if not isinstance(case_statement, sentence_list):
+        if not isinstance(case_statement, case_sentence):
             raise RuntimeError(f"Expected a 'case_statement' type, got {case_statement.__class__.__name__}.")
+        
         self.cases.append(case_statement)
-        self.children_list.append(case_statement)
         return self
 
-class case_statement(parserTypes):
+class case_sentence(parserTypes):
     def __init__(self, expression, body):
         self.expression = expression
         self.body = body
         self.children_list = [expression, body]
 
-    def execute(self, env):
-        evaluated_expression = self.expression.execute(env)
-        if evaluated_expression.__type__() not in ['Int', 'String', 'Char']:
-            raise RuntimeError(f"Case expression must be of type 'Int', 'String' or 'Char', got {evaluated_expression.__type__()}.")
+    def execute(self, env, switch_expression):
         
-        self.body.execute(env)
+        if self.expression is not None:
+            evaluated_expression = self.expression.execute(env)
+            if evaluated_expression.__type__() not in ['Int', 'String', 'Char']:
+                raise RuntimeError(f"Case expression must be of type 'Int', 'String' or 'Char', got {evaluated_expression.__type__()}.")
+        else:
+            evaluated_expression = None
+        
+        if switch_expression.__str__() == evaluated_expression.__str__():
+            self.body.execute(env)
+        elif evaluated_expression is None:
+            self.body.execute(env)
+        
+
+
 
     def __str__(self):
         return f"CaseStatement(expression={self.expression}, body={self.body})"
 
+
+class BreakException(Exception):
+    pass
+
+
+class break_statement(parserTypes):
+    def __init__(self):
+        self.children_list = []
+
+    def execute(self, env):
+        raise BreakException("Break triggered")
+    
+    def __str__(self):
+        return "BreakStatement"
 
 
 class for_loop(parserTypes):
@@ -751,6 +783,29 @@ class for_loop(parserTypes):
         return f"ForLoop(init={self.init}, condition={self.condition}, increment={self.increment}, body={self.body})"
     
 
+#Functions and related classes
+
+class function():
+    def __init__(self, var_type, id, function_args, sentence_list):
+        self.type = var_type
+        self.funtion_name = id
+        self.function_args = function_args
+        self.function_body = sentence_list
+        self.children = [sentence_list]
+    
+    def __type__(self):
+        return self.type
+
+    def execute(self,env):
+        #TODO:Create a new env for the function
+
+        #TODO:Enter the function_args into variables in the env
+
+        #TODO:Execut the sentence_list with the new env
+
+        #TODO:Return an expresion if type is not null
+        pass
+    
 
 
 
