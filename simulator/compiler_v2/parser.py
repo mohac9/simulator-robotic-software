@@ -129,19 +129,20 @@ class ArduinoParser(Parser):
     #Function rules @dataclasses
     @_('var_type ID LPAREN function_args RPAREN LBRACE sentence_list RBRACE')
     def function(self, p):
-        return ('function', p.var_type, p.ID, p.function_args, p.sentence_list)
+        return ta.function(p.var_type, p.ID, p.function_args, p.sentence_list)
     
     @_('var_type ID LPAREN RPAREN LBRACE sentence_list RBRACE')
     def function(self, p):  
-        return ('function', p.var_type, p.ID, [], p.sentence_list)
+        return ta.function(p.var_type, p.ID, None, p.sentence_list)
     
     @_('function_args COMMA declaration')
     def function_args(self, p):
-        return [p.declaration] + p.function_args
+        return p.function_args.append(p.declaration)
+    
     
     @_('declaration')
     def function_args(self, p):
-        return [p.declaration]
+        return ta.function_args([p.declaration])
     
     @_('sentence_list sentence') 
     def sentence_list(self, p):
@@ -609,13 +610,11 @@ def print_tree_v2(node, indent=0):
 
 if __name__ == '__main__':
     data = code = """
-    int a = 5;
-    void setup() {
-    if (a > 3){
-        a = 10;
+    int a;
+    int foo(int x, char y){
+        z = x;
     }
     
-    }
     """
     lexer = ArduinoLexer()
     print("----------------------------------")

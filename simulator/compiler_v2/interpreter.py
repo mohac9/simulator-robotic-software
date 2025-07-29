@@ -55,9 +55,6 @@ if __name__ == '__main__':
     # Break are correctly implemented
     code = """
     int a = 5;
-    for (int i = 0; i < 2; i++ ){
-        a = a + 1;
-    }
         
 
     

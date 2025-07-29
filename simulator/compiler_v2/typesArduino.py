@@ -562,7 +562,7 @@ class program_code(parserTypes):
         return self.code.execute(env)
     
     def __str__(self):
-        return str(self.code)
+        return f"ProgramCode({self.code}), children: {len(self.children_list)} elements of types {[type(child).__name__ for child in self.children_list]}"
     
 
 class sentence_list(parserTypes):
@@ -785,27 +785,63 @@ class for_loop(parserTypes):
 
 #Functions and related classes
 
-class function():
+
+class function_args(parserTypes):
+    def __init__(self,declarations):
+        self.declarations = declarations
+        self.children_list = declarations
+        
+    #It binds the arguments to the given enviroment
+    def execute(self,env):
+        for dec in self.declarations:
+            dec.execute(env)
+            
+    #This method gives a string that are the types of the declaration separated by '#'
+    def name_mangling(self):
+        return '#'.join(str(decl.__type__()) for decl in self.declarations)
+    
+    def append(self,declaration_instance):
+        if not isinstance(declaration_instance, declaration):
+            raise RuntimeError(f"Expected a 'case_statement' type, got {declaration_instance.__class__.__name__}.")
+        self.declarations.append(declaration_instance)
+        return self
+    
+    def __str__(self):
+        return f"FunctionArgs({self.declarations})"
+        
+    
+
+class function(parserTypes):
     def __init__(self, var_type, id, function_args, sentence_list):
         self.type = var_type
         self.funtion_name = id
         self.function_args = function_args
         self.function_body = sentence_list
-        self.children = [sentence_list]
+        self.children_list = [function_args, sentence_list]
     
     def __type__(self):
         return self.type
+    
+    def name_mangling(self):
+        if self.function_args is not None:
+            return f"{self.funtion_name}#{'_'.join(str(arg) for arg in self.function_args)}"
+        else:
+             return f"{self.funtion_name}#" #Dont now if I should mantain the las #
 
     def execute(self,env):
-        #TODO:Create a new env for the function
+        env.set_function(self.name_mangling(), self)
+        
+    def __str__(self):
+        return f"Function(type={self.type}, name={self.funtion_name}, args={self.function_args}, body={self.function_body})"
+ 
 
-        #TODO:Enter the function_args into variables in the env
-
-        #TODO:Execut the sentence_list with the new env
-
-        #TODO:Return an expresion if type is not null
+class function_call(parserTypes):
+    def __init__(self,name, parameters):
+        self.name = name
+        self.parameters =parameters
+        
+    def execute():
         pass
-    
 
 
 
