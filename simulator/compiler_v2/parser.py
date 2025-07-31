@@ -545,7 +545,7 @@ class ArduinoParser(Parser):
     def type_convert(self, p):
         return p[0]
 
-    # Parameter rules
+    # ç rules
     @_('expression_list')
     def parameter(self, p):
         return p.expression_list

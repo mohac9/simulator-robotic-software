@@ -47,6 +47,12 @@ class Environment:
     def get_function(self,signature):
         return self.functions[signature]
     
+    def get_all_functions(self):
+        return [
+            {"signature": signature, "function_object": self.functions[signature]}
+            for signature in self.functions
+        ]
+    
     
         
     

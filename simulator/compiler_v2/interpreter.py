@@ -31,8 +31,10 @@ class ArduinoInterpreter:
         for var in self.env.get_all_variables():
             print(f"Name: {var['name']}, Type: {var['type']}, Content: {var['content']}")
        
-    
-    
+    def get_functions(self):
+        print("Funtions in the environment:")
+        for func in self.env.get_all_functions():
+            print(f"Signature:{func['signature']}")
     
     def show_tree(self):
         parser.print_tree_v2(self.parser_object)
@@ -54,7 +56,20 @@ if __name__ == '__main__':
     # Type conversion is correctly handled(Internally)
     # Break are correctly implemented
     code = """
-    int a = 5;
+    int a = 5 + 2;
+    void setup(){
+        
+        
+        
+    }
+    
+    void loop(){
+        
+        
+        
+    }
+    
+    
         
 
     
@@ -63,6 +78,7 @@ if __name__ == '__main__':
     #interpreter.show_tree()
     interpreter.run(interpreter.parser_object)
     interpreter.get_variables()
+    interpreter.get_functions()
 
         
         

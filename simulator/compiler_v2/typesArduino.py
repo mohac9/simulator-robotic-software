@@ -440,16 +440,17 @@ class simple_declaration(parserTypes):
     def __type__(self, env=None):
         return self.var_type
     
-    def __var_name__(self, env=None):
+    def get_var_name(self, env=None):
         return self.name
     
-    def __var_content__(self, env=None):
+    def var_content(self, env=None):
         if self.content is not None:
             return self.content.__type__(env)
         return None
     
-    def __change_content__(self, content, env=None):
+    def change_content(self, content, env=None):
         self.content = content
+        
         
         
     def execute(self, env):
@@ -784,10 +785,6 @@ class for_loop(parserTypes):
     
 
 #Functions and related classes
-
-class returnException():
-    pass
-
 class void():
     def __init__(self):
         self.value = None
@@ -795,6 +792,15 @@ class void():
     def __type__():
         return "Void"
     
+
+class returnException(Exception):
+    def __init__(self, value=void()):
+        self.value = value
+        
+    def value(self):
+        return self.value
+
+
     
 
 class function_args(parserTypes):
@@ -811,6 +817,18 @@ class function_args(parserTypes):
     def name_mangling(self):
         return '#'.join(str(decl.__type__()) for decl in self.declarations)
     
+    def get_param_names(self):
+        names = []
+        for dec in self.declarations:
+            names.append(dec.declaration.get_var_name())
+        return names
+    
+    def get_param_types(self):
+        types = []
+        for dec in self.declarations:
+            types.append(dec.declaration.__type__())
+        return types
+    
     def append(self,declaration_instance):
         if not isinstance(declaration_instance, declaration):
             raise RuntimeError(f"Expected a 'case_statement' type, got {declaration_instance.__class__.__name__}.")
@@ -825,7 +843,7 @@ class function_args(parserTypes):
 class function(parserTypes):
     def __init__(self, var_type, id, function_args, sentence_list):
         self.type = var_type
-        self.funtion_name = id
+        self.function_name = id
         self.function_args = function_args
         self.function_body = sentence_list
         self.children_list = [function_args, sentence_list]
@@ -835,9 +853,14 @@ class function(parserTypes):
     
     def name_mangling(self):
         if self.function_args is not None:
-            return f"{self.funtion_name}#{'_'.join(str(arg) for arg in self.function_args)}"
+            types = self.function_args.get_param_types()
+            print("___________________")
+            print("The types are:")
+            print(types)
+            print("___________________")
+            return f"{self.function_name}#" + "#".join(types) + "#"
         else:
-             return f"{self.funtion_name}#" #Dont now if I should mantain the las #
+             return f"{self.function_name}#" #Dont now if I should mantain the las #
 
     def execute(self,env):
         env.set_function(self.name_mangling(), self)
@@ -848,14 +871,26 @@ class function(parserTypes):
         self.function_args.execute()
         return new_scope
 
+    def args_binding(self,list_of_arguments,env):
+        param_names = self.function_args.get_param_names()
+        for param_name, argument in zip(param_names, list_of_arguments):
+            env.modify_variable(param_name, argument)
+            
+
     def body_execution(self,env):
-        self.function_body.execute(env)
-        pass
-        
+        try:
+            self.function_body.execute()
+            if self.type != "Void":
+                raise RuntimeError("Expected return statement in function body.")
+        except returnException as ret:
+            if self.type != ret.__type():
+                raise RuntimeError(f"Return type mismatch: expected {self.type}, got {ret.__type__()}.")
+            return ret
+                
 
         
     def __str__(self):
-        return f"Function(type={self.type}, name={self.funtion_name}, args={self.function_args}, body={self.function_body})"
+        return f"Function(type={self.type}, name={self.function_name}, args={self.function_args}, body={self.function_body})"
     
 
 class expression_list(parserTypes): #May need  to change the return to the type in data_structures
@@ -917,7 +952,13 @@ class function_call(parserTypes):
         args = self.parameters.execute()
         signature = self.name_mangling()
         function_object = env.get_function(signature)
-
+        #Creation of new env for the function
+        new_env = function_object.scope_generator()
+        #Binding parameters
+        function_object.args_binding(args,new_env)
+        #Executing the function
+        return function_object.body_execution(new_env)
+        
 
 
 if __name__ == "__main__":
