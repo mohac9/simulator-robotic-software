@@ -785,6 +785,17 @@ class for_loop(parserTypes):
 
 #Functions and related classes
 
+class returnException():
+    pass
+
+class void():
+    def __init__(self):
+        self.value = None
+
+    def __type__():
+        return "Void"
+    
+    
 
 class function_args(parserTypes):
     def __init__(self,declarations):
@@ -807,7 +818,7 @@ class function_args(parserTypes):
         return self
     
     def __str__(self):
-        return f"FunctionArgs({self.declarations})"
+        return f"FunctionArgs({self.declarations})"  
         
     
 
@@ -830,18 +841,82 @@ class function(parserTypes):
 
     def execute(self,env):
         env.set_function(self.name_mangling(), self)
+
+    def scope_generator(self):
+        new_scope = environment.Environment()
+        #Bind function args
+        self.function_args.execute()
+        return new_scope
+
+    def body_execution(self,env):
+        self.function_body.execute(env)
+        pass
+        
+
         
     def __str__(self):
         return f"Function(type={self.type}, name={self.funtion_name}, args={self.function_args}, body={self.function_body})"
+    
+
+class expression_list(parserTypes): #May need  to change the return to the type in data_structures
+    def __init__(self,expressions):
+        self.expressions = expressions
+
+    def execute(self,env):
+        result = []
+        for expr in  self.expressions:
+            result.append(expr.execute())
+        return result
+    
+    def append(self,expr):
+        self.expressions.append(expr)
+        return self
+    
+    def __type__(self):
+        types = []
+        for expr in self.expressions:
+            types.append(expr.__type__())
+        return types
+
+
+
+    def __str__(self):
+        return f"ExpressionList({len(self.expressions)} expressions)"
+    
+
+        
  
+class parameters(parserTypes):
+    def __init__(self, expression_list):
+        self.expression_list = expression_list
+
+    def __type__(self):
+        return self.expression_list.__type__()
+
+    def execute(self,env):
+        return self.expression_list.execute()
+    
+
+
 
 class function_call(parserTypes):
     def __init__(self,name, parameters):
         self.name = name
         self.parameters =parameters
         
-    def execute():
-        pass
+    def name_mangling(self): #Builds signature
+        signature = f'{self.name}#'
+        if self.parameters is not None:
+            types = self.parameters.__type__()
+            for t in types:
+                signature += f"{t}#"
+            return signature
+
+
+    def execute(self,env):
+        args = self.parameters.execute()
+        signature = self.name_mangling()
+        function_object = env.get_function(signature)
 
 
 
