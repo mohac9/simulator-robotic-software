@@ -321,7 +321,9 @@ class MainApplication(tk.Tk):
         self.stop()
         self.destroy()
 
-
+    def update_tracepoints(self, tracepoints):
+        self.tracepoints = tracepoints
+        
 class PinConfigurationWindow(tk.Toplevel):
 
     def __init__(self, parent, robot_option, application: MainApplication = None, *args, **kwargs):
@@ -980,7 +982,7 @@ class EditorFrame(tk.Frame):
         self.text = self.TextEditor(self, bd=1, relief=tk.SOLID, wrap="none", font=("consolas", 12), undo=True,
                                     autoseparators=True)
         self.line_bar = self.LineNumberBar(
-            self, width=30, bg=BLUE, bd=0, highlightthickness=0)
+            self, width=60, bg=BLUE, bd=0, highlightthickness=0)
         self.sb_x = tk.Scrollbar(self, orient=tk.HORIZONTAL,
                                  command=self.text.xview)
         self.sb_y = tk.Scrollbar(self, orient=tk.VERTICAL,
@@ -1207,6 +1209,8 @@ class EditorFrame(tk.Frame):
         def __init__(self, *args, **kwargs):
             tk.Canvas.__init__(self, *args, **kwargs)
             self.editor = None
+            self.tracepoints = set()
+            self.bind("<Button-1>", self.toggle_tracepoint)
 
         def attach(self, editor):
             self.editor = editor
@@ -1220,11 +1224,30 @@ class EditorFrame(tk.Frame):
                 if dline is None:
                     break
                 line = str(i).split(".")[0]
-                x = 28 - 9 * len(line)
+                x = 55 - 9 * len(line)
                 y = dline[1]
+                #Lines
                 self.create_text(x, y, anchor="nw", text=line,
                                  fill="white", font=('consolas', 12, 'bold'))
+                #Tracepoints
+                line_num = int(str(i).split(".")[0])
+                if line_num in [int(tp.split(".")[0]) for tp in self.tracepoints]:
+                    self.create_oval(5, y + 5, 13, y + 13, fill="#8B0000", outline="#8B0000", width=2)
                 i = self.editor.index("%s+1line" % i)
+        
+        def toggle_tracepoint(self,event):
+            y_pos = event.y
+            line_idx = self.editor.index("@0,%d" % y_pos)
+
+            if line_idx in self.tracepoints:
+                self.tracepoints.remove(line_idx)
+            else:
+                self.tracepoints.add(line_idx)
+
+            self.show_lines()
+
+            if hasattr(self.editor.master, 'application'):
+                self.editor.master.application.update_tracepoints(self.tracepoints)
 
 
 class ConsoleFrame(tk.Frame):
