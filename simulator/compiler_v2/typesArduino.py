@@ -171,6 +171,8 @@ class Int(Number):
             return Float(float(self.value))
         elif target_type == 'Double':
             return Double(float(self.value))
+        elif target_type == 'Bool':
+            return Bool(bool(self.value))
         return self
     
     def __type__(self, env=None):
@@ -188,6 +190,8 @@ class Float(Number):
             return Int(int(self.value))
         elif target_type == 'Double':
             return Double(float(self.value))
+        elif target_type == 'Bool':
+            return Bool(bool(self.value))
         return self
     
     def __type__(self, env=None):
@@ -206,6 +210,8 @@ class Double(Number):
             return Int(int(self.value))
         elif target_type == 'Float':
             return Float(float(self.value))
+        elif target_type == 'Bool':
+            return Bool(bool(self.value))
         return self
     
     def __type__(self, env=None):
@@ -751,20 +757,23 @@ class for_loop(parserTypes):
         self.increment = increment
         self.body = body
         self.children_list = [init, condition, increment, body]
+        if condition is None:
+            self.condition = Bool(True)  # Default condition if not provided
 
     def execute(self, env):
         #Check types
         if self.condition.__type__() != 'Bool':
             raise RuntimeError(f"Condition must be of type 'Bool', got {self.condition.__type__()}.")
         
-        if self.init.__class__.__name__ != 'assignment':
+        if self.init.__class__.__name__ != 'assignment' and self.init is not None:
             raise RuntimeError(f"Initialization must be an assignment, got {self.init.__class__.__name__}.")
 
-        if self.init.__type__(env) != 'Int': #This may be any number type, but for now we will use Int
+        if self.init.__type__(env) != 'Int' and self.init is not None: #This may be any number type, but for now we will use Int
             raise RuntimeError(f"Initialization must be of type 'Number', got {self.init.__type__(env)}.")
         
         # Execute the initialization
-        self.init.execute(env)
+        if self.init is not None:
+            self.init.execute(env)
         while True:
             # Check the loop condition
             condition_result = self.condition.execute(env)
@@ -784,6 +793,49 @@ class for_loop(parserTypes):
         return f"ForLoop(init={self.init}, condition={self.condition}, increment={self.increment}, body={self.body})"
     
 
+class while_loop(parserTypes):
+    def __init__(self,expression,code):
+        self.expression = expression
+        self.code_block = code
+        self.children = [self.expression,self.code_block]
+        
+    def execute(self,env):
+        condition = self.expression.execute(env)
+        condition.cast_to('Bool')
+        if condition.__type__() != 'Bool':
+            raise RuntimeError(f"Condition must be of type 'Bool', got {condition.__type__()}.")
+        try:
+            while condition.__value__():
+                self.code_block.execute(env)
+                condition = self.expression.execute(env)
+                condition.cast_to('Bool')
+                if condition.__type__() != 'Bool':
+                    raise RuntimeError(f"Condition must be of type 'Bool', got {condition.__type__()}.")
+        except BreakException:
+            print("Break statement encountered, exiting while loop.")
+        
+class do_while_loop(parserTypes):
+    def __init__(self, code_block, expression):
+        self.code_block = code_block
+        self.expression = expression
+        self.children_list = [code_block, expression]
+        
+    def execute(self, env):
+        try:
+            while True:
+                self.code_block.execute(env)
+                condition = self.expression.execute(env)
+                condition.cast_to('Bool')
+                if condition.__type__() != 'Bool':
+                    raise RuntimeError(f"Condition must be of type 'Bool', got {condition.__type__()}.")
+                if not condition.__value__():
+                    break
+        except BreakException:
+            print("Break statement encountered, exiting do-while loop.")
+    
+    def __str__(self):
+        return f"DoWhileLoop(code_block={self.code_block}, expression={self.expression})"
+    
 #Functions and related classes
 class void():
     def __init__(self):

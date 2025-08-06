@@ -209,48 +209,46 @@ class ArduinoParser(Parser):
     #Iterative and conditional sentences
     @_('WHILE LPAREN expression RPAREN LBRACE code_block RBRACE')
     def iteration_sentence(self, p):
-        return {
-            'type': 'while',
-            'condition': p.expression,
-            'body': p.sentence_list
-        }
+        return ta.while_loop(p.expression,p.code_block)
         
     
     @_('DO code_block WHILE LPAREN expression RPAREN SEMICOLON')
     def iteration_sentence(self, p):
-        return {
-            'type': 'do_while',
-            'condition': p.expression,
-            'body': p.sentence_list
-        }
+        return ta.do_while_loop(p.code_block, p.expression)
 
     
-    @_('FOR LPAREN simple_declaration_optional SEMICOLON expression_optional SEMICOLON expression_optional RPAREN code_block')
+    #Es la implementación que menos codigo hay que picar en typesArduino
+    @_('FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON expression RPAREN code_block')
     def iteration_sentence(self, p):
-        return {
-            'type': 'for',
-            'initializer': p.simple_declaration_optional,
-            'condition': p.expression_optional,
-            'increment': p.expression_optional,
-            'body': p.code_block
-        }
+        return ta.for_loop(p.simple_declaration,p.expression0, p.expression1)
     
-    #Auxiliary rules, allows me to ot repeat the for rule several times
-    @_('')
-    def simple_declaration_optional(self, p):
-        return None
+    @_('FOR LPAREN  SEMICOLON  SEMICOLON  RPAREN code_block')
+    def iteration_sentence(self, p):
+        return ta.for_loop(None, None, None)
     
-    @_('simple_declaration')
-    def simple_declaration_optional(self, p):
-        return p.simple_declaration
+    @_('FOR LPAREN simple_declaration SEMICOLON  SEMICOLON  RPAREN code_block')
+    def iteration_sentence(self, p):
+        return ta.for_loop(p.simple_declaration, None, None)
     
-    @_('')
-    def expression_optional(self, p):
-        return None
+    @_('FOR LPAREN simple_declaration SEMICOLON expression_optional SEMICOLON  RPAREN code_block')
+    def iteration_sentence(self, p):
+        return ta.for_loop(p.simple_declaration, p.expression_optional, None)
+
+    @_('FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON expression RPAREN code_block')
+    def iteration_sentence(self, p):
+        return ta.for_loop(p.simple_declaration, p.expression0, p.expression1)
     
-    @_('expression')
-    def expression_optional(self, p):
-        return p.expression
+    @_('FOR LPAREN  SEMICOLON expression SEMICOLON  RPAREN code_block')
+    def iteration_sentence(self, p):
+        return ta.for_loop(None, p.expression, None)
+    
+    @_('FOR LPAREN  SEMICOLON expression SEMICOLON expression RPAREN code_block')
+    def iteration_sentence(self, p):
+        return ta.for_loop(None, p.expression, p.expression1)
+
+    @_('FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON  RPAREN code_block')
+    def iteration_sentence(self, p):
+        return ta.for_loop(p.simple_declaration, p.expression0, None)
     
     #Conditional sentences
     @_('IF LPAREN expression RPAREN code_block LPAREN ELSE code_block RPAREN')
