@@ -26,8 +26,17 @@ class MainApplication(tk.Tk):
         self.button_bar = ButtonBar(self.tools_frame, self, bg=DARK_BLUE)
         self.selector_bar = SelectorBar(self.tools_frame, self, bg=DARK_BLUE)
 
+        #Main pane
+        self.main_pane = tk.PanedWindow(
+            self, orient=tk.HORIZONTAL, sashpad=5, sashrelief="solid", bg=DARK_BLUE)
+
+        #Debug pane(Occulted by default)
+        self.debug_panel = DebugPanel(self, self, bg=DARK_BLUE)
+        self.debug_panel_visible = False
+        
+        
         self.vertical_pane = tk.PanedWindow(
-            orient=tk.VERTICAL, sashpad=5, sashrelief="solid", bg=DARK_BLUE)
+            self.main_pane, orient=tk.VERTICAL, sashpad=5, sashrelief="solid", bg=DARK_BLUE)
         self.horizontal_pane = tk.PanedWindow(
             self.vertical_pane, orient=tk.HORIZONTAL, sashpad=5, sashrelief="solid", bg=BLUE)
         self.drawing_frame = DrawingFrame(
@@ -58,20 +67,26 @@ class MainApplication(tk.Tk):
         }
 
         self.tools_frame.pack(fill=tk.X)
-        self.vertical_pane.pack(fill="both", expand=True)
+        self.main_pane.pack(fill="both", expand=True)
 
+        self.main_pane.add(self.vertical_pane, stretch="always")
+        self.vertical_pane.add(self.horizontal_pane, stretch="always", minsize=400)
+        
+        
         self.horizontal_pane.add(
             self.drawing_frame, stretch="first", width=1100, minsize=100)
         self.horizontal_pane.add(self.editor_frame, minsize=100)
-        self.vertical_pane.add(self.horizontal_pane,
-                               stretch="first", minsize=100)
-        self.vertical_pane.add(
-            self.console_frame, stretch="never", height=200, minsize=100)
+        
+        self.vertical_pane.add(self.console_frame, stretch="never", height=200, minsize=100)
+        #self.vertical_pane.add(
+        #    self.console_frame, stretch="never", height=200, minsize=100)
 
         self.bind("<KeyPress>", self.key_press)
         self.bind("<KeyRelease>", self.key_release)
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.challenge = 0
+        
+        
 
     def prepare_controller(self):
         self.__update_robot()  # call first so the robot_layer is created
@@ -324,6 +339,170 @@ class MainApplication(tk.Tk):
     def update_tracepoints(self, tracepoints):
         self.tracepoints = tracepoints
         
+    def toggle_debug_panel(self):
+        if self.debug_panel_visible:
+            self.hide_debug_panel()
+        else:
+            self.show_debug_panel()
+            
+    def show_debug_panel(self):
+        if not self.debug_panel_visible:
+            # CORREGIR: Usar add() en lugar de insert() para PanedWindow
+            self.main_pane.add(self.debug_panel, width=500, minsize=250)
+            self.debug_panel_visible = True
+
+    def hide_debug_panel(self):
+        if self.debug_panel_visible:
+            # CORREGIR: Usar forget() (este ya está correcto)
+            self.main_pane.forget(self.debug_panel)
+            self.debug_panel_visible = False
+            
+    # Debug methods logic will be implemented later
+    
+    def step_next_line(self): #I shiuld add a color to the line in the editor
+        print("Avanza una linea")
+        
+    def step_to_tracepoint(self):
+        print("Avanza hasta el siguiente tracepoint")
+        
+    def continue_execution(self):
+        print("Continua la ejecución")
+        
+    def update_debug_variables(self, variables):
+        if self.debug_panel_visible:
+            self.debug_panel.update_variables(variables)
+
+    def update_debug_stack(self, stack):
+        if self.debug_panel_visible:
+            self.debug_panel.update_stack(stack)
+        
+        
+class DebugPanel(tk.Frame):
+
+    def __init__(self, parent, application: MainApplication = None, *args, **kwargs):
+        tk.Frame.__init__(self, parent, *args, **kwargs)
+        self.application = application
+
+        # Frame para los controles de debug
+        self.controls_frame = tk.Frame(self, bg=DARK_BLUE, height=60)
+        self.controls_frame.pack(fill=tk.X, padx=5, pady=5)
+        self.controls_frame.pack_propagate(False)
+
+        # Botones de control
+        self.step_button = tk.Button(
+            self.controls_frame,
+            text="Paso",
+            bg=BLUE,
+            fg=DARK_BLUE,
+            font=("Consolas", 10),
+            command=self.application.step_next_line
+        )
+        self.trace_button = tk.Button(
+            self.controls_frame,
+            text="Traza",
+            bg=BLUE,
+            fg=DARK_BLUE,
+            font=("Consolas", 10),
+            command=self.application.step_to_tracepoint
+        )
+        self.continue_button = tk.Button(
+            self.controls_frame,
+            text="Continuar",
+            bg=BLUE,
+            fg=DARK_BLUE,
+            font=("Consolas", 10),
+            command=self.application.continue_execution
+        )
+
+        self.step_button.pack(side=tk.LEFT, padx=2, pady=5)
+        self.trace_button.pack(side=tk.LEFT, padx=2, pady=5)
+        self.continue_button.pack(side=tk.LEFT, padx=2, pady=5)
+
+        # Panel dividido para variables y stack
+        self.debug_pane = tk.PanedWindow(
+            self, orient=tk.VERTICAL, sashpad=3, sashrelief="solid", bg=DARK_BLUE)
+        self.debug_pane.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+        # Frame para variables
+        self.variables_frame = tk.LabelFrame(
+            self.debug_pane,
+            text="Variables",
+            bg=DARK_BLUE,
+            fg="white",
+            font=("Consolas", 12, "bold")
+        )
+        
+        # TreeView para mostrar variables
+        self.variables_tree = ttk.Treeview(
+            self.variables_frame,
+            columns=("Valor",),
+            show="tree headings"
+        )
+        self.variables_tree.heading("#0", text="Variable")
+        self.variables_tree.heading("Valor", text="Valor")
+        self.variables_tree.column("#0", width=120)
+        self.variables_tree.column("Valor", width=120)
+
+        variables_scrollbar = tk.Scrollbar(
+            self.variables_frame,
+            orient=tk.VERTICAL,
+            command=self.variables_tree.yview
+        )
+        self.variables_tree.configure(yscrollcommand=variables_scrollbar.set)
+
+        self.variables_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        variables_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Frame para stack de funciones
+        self.stack_frame = tk.LabelFrame(
+            self.debug_pane,
+            text="Stack de Funciones",
+            bg=DARK_BLUE,
+            fg="white",
+            font=("Consolas", 12, "bold")
+        )
+
+        self.stack_listbox = tk.Listbox(
+            self.stack_frame,
+            bg="white",
+            fg="black",
+            font=("Consolas", 10)
+        )
+
+        stack_scrollbar = tk.Scrollbar(
+            self.stack_frame,
+            orient=tk.VERTICAL,
+            command=self.stack_listbox.yview
+        )
+        self.stack_listbox.configure(yscrollcommand=stack_scrollbar.set)
+
+        self.stack_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        stack_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Agregar los frames al panel dividido
+        self.debug_pane.add(self.variables_frame, stretch="always", minsize=150)
+        self.debug_pane.add(self.stack_frame, stretch="always", minsize=100)
+
+    def update_variables(self, variables):
+        """Actualiza la vista de variables"""
+        # Limpiar el árbol
+        for item in self.variables_tree.get_children():
+            self.variables_tree.delete(item)
+        
+        # Agregar nuevas variables
+        for var_name, var_value in variables.items():
+            self.variables_tree.insert("", "end", text=var_name, values=(str(var_value),))
+
+    def update_stack(self, stack):
+        """Actualiza el stack de funciones"""
+        # Limpiar la lista
+        self.stack_listbox.delete(0, tk.END)
+        
+        # Agregar funciones del stack
+        for i, function in enumerate(stack):
+            self.stack_listbox.insert(tk.END, f"{i}: {function}")
+        
+
 class PinConfigurationWindow(tk.Toplevel):
 
     def __init__(self, parent, robot_option, application: MainApplication = None, *args, **kwargs):
@@ -1248,6 +1427,8 @@ class EditorFrame(tk.Frame):
 
             if hasattr(self.editor.master, 'application'):
                 self.editor.master.application.update_tracepoints(self.tracepoints)
+                
+        
 
 
 class ConsoleFrame(tk.Frame):
@@ -1336,6 +1517,7 @@ class ButtonBar(tk.Frame):
         self.exec_frame = tk.Frame(self, bg=kwargs["bg"])
         self.hist_frame = tk.Frame(self, bg=kwargs["bg"])
         self.utils_frame = tk.Frame(self, bg=kwargs["bg"])
+        self.debug_frame = tk.Frame(self, bg=kwargs["bg"])
         self.tooltip_hover = tk.Label(
             self, bg=kwargs["bg"], font=("consolas", 12), fg="white")
 
@@ -1411,6 +1593,23 @@ class ButtonBar(tk.Frame):
             bd=0,
             command=self.application.open_file
         )
+        
+        ####For now I will use the execute as a placeholder for the debug button
+        self.debug_button = ImageButton(
+            self.debug_frame,
+            images={
+                "blue": self.exec_img,
+                "white": self.exec_whi_img,
+                "yellow": self.exec_yel_img
+            },
+            bg=kwargs["bg"],
+            activebackground=DARK_BLUE,
+            bd=0,
+            command=self.toggle_debug_panel
+        )
+        
+        self.debug_button.set_tooltip_text(self.tooltip_hover, "Debug")
+
 
         self.execute_button.set_tooltip_text(self.tooltip_hover, "Ejecutar")
         self.stop_button.set_tooltip_text(self.tooltip_hover, "Detener")
@@ -1425,7 +1624,8 @@ class ButtonBar(tk.Frame):
         self.exec_frame.grid(row=0, column=0)
         self.hist_frame.grid(row=0, column=1)
         self.utils_frame.grid(row=0, column=2)
-        self.tooltip_hover.grid(row=0, column=3)
+        self.debug_frame.grid(row=0, column=3)
+        self.tooltip_hover.grid(row=0, column=4)
 
         self.execute_button.grid(row=0, column=1, padx=5, pady=5)
         self.stop_button.grid(row=0, column=2, padx=5, pady=5)
@@ -1433,6 +1633,8 @@ class ButtonBar(tk.Frame):
         self.redo_button.grid(row=0, column=2, padx=5, pady=5)
         self.save_button.grid(row=0, column=1, padx=5, pady=5)
         self.import_button.grid(row=0, column=2, padx=5, pady=5)
+        self.debug_button.grid(row=0, column=3, padx=5, pady=5)
+
 
     def execute(self):
         self.execute_button.on_click()
@@ -1465,6 +1667,14 @@ class ButtonBar(tk.Frame):
         self.undo_img = tk.PhotoImage(file="buttons/undo.png")
         self.undo_whi_img = tk.PhotoImage(file="buttons/undo_w.png")
         self.undo_yel_img = tk.PhotoImage(file="buttons/undo_y.png")
+        '''
+        self.debug_img = tk.PhotoImage(file="buttons/debug.png")
+        self.debug_whi_img = tk.PhotoImage(file="buttons/debug_w.png")
+        self.debug_yel_img = tk.PhotoImage(file="buttons/debug_y.png")
+        '''
+        
+    def toggle_debug_panel(self):
+        self.application.toggle_debug_panel()
 
 
 class ImageButton(tk.Button):
