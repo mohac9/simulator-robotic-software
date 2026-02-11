@@ -4,7 +4,8 @@ from sly import Lexer
 import os
 import re
 import sys
-import typesArduino
+#from . import typesArduino
+#import typesArduino
     
 
 def comentario(t):
@@ -63,7 +64,7 @@ class ArduinoLexer(Lexer):
               ,'AND','OR','NOT','EQ','NE','LT','LE','GT','GE','PLUS','MINUS','MULTIPLY','DIVIDE','MODULUS',
               'BITWISE_AND','BITWISE_OR','BITWISE_XOR','BITWISE_NOT','BITWISE_LEFT_SHIFT','BITWISE_RIGHT_SHIFT',
               'UNSIGNED_INT','SIGNED_INT','FLOAT','DOUBLE','LONG','SHORT','BYTE','WORD','UNSIGNED_LONG','UNSIGNED_CHAR',
-              'SIZE_T','BOOLEAN'
+              'SIZE_T','BOOLEAN','DOT'
               } | set(keywords.values())
     pass
 
@@ -368,9 +369,11 @@ class ArduinoLexer(Lexer):
     @_(r'\bboolean\b')
     def BOOLEAN(self, t):
         return t
-    
-    
 
+    @_(r'\.')
+    def DOT(self, t):
+        return t
+ 
   
 
     
@@ -398,10 +401,14 @@ class ArduinoLexer(Lexer):
 
 
 if __name__ == '__main__':
+    
     data = '''
-    #include <Arduino.h>
-    int i = 10;
-    }
+    Serial.begin(9600); 
+    i = 0;
+    while (i < 5) {
+        Serial.println(i);
+        i++;
+    } 
     '''
     
     lexer = ArduinoLexer()

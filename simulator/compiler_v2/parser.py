@@ -1,7 +1,14 @@
 import re
 from sly import Parser
-from lexer import ArduinoLexer
-import typesArduino as ta
+from pathlib import Path
+
+try:
+    from .lexer import ArduinoLexer
+    from . import typesArduino as ta
+except ImportError:
+    # When run directly as a script
+    from lexer import ArduinoLexer
+    import typesArduino as ta
 
 
 
@@ -185,20 +192,20 @@ class ArduinoParser(Parser):
     
     @_('RETURN expression SEMICOLON')
     def sentence(self, p):
-        pass
+        return ta.sentence(ta.return_statement(p.expression))
         
     
     @_('RETURN SEMICOLON')
     def sentence(self, p):
-        return ('return', None)
+        return ta.sentence(ta.return_statement(None))
     
     @_('BREAK SEMICOLON')
     def sentence(self, p):
-        return ta.break_statement()
+        return ta.sentence(ta.break_statement())
     
     @_('CONTINUE SEMICOLON')
     def sentence(self, p):
-        return ('continue', None)
+        return ta.sentence(ta.continue_statement())
     
     #Assignment rules
     @_('ID EQUAL expression')
@@ -230,13 +237,10 @@ class ArduinoParser(Parser):
     def iteration_sentence(self, p):
         return ta.for_loop(p.simple_declaration, None, None)
     
-    @_('FOR LPAREN simple_declaration SEMICOLON expression_optional SEMICOLON  RPAREN code_block')
+    @_('FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON  RPAREN code_block')
     def iteration_sentence(self, p):
-        return ta.for_loop(p.simple_declaration, p.expression_optional, None)
+        return ta.for_loop(p.simple_declaration, p.expression, None)
 
-    @_('FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON expression RPAREN code_block')
-    def iteration_sentence(self, p):
-        return ta.for_loop(p.simple_declaration, p.expression0, p.expression1)
     
     @_('FOR LPAREN  SEMICOLON expression SEMICOLON  RPAREN code_block')
     def iteration_sentence(self, p):
@@ -246,9 +250,6 @@ class ArduinoParser(Parser):
     def iteration_sentence(self, p):
         return ta.for_loop(None, p.expression, p.expression1)
 
-    @_('FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON  RPAREN code_block')
-    def iteration_sentence(self, p):
-        return ta.for_loop(p.simple_declaration, p.expression0, None)
     
     #Conditional sentences
     @_('IF LPAREN expression RPAREN code_block LPAREN ELSE code_block RPAREN')
@@ -374,7 +375,7 @@ class ArduinoParser(Parser):
     
     @_('ID LPAREN expression_list RPAREN')
     def expression(self, p):
-        return ('r_expr', p.ID, p.expression_list)
+        return ta.function_call(p.ID, ta.argument_list(p.expression_list))
     
     @_('expression "." expression')
     def expression(self, p):
@@ -395,14 +396,39 @@ class ArduinoParser(Parser):
         return [p.expression]
     
 
-    @_('expression LPAREN parameter RPAREN')
+    @_('ID LPAREN RPAREN')
     def expression(self, p):
-        return ('function_call', p.expression, p.parameter)
+        return ta.function_call(p.ID, None)
 
-    @_('expression LPAREN RPAREN')
+    @_('ID LPAREN parameter RPAREN')
     def expression(self, p):
-        return ('function_call', p.expression, None)
+        return ta.function_call(p.ID, p.parameter)
 
+    @_('ID DOT ID LPAREN RPAREN')
+    def expression(self, p):
+        return ta.function_call(f"{p.ID0}.{p.ID1}", None)
+    
+    @_('ID DOT ID LPAREN parameter RPAREN')
+    def expression(self, p):
+        return ta.function_call(f"{p.ID0}.{p.ID1}", p.parameter)
+
+    #añadir regla extra
+    @_('expression DOT ID')#I dont now if its correct 
+    def expression(self, p):
+        return ta.member_access(p.expression, p.ID)
+    #caso extra acceder a un miembro de expresion
+
+    @_('expression')
+    def argument_list(self,p):
+        return ta.argument_list([p.expression])
+
+    @_('argument_list COMMA expression')
+    def argument_list(self, p):
+        return p.argument_list.add_argument(p.expression)    
+
+    @_('')
+    def argument_list(self, p):
+        return ta.argument_list([])
     @_('conversion')
     def expression(self, p):
         return ('conversion', p.conversion)
@@ -574,6 +600,9 @@ class ArduinoParser(Parser):
     @_('SEMICOLON')
     def symbol(self, p):
         return p.SEMICOLON    
+    
+    
+    
 
 
 def print_tree(node, indent=0):
@@ -607,13 +636,44 @@ def print_tree_v2(node, indent=0):
 # Convertir el string en un arbol de sintaxis
 
 if __name__ == '__main__':
-    data = code = """
-    int a;
-    int foo(int x, char y){
-        z = x;
-    }
+    data = code = '''
+    #include <Arduino.h>
+    int led13 = 13; 
+    double inicioCuentaTiempo; 
+ 
+    void setup() { 
+        Serial.begin(9600); // Iniciar el Serial 
+        pinMode(led13, OUTPUT); 
+  
+        // Instante de tiempo que empieza a contar! 
+        inicioCuentaTiempo = millis(); 
+    } 
+ 
+    void loop() { 
+    if (millis() - inicioCuentaTiempo  >= 5000){ 
+        // Tiempo actual - inicio Cuenta tiempo >= 5000 
+        // Han pasado 5 segundos, enciendo el led 
+        digitalWrite(led13, HIGH); 
+        
+    } 
+    }   
+    '''
+    data = code = '''
+        #include <Arduino.h>
+        int led13 = 13; 
+        double inicioCuentaTiempo;
+        inicioCuentaTiempo = millis();
+        void setup() { 
+            Serial.begin(); // Iniciar el Serial 
+            pinMode(led13, OUTPUT); 
+            inicioCuentaTiempo = millis();
+        }
+        void loop() { 
+            digitalWrite(led13, HIGH); 
+        }
+        
     
-    """
+    '''
     lexer = ArduinoLexer()
     print("----------------------------------")
     for i in lexer.tokenize(data):

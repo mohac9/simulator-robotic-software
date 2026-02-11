@@ -1,0 +1,12 @@
+Hablado en la reunión anterior:
+- Planificación TFG
+- Problema con la implementación de las librerías
+- Memoria y leer memorias de otros años
+
+Reunión de hoy:
+- Comentar progreso
+	- He rehecho toda la parte de las librerías
+- Algo retrasado de tiempo, master + hay que cambiar librería command.py
+
+Siguiente:
+- Hechar vistazo codigo

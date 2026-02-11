@@ -20,3 +20,7 @@ No se ha llegado a terminar todos los tipos del TypesArduino quedan funciones y 
 	- Contar por lineas en el lexer y asignar un parametro linea para cada clase
 - Implementación de los puntos de ruptura, si hay que reutilizar el lexer
 - Reducir complejidad del código para tratar errores
+
+[]
+- Añadir pruebas unitarias
+- PyCharm(Probarlo)

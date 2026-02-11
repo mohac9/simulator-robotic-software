@@ -1,10 +1,15 @@
 import graphics.layers as layers
 import output.console as console
 import output.console_gamification as console_gamification
-import compiler.commands as commands
+#import compiler.commands as commands
 import graphics.screen_updater as screen_updater
 from datetime import datetime
 
+use_interpreter = True
+if use_interpreter:
+    import compiler_v2.commands as commands
+else:
+    import compiler.commands as commands
 
 class RobotsController:
 

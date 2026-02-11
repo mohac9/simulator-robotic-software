@@ -1,4 +1,9 @@
-import environment 
+try:
+    # When imported as part of a package
+    from . import environment
+except ImportError:
+    # When run directly as a script
+    import environment
 
 class Metatype(type):
     _types = {}
@@ -379,7 +384,29 @@ def type_conversion(object, target_type):
     
     raise RuntimeError(f"Cannot convert {original_type} to {target_type}. Only 'Object' type can be converted.")
     
-
+def types_arduino_to_python(value):
+        if value is None:
+            return None
+        
+        if hasattr(value, 'value'):
+            return value.value
+        
+        return value #This is if is already a Python Type
+    
+def python_to_types_arduino(value):
+    if value in None:
+        return None
+        
+    if isinstance(value, int):
+        return Int(value)
+    elif isinstance(value, float):
+        return Float(value)
+    elif isinstance(value, bool):
+        return Bool(value)
+    elif isinstance(value, str):
+        return String(value)
+    else:
+        return value #This is if is already a TypeArduino Type
 
 class assignment(parserTypes):
     def __init__(self, name, value):
@@ -526,6 +553,15 @@ class program(parserTypes):
         self.children_list = [include_list, program_code_list]
         
     def execute(self, env):
+        # Antes de ejecutarlo self.program_code_list 
+        for code in self.program_code_list.code_list: 
+            if isinstance(code, function):
+                if code.name == "setup": #Comprobar si es correcta la signature de setup
+                    code.execute(env)
+                elif code.name == "loop":
+                    while True:
+                            code.execute(env)
+
         # Execute includes first
         self.include_list.execute(env)
         # Then execute the program code
@@ -549,6 +585,8 @@ class program_code_list(parserTypes):
         return f"ProgramCodeList({len(self.code_list)} elements)"
     
     def append(self, code):
+        print(f"Appending code: {code}")
+        print(code)
         if not isinstance(code, program_code):
             raise RuntimeError(f"Expected a 'program_code' type, got {code.__class__.__name__}.")
         self.code_list.append(code)
@@ -624,23 +662,51 @@ class include_list(parserTypes):
     def children(self):
         return self.children_list
     
-    def append(self, include):
-        if not isinstance(include, include):
+    def append(self, include_obj):
+        if not isinstance(include_obj, include):
             raise RuntimeError(f"Expected an 'include' type, got {include.__class__.__name__}.")
-        self.includes.append(include)
-        self.children_list.append(include)
+        self.includes.append(include_obj)
+        self.children_list.append(include_obj)
         return self
 
-class include(parserTypes):
-    def __init__(self, include_name):
-        self.include_name = include_name
-        self.children_list  = [include_name]
-    def execute(self, env):
-        if self.include_name.__type__(env) != 'String':
-            raise RuntimeError(f"Include name must be a string, got {self.include_name.__type__(env)}.")
-        #TODO: Implement include functionality
+
     def children(self):
         return  self.children_list
+
+
+class include(parserTypes):
+    def __init__(self, library_name):
+        self.library_name = library_name.strip('"<>\'')
+        if self.library_name.endswith('.h'):
+            self.library_name = self.library_name[:-2]
+        self.children_list = []
+
+    def execute(self, env):
+        try:
+            if self.library_name == 'Serial':
+                import libraries.serial as serial
+                env.register_library('Serial', serial)
+            elif self.library_name == 'Servo':
+                import libraries.servo as servo
+                env.register_library('Servo', servo)
+            elif self.library_name == 'String':
+                import libraries.string as string
+                env.register_library('String', string)
+            elif self.library_name == 'Keyboard':
+                import libraries.keyboard as keyboard
+                env.register_library('Keyboard', keyboard)
+            else:
+                print(f"Warning: Library '{self.library_name}' not found")
+                return
+            print(f"Library '{self.library_name}' registered successfully")
+        except ImportError as e:
+            print(f"Error importing library '{self.library_name}': {e}") 
+
+    def __str__(self):
+        return f"Include({self.library_name})"
+    
+    def __type__(self, env=None):
+        return "Void"
 
 #Control structures
 class if_statement(parserTypes):
@@ -845,12 +911,6 @@ class void():
         return "Void"
     
 
-class returnException(Exception):
-    def __init__(self, value=void()):
-        self.value = value
-        
-    def value(self):
-        return self.value
 
 
     
@@ -917,12 +977,12 @@ class function(parserTypes):
     def execute(self,env):
         env.set_function(self.name_mangling(), self)
 
+    #This method creates a new enviroment for the function execution, it is used to implement the scope of the function
     def scope_generator(self):
         new_scope = environment.Environment()
-        #Bind function args
-        self.function_args.execute()
         return new_scope
-
+    
+    #This method binds the arguments to the enviroment of the function
     def args_binding(self,list_of_arguments,env):
         param_names = self.function_args.get_param_names()
         for param_name, argument in zip(param_names, list_of_arguments):
@@ -931,15 +991,23 @@ class function(parserTypes):
 
     def body_execution(self,env):
         try:
-            self.function_body.execute()
+            self.function_body.execute(env)
             if self.type != "Void":
                 raise RuntimeError("Expected return statement in function body.")
+            
+        #El error parece que esta aqui :(
         except returnException as ret:
-            if self.type != ret.__type():
-                raise RuntimeError(f"Return type mismatch: expected {self.type}, got {ret.__type__()}.")
-            return ret
+            
+            ret_type = type(ret).__type__(ret).lower() if hasattr(ret, '__type__') else 'Void'
+            print(f"Return type: {ret_type}, Expected type: {self.type}")
+            if self.type != ret_type:
+                raise RuntimeError(f"Return type mismatch: expected {self.type}, got {ret_type}.")
+            return ret.value
                 
 
+    
+        
+        
         
     def __str__(self):
         return f"Function(type={self.type}, name={self.function_name}, args={self.function_args}, body={self.function_body})"
@@ -984,6 +1052,14 @@ class parameters(parserTypes):
         return self.expression_list.execute()
     
 
+#Tramslates Arduino method names to Python method names
+def arduino_to_python_name(lib_module, arduino_name: str) -> str:
+    get_methods = getattr(lib_module, "get_methods", None)
+    if callable(get_methods):
+        spec = get_methods().get(arduino_name)
+        if spec is not None:
+            return spec[1]
+    return arduino_name
 
 
 class function_call(parserTypes):
@@ -998,20 +1074,91 @@ class function_call(parserTypes):
             for t in types:
                 signature += f"{t}#"
             return signature
+        else:
+            return signature
 
 
-    def execute(self,env):
-        args = self.parameters.execute()
-        signature = self.name_mangling()
-        function_object = env.get_function(signature)
-        #Creation of new env for the function
-        new_env = function_object.scope_generator()
-        #Binding parameters
-        function_object.args_binding(args,new_env)
-        #Executing the function
-        return function_object.body_execution(new_env)
+    def execute(self, env):
+        # Handle library method calls 
+        if '.' in self.name:
+            lib_name, func_name = self.name.split('.')
+            
+            lib = env.libraries.get(lib_name)
+            if lib is None:
+                raise RuntimeError(f"Library '{lib_name}' not found.")
+                
+            args = self.parameters.execute(env) if self.parameters else []
+            python_args = [types_arduino_to_python(arg) for arg in args]
+
+            py_name = arduino_to_python_name(lib, func_name)
+
+            if hasattr(lib, py_name):
+                return getattr(lib, py_name)(*python_args)
+            elif hasattr(lib, lib_name):  # Clase como Servo, String
+                lib_class = getattr(lib, lib_name)
+                instance = lib_class()
+                if hasattr(instance, py_name):
+                    return getattr(instance, py_name)(*python_args)
+            
+            raise RuntimeError(f"Method '{func_name}' not found in library '{lib_name}'")
         
+        # Check for built-in functions (Arduino standard functions)
+        elif hasattr(env, 'built_in_functions') and self.name in env.built_in_functions:
+            args = []
+            if self.parameters:
+                args = [arg.execute(env) for arg in self.parameters.expressions]
+            return env.built_in_functions[self.name](*args)
+            
+        # Regular user-defined functions
+        else:
+            args = self.parameters.execute(env) if self.parameters else []
+            signature = self.name_mangling()
+            function_object = env.get_function(signature)
+            new_env = function_object.scope_generator()
+            if function_object.function_args is not None:
+                function_object.args_binding(args, new_env)
+            print(f"El env es: {new_env.variables}")
+            return function_object.body_execution(new_env)
 
+class argument_list(parserTypes):
+    def __init__(self, expressions):
+        self.expressions = expressions
+        
+    def add_argument(self, expression):
+        self.expressions.append(expression)
+        return self
+        
+    def execute(self, env):
+        return [expr.execute(env) for expr in self.expressions]
+
+
+class returnException(Exception):
+    def __init__(self, value=void()):
+        self.value = value
+        
+    def get_value(self):
+        return self.value
+    
+    def __type__(self):
+        if hasattr(self.value, '__type__'):
+            return self.value.__type__()
+        return "Void"
+    
+
+class return_statement(parserTypes):
+    def __init__(self, expression):
+        self.expression = expression
+        self.children_list = [expression] if expression else []
+        
+    def execute(self, env):
+        if self.expression is not None:
+            value = self.expression.execute(env)
+            raise returnException(value)
+        else:
+            raise returnException()
+    
+    def __str__(self):
+        return f"ReturnStatement(expression={self.expression})"
 
 if __name__ == "__main__":
     int1 = Int(5)

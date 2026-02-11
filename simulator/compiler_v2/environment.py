@@ -4,14 +4,16 @@ class Environment:
         self.variables_contents = {} #Key: variable name, Value: variable content
         self.parent_env = parent_env #May be eliminated in the future, not used yet
         self.functions = {} # key: Signature(name + args) , value: function object
-        
-        
+        self.libraries = {} # key: library name, value: library module   
+        self.built_in_functions = {} # key: function name, value: function object
+        self.built_in_functions = {}
+
     #Auxilliary functions
     def get_name_from_signature(self,signature):
         return signature.split('#')[0]
         
         
-    #TODO: Check collisions with function names    
+    #TODO: Check collisions with function names, done   
     def set_variable(self, name, var_type, content=None):
         if name in self.variables:
             raise RuntimeError(f"Variable '{name}' already defined.")
@@ -40,6 +42,7 @@ class Environment:
             
     
     def set_function(self,signature, function_object):
+        #TODO: Permitir que se ejecuten despues comparando tanto llave y contenido si son iguales no hay error en runtime
         if signature in self.functions or self.get_name_from_signature(signature) in self.variables:
             raise RuntimeError(f"Function '{signature}' already defined.")
         self.functions[signature] = function_object
@@ -53,12 +56,32 @@ class Environment:
             for signature in self.functions
         ]
     
-    
+    def register_library(self, name, library_module):
+        self.libraries[name] = library_module
+
         
+    def call_library_function(self, library_name, function_name, args):
+        """Call a function from a registered library"""
+        if library_name in self.libraries:
+            lib = self.libraries[library_name]
+            if hasattr(lib, function_name):
+                func = getattr(lib, function_name)
+                return func(*args)
+            else:
+                # Try class-based library
+                if hasattr(lib, library_name):
+                    lib_class = getattr(lib, library_name)
+                    lib_instance = lib_class()
+                    if hasattr(lib_instance, function_name):
+                        func = getattr(lib_instance, function_name)
+                        return func(*args)
+        
+        raise Exception(f"Library function {library_name}.{function_name} not found")
     
     
+
+    def register_built_in(self, arduino_name, python_func):
+        self.built_in_functions[arduino_name] = python_func
         
-    #TODO: Search parents variables for env inside functions
-    def search_parents(self,name):
-        pass
-        
+    def define_function(self, name, func):
+        self.built_in_functions[name] = func
