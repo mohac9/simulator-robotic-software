@@ -1009,7 +1009,7 @@ class function(parserTypes):
     def body_execution(self,env):
         try:
             self.function_body.execute(env)
-            if self.type != "Void":
+            if self.type.lower() != "void":
                 raise RuntimeError("Expected return statement in function body.")
             
         except returnException as ret:

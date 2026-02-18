@@ -94,9 +94,9 @@ class Setup(Command):
         self.controller.console
         )
 
-        board = self.controller.robot_layer.robot.board
-        console_obj = self.controller.console
-        interpreter.register_libraries(board, console_obj)
+        #board = self.controller.robot_layer.robot.board
+        #console_obj = self.controller.console
+        #interpreter.register_libraries(board, console_obj)
 
 
         
@@ -112,7 +112,7 @@ class Setup(Command):
                         setup_func = func['function_object']
                         break
                 if setup_func:
-                    interpreter.visit(setup_func, interpreter.env)
+                    setup_func.body_execution(interpreter.env)
                 else:
                     self.controller.console.write_warning(
                     console.Warning("Aviso", 0, 0, "No se ha encontrado la función setup()")
@@ -159,7 +159,7 @@ class Loop(Command):
                         break
                         
                 if loop_func:
-                    interpreter.visit(loop_func, interpreter.env)
+                    loop_func.body_execution(interpreter.env)
                 else:
                     self.controller.console.write_warning(
                         console.Warning("Aviso", 0, 0, "No se ha encontrado la función loop()")
