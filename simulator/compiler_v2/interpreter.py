@@ -106,18 +106,23 @@ if __name__ == '__main__':
             return 2;
         }
 
-        int dos = foo();
+        float x = 1.1 + 1;
+        float y = x + 1;
+        int z = 2;
 
-        int f(int x) {
-            return x + 1;
+        float m = z + y;
+
+        int  fact(int iter){
+            if(iter == 1){
+            return 1;
+            }
+            int result = fact(iter - 1) * iter;
+            return result;
         }
-
-        dos = f(dos);
-
     
     """
     interpreter = ArduinoInterpreter(code)
-    #interpreter.show_tree()
+    
     interpreter.run(interpreter.parser_object)
     interpreter.get_variables()
     interpreter.get_functions()

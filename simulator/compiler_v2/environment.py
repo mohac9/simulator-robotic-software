@@ -48,7 +48,11 @@ class Environment:
         self.functions[signature] = function_object
         
     def get_function(self,signature):
-        return self.functions[signature]
+        if signature in self.functions:
+            return self.functions[signature]
+        if self.parent_env is not None:
+            return self.parent_env.get_function(signature)
+        raise KeyError(f"Function '{signature}' not found.")
     
     def get_all_functions(self):
         return [

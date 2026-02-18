@@ -297,7 +297,9 @@ class Object(BaseType):
     def __type__(self,env=None):
         if self.name not in env.variables:
             raise RuntimeError(f"Variable '{self.name}' is not defined.")
-        return env[self.name]
+        if self.name not in env.variables:
+            raise RuntimeError(f"Variable '{self.name}' is not defined.")
+        return env.get_variable_type(self.name)
     
     def __str__(self):
         return f"Object({self.name})"
@@ -340,6 +342,24 @@ class binary_operation(parserTypes):
         left_value = self.left.execute(env)
         right_value = self.right.execute(env)
         
+        left_type = left_value.__type__()
+        right_type = right_value.__type__()
+
+        if left_type != right_type:
+            type_hierarchy = {'Bool': 0, 'Int': 1, 'Float': 2, 'String': 3}
+            left_rank = type_hierarchy.get(left_type, -1)
+            right_rank = type_hierarchy.get(right_type, -1)
+            print(f"Rank left:{left_rank}")
+            print(f"Rank right:{right_rank}")
+
+            print(f"Value left:{left_value}")
+            print(f"Value right:{right_value}")
+
+            if left_rank > right_rank:
+                right_value = type_conversion(right_value,left_type)
+            else:
+                left_value = type_conversion(left_value,right_type)
+
         result = self.operation(left_value, right_value)
         print(f"Executing binary operation: {self.left} {self.operation.__name__} {self.right} = {result}")
         return result
@@ -349,17 +369,17 @@ class binary_operation(parserTypes):
     
     # This method return a string with the type
     def __type__(self, env=None):
-        left_type = self.left.__type__()
-        right_type = self.right.__type__()
+        left_type = self.left.__type__(env).lower()
+        right_type = self.right.__type__(env).lower()
 
         if left_type == right_type:
             return left_type
         
 def type_conversion(object, target_type):
     original_type = object.__class__.__name__.lower() 
+    target_type = target_type.lower()
     print(f"Original type: {original_type}, Target type: {target_type}")
     number_types = {"int", "float", "double", "bool"}
-    
     if original_type == target_type:
         return object
     
@@ -417,7 +437,7 @@ class assignment(parserTypes):
         
     def __type__(self, env=None):
         if self.name not in env.variables:
-            raise RuntimeError(f"Variable '{self.variable}' is not defined.")
+            raise RuntimeError(f"Variable '{self.name}' is not defined.")
         
         var_type = env.get_variable_type(self.name)
         value_type = self.value.__type__(env)
@@ -429,7 +449,7 @@ class assignment(parserTypes):
 
 
         if self.name not in env.variables:
-            raise RuntimeError(f"Variable '{self.variable}' is not defined.")
+            raise RuntimeError(f"Variable '{self.name}' is not defined.")
         
 
 
@@ -966,10 +986,6 @@ class function(parserTypes):
     def name_mangling(self):
         if self.function_args is not None:
             types = self.function_args.get_param_types()
-            print("___________________")
-            print("The types are:")
-            print(types)
-            print("___________________")
             return f"{self.function_name}#" + "#".join(types) + "#"
         else:
              return f"{self.function_name}#" #Dont now if I should mantain the las #
@@ -978,15 +994,16 @@ class function(parserTypes):
         env.set_function(self.name_mangling(), self)
 
     #This method creates a new enviroment for the function execution, it is used to implement the scope of the function
-    def scope_generator(self):
-        new_scope = environment.Environment()
+    def scope_generator(self,parent_env=None):
+        new_scope = environment.Environment(parent_env)
         return new_scope
     
     #This method binds the arguments to the enviroment of the function
     def args_binding(self,list_of_arguments,env):
         param_names = self.function_args.get_param_names()
-        for param_name, argument in zip(param_names, list_of_arguments):
-            env.modify_variable(param_name, argument)
+        param_types = self.function_args.get_param_types()
+        for param_name, param_type, argument in zip(param_names, param_types, list_of_arguments):
+            env.set_variable(param_name, param_type, argument)
             
 
     def body_execution(self,env):
@@ -995,13 +1012,12 @@ class function(parserTypes):
             if self.type != "Void":
                 raise RuntimeError("Expected return statement in function body.")
             
-        #El error parece que esta aqui :(
         except returnException as ret:
-            
             ret_type = type(ret).__type__(ret).lower() if hasattr(ret, '__type__') else 'Void'
             print(f"Return type: {ret_type}, Expected type: {self.type}")
-            if self.type != ret_type:
-                raise RuntimeError(f"Return type mismatch: expected {self.type}, got {ret_type}.")
+            if self.type.lower() != ret_type:
+                converted_value = type_conversion(ret.value, self.type)
+                return converted_value
             return ret.value
                 
 
@@ -1020,17 +1036,17 @@ class expression_list(parserTypes): #May need  to change the return to the type 
     def execute(self,env):
         result = []
         for expr in  self.expressions:
-            result.append(expr.execute())
+            result.append(expr.execute(env))
         return result
     
     def append(self,expr):
         self.expressions.append(expr)
         return self
     
-    def __type__(self):
+    def __type__(self, env=None):
         types = []
         for expr in self.expressions:
-            types.append(expr.__type__())
+            types.append(expr.__type__(env))
         return types
 
 
@@ -1045,11 +1061,11 @@ class parameters(parserTypes):
     def __init__(self, expression_list):
         self.expression_list = expression_list
 
-    def __type__(self):
-        return self.expression_list.__type__()
+    def __type__(self,env=None):
+        return self.expression_list.__type__(env)
 
     def execute(self,env):
-        return self.expression_list.execute()
+        return self.expression_list.execute(env)
     
 
 #Tramslates Arduino method names to Python method names
@@ -1067,12 +1083,12 @@ class function_call(parserTypes):
         self.name = name
         self.parameters =parameters
         
-    def name_mangling(self): #Builds signature
+    def name_mangling(self, env = None): #Builds signature
         signature = f'{self.name}#'
         if self.parameters is not None:
-            types = self.parameters.__type__()
+            types = self.parameters.__type__(env)
             for t in types:
-                signature += f"{t}#"
+                signature += f"{t.lower()}#"
             return signature
         else:
             return signature
@@ -1112,9 +1128,9 @@ class function_call(parserTypes):
         # Regular user-defined functions
         else:
             args = self.parameters.execute(env) if self.parameters else []
-            signature = self.name_mangling()
+            signature = self.name_mangling(env)
             function_object = env.get_function(signature)
-            new_env = function_object.scope_generator()
+            new_env = function_object.scope_generator(env)
             if function_object.function_args is not None:
                 function_object.args_binding(args, new_env)
             print(f"El env es: {new_env.variables}")
@@ -1130,6 +1146,12 @@ class argument_list(parserTypes):
         
     def execute(self, env):
         return [expr.execute(env) for expr in self.expressions]
+    
+    def __type__(self,env):
+        types = []
+        for expr in self.expressions:
+            types.append(expr.__type__(env))
+        return types
 
 
 class returnException(Exception):
