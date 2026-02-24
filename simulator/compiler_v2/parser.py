@@ -16,6 +16,8 @@ class ArduinoParser(Parser):
     
     tokens = ArduinoLexer.tokens
     
+    debugfile = 'parser.out'
+    
     precedence = (
     ('left', 'PLUS', 'MINUS'),
     ('left', 'MULTIPLY', 'DIVIDE'),
@@ -58,18 +60,23 @@ class ArduinoParser(Parser):
     @_('declaration SEMICOLON')
     def program_code(self, p):
         return ta.program_code(p.declaration)
-    
+    '''
     @_('assignment SEMICOLON')
     def program_code(self, p):  #May contradict the grammar
         return ta.program_code(p.assignment)
+    '''
     
     @_('function')
     def program_code(self, p):
+        print("Entra aqui")
         return ta.program_code(p.function)    
     
+    
+    '''
     @_('define_macro')
     def program_code(self, p):
         return ta.program_code(p.define_macro)
+    '''
     
     @_('sentence_list')
     def program_code(self, p):
@@ -158,9 +165,9 @@ class ArduinoParser(Parser):
         return ta.sentence_list(new_sentences)
         
     
-    @_('')
+    @_('sentence')
     def sentence_list(self, p):
-        return ta.sentence_list([])
+        return ta.sentence_list([p.sentence])
     
     #Sentence rules
     @_('declaration SEMICOLON')
@@ -659,15 +666,8 @@ if __name__ == '__main__':
     }   
     '''
     data = code = '''
-        #include <Arduino.h>
-        int led13 = 13; 
-        double inicioCuentaTiempo;
-        inicioCuentaTiempo = millis();
-        void setup() { 
-            Serial.begin(); // Iniciar el Serial 
-            pinMode(led13, OUTPUT); 
-            inicioCuentaTiempo = millis();
-        }
+        
+        //inicioCuentaTiempo = millis();
         void loop() { 
             digitalWrite(led13, HIGH); 
         }
@@ -675,10 +675,13 @@ if __name__ == '__main__':
     
     '''
     lexer = ArduinoLexer()
+    
     print("----------------------------------")
+    
     for i in lexer.tokenize(data):
         print(f'#{i.lineno} {i.type} {i.value}')
     print("----------------------------------")
+    
     parser = ArduinoParser()
     result = parser.parse(lexer.tokenize(data))
     #print_tree(result)

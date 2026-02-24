@@ -22,8 +22,6 @@ def comentario(t):
 class ArduinoLexer(Lexer):
     literals = {'(', ')', '{', '}', '[', ']', ';', ',', '.', '=', '+', '-', '*', '/', '%', '!', '<', '>', '&', '|', '^', '~'}
     ignore = ' \t'
-    ignore_newline = r'\n+'
-    ignore_comment = r'//.*|/\*.*?\*/'
     keywords = {
         'if': 'IF',
         'else': 'ELSE',
@@ -77,7 +75,7 @@ class ArduinoLexer(Lexer):
     
     @_(r'/\*.*?\*/')
     def BLOCK_COMMENT(self, t):
-        pass
+        self.lineno+= t.value.count("\n")
     
     @_(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b')
     def ID(self, t):
@@ -123,7 +121,7 @@ class ArduinoLexer(Lexer):
     
     @_(r'\s+')
     def WHITESPACE(self, t):
-        pass
+        self.lineno+=t.value.count("\n")
     
     @_(r'\n')
     def NEWLINE(self, t):
