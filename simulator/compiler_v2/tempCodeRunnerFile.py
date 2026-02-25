@@ -1,1 +1,1 @@
-rules
+inicioCuentaTiempo

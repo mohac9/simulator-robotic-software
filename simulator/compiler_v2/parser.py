@@ -384,9 +384,9 @@ class ArduinoParser(Parser):
     def expression(self, p):
         return ta.function_call(p.ID, ta.argument_list(p.expression_list))
     
-    @_('expression "." expression')
+    @_('ID "." expression')
     def expression(self, p):
-        return ('member_acc', p.expression0, p.expression1)
+        return ('member_acc', ta.Object(p.ID), p.expression)
     
     @_('ID LBRACKET expression_list RBRACKET')
     def expression(self, p):
@@ -666,8 +666,7 @@ if __name__ == '__main__':
     }   
     '''
     data = code = '''
-        
-        //inicioCuentaTiempo = millis();
+        int inicioCuentaTiempo = millis();
         void loop() { 
             digitalWrite(led13, HIGH); 
         }
