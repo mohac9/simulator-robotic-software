@@ -19,6 +19,7 @@ class ArduinoParser(Parser):
     debugfile = 'parser.out'
     
     precedence = (
+    ('left','DOT'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'MULTIPLY', 'DIVIDE'),
     )
@@ -385,10 +386,14 @@ class ArduinoParser(Parser):
     def expression(self, p):
         return ta.function_call(p.ID, ta.argument_list(p.expression_list))
     
-    @_('ID "." expression')
+    #DUDOSA no se encuentra en la gramatica
+    '''
+    @_('ID DOT expression')
     def expression(self, p):
         return ('member_acc', ta.Object(p.ID), p.expression)
+    '''
     
+    #TODO: Esta regla provoca conflicto
     @_('ID LBRACKET expression_list RBRACKET')
     def expression(self, p):
         return ('array_name', p.ID, p.expression_list)
@@ -404,22 +409,25 @@ class ArduinoParser(Parser):
         return [p.expression]
     
 
-    @_('ID LPAREN RPAREN')
+    @_('expression LPAREN RPAREN')
     def expression(self, p):
         return ta.function_call(p.ID, None)
 
-    @_('ID LPAREN parameter RPAREN')
+    @_('expression LPAREN parameter RPAREN')
     def expression(self, p):
         return ta.function_call(p.ID, p.parameter)
 
+    #TODO: No estan en la gramatica, SOLUCIONAR llamadas a funciones de libreria
+    '''
     @_('ID DOT ID LPAREN RPAREN')
     def expression(self, p):
         return ta.function_call(f"{p.ID0}.{p.ID1}", None)
-    
+    '''
+    '''
     @_('ID DOT ID LPAREN parameter RPAREN')
     def expression(self, p):
         return ta.function_call(f"{p.ID0}.{p.ID1}", p.parameter)
-
+    '''
     #añadir regla extra
     @_('expression DOT ID')#I dont now if its correct 
     def expression(self, p):
