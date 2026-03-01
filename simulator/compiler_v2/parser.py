@@ -77,10 +77,11 @@ class ArduinoParser(Parser):
     def program_code(self, p):
         return ta.program_code(p.define_macro)
     '''
-    
+    '''
     @_('sentence_list')
     def program_code(self, p):
         return ta.program_code(p.sentence_list)
+    '''
     
     #Declaration rules
     @_('simple_declaration')
@@ -259,7 +260,7 @@ class ArduinoParser(Parser):
 
     
     #Conditional sentences
-    @_('IF LPAREN expression RPAREN code_block LPAREN ELSE code_block RPAREN')
+    @_('IF LPAREN expression RPAREN code_block  ELSE code_block ')
     def conditional_sentence(self, p):
         return ta.if_statement(p.expression, p.code_block0, p.code_block1)
     

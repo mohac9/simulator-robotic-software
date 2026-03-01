@@ -46,6 +46,7 @@ class ArduinoInterpreter:
     
     def run(self,node):
         self.env = environment.Environment()
+        
         node.execute(self.env)
         
         pass
@@ -101,28 +102,16 @@ if __name__ == '__main__':
     # Variables are correctly defined and assigned
     # Type conversion is correctly handled(Internally)
     # Break are correctly implemented
+    
     code = """
-        int foo() {
-            return 2;
-        }
+        int res;
+        res = map(25, 0, 100, 0, 1000);
 
-        float x = 1.1 + 1;
-        float y = x + 1;
-        int z = 2;
-
-        float m = z + y;
-
-        int  fact(int iter){
-            if(iter == 1){
-            return 1;
-            }
-            int result = fact(iter - 1) * iter;
-            return result;
-        }
+        
     
     """
     interpreter = ArduinoInterpreter(code)
-    
+    interpreter.register_libraries()
     interpreter.run(interpreter.parser_object)
     interpreter.get_variables()
     interpreter.get_functions()

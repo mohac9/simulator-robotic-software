@@ -83,9 +83,14 @@ class Environment:
         raise Exception(f"Library function {library_name}.{function_name} not found")
     
     
-
-    def register_built_in(self, arduino_name, python_func):
-        self.built_in_functions[arduino_name] = python_func
+    #TODO: Añadir todas las funciones built in
+    def register_built_in(self):
+        pass
         
     def define_function(self, name, func):
         self.built_in_functions[name] = func
+
+
+    
+
+
