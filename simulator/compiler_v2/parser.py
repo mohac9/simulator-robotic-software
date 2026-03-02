@@ -19,9 +19,18 @@ class ArduinoParser(Parser):
     debugfile = 'parser.out'
     
     precedence = (
-    ('left','DOT'),
-    ('left', 'PLUS', 'MINUS'),
-    ('left', 'MULTIPLY', 'DIVIDE'),
+        ('left', 'OR'),
+        ('left', 'AND'),
+        ('left', 'BITWISE_OR'),
+        ('left', 'BITWISE_XOR'),
+        ('left', 'BITWISE_AND'),
+        ('left', 'EQ', 'NE'),
+        ('left', 'LT', 'LE', 'GT', 'GE'),
+        ('left', 'BITWISE_LEFT_SHIFT', 'BITWISE_RIGHT_SHIFT'),
+        ('left', 'PLUS', 'MINUS'),
+        ('left', 'MULTIPLY', 'DIVIDE', 'MODULUS'),
+        ('right', 'NOT', 'BITWISE_NOT','UPLUS','UMINUS'),
+        ('left', 'DOT', 'LPAREN', 'LBRACKET'),
     )
     
     
@@ -381,11 +390,12 @@ class ArduinoParser(Parser):
     @_('ID')
     def expression(self, p):
         return ta.Object(p.ID)
-    
+    #NOTE:Esta regla parece redundante
+    '''
     @_('ID LPAREN expression_list RPAREN')
     def expression(self, p):
         return ta.function_call(p.ID, ta.argument_list(p.expression_list))
-    
+    '''
     #DUDOSA no se encuentra en la gramatica
     '''
     @_('ID DOT expression')
@@ -411,11 +421,11 @@ class ArduinoParser(Parser):
 
     @_('expression LPAREN RPAREN')
     def expression(self, p):
-        return ta.function_call(p.ID, None)
+        return ta.function_call(p.expression, None)
 
     @_('expression LPAREN parameter RPAREN')
     def expression(self, p):
-        return ta.function_call(p.ID, p.parameter)
+        return ta.function_call(p.expression, p.parameter)
 
     #TODO: No estan en la gramatica, SOLUCIONAR llamadas a funciones de libreria
     '''
@@ -449,11 +459,11 @@ class ArduinoParser(Parser):
     def expression(self, p):
         return ('conversion', p.conversion)
 
-    @_('PLUS PLUS expression')
+    @_('PLUS PLUS expression %prec UPLUS')
     def expression(self, p):
         return ta.unary_operation(p.expression, ta.Number.__next__)
 
-    @_('MINUS MINUS expression')
+    @_('MINUS MINUS expression %prec UMINUS')
     def expression(self, p):
         return ta.unary_operation(p.expression, ta.Number.__prev__)
         
