@@ -699,9 +699,9 @@ if __name__ == '__main__':
     
     print("----------------------------------")
     
-    for i in lexer.tokenize(data):
-        print(f'#{i.lineno} {i.type} {i.value}')
-    print("----------------------------------")
+    #for i in lexer.tokenize(data):
+        #print(f'#{i.lineno} {i.type} {i.value}')
+    #print("----------------------------------")
     
     parser = ArduinoParser()
     result = parser.parse(lexer.tokenize(data))
