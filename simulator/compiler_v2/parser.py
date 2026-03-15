@@ -18,7 +18,7 @@ class ArduinoParser(Parser):
     
     debugfile = 'parser.out'
     
-    precedence = (
+    precedence = ( 
         ('left', 'OR'),
         ('left', 'AND'),
         ('left', 'BITWISE_OR'),
@@ -31,6 +31,7 @@ class ArduinoParser(Parser):
         ('left', 'MULTIPLY', 'DIVIDE', 'MODULUS'),
         ('right', 'NOT', 'BITWISE_NOT','UPLUS','UMINUS'),
         ('left', 'DOT', 'LPAREN', 'LBRACKET'),
+        ('right', 'BITWISE_OR_EQ', 'BITWISE_XOR_EQ', 'DIV_EQ', 'MINUS_EQ', 'SUM_EQ', 'MUL_EQ', 'BITWISE_EQ', 'MOD_EQ'),
     )
     
     
@@ -548,21 +549,35 @@ class ArduinoParser(Parser):
     def expression(self, p):
         return ta.binary_operation(p.expression0, p.expression1, ta.Number.__or__)
 
-    #TODO: Change later to use objects from typesArduino
-    @_('expression compound_operator expression')
-    def expression(self, p):
-        return ('compound_assignment', p.expression0, p.compound_operator, p.expression1)
 
-    @_('MODULUS EQ')
-    @_('BITWISE_AND EQ')
-    @_('MULTIPLY EQ')
-    @_('PLUS EQ')
-    @_('MINUS EQ')
-    @_('DIVIDE EQ')
-    @_('BITWISE_XOR EQ')
-    @_('BITWISE_OR EQ')
-    def compound_operator(self, p):
-        return p[0]
+    @_('expression MOD_EQ expression')
+    def expression(self, p):
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__mod_eq__)
+    
+    @_('expression MUL_EQ expression')
+    def expression(self, p):
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__mul_eq__)
+    
+    @_('expression SUM_EQ expression')
+    def expression(self, p):
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__add_eq__)
+    
+    @_('expression MINUS_EQ expression')
+    def expression(self, p):
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__sub_eq__)
+    
+    @_('expression DIV_EQ expression')
+    def expression(self, p):
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__truediv_eq__)
+    
+    @_('expression BITWISE_XOR_EQ expression')
+    def expression(self, p):
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__bitwise_xor_eq__)
+    
+    @_('expression BITWISE_OR_EQ expression')
+    def expression(self, p):
+        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__bitwise_or_eq__)
+
 
     # Conversion rules
     @_('LPAREN UNSIGNED_INT RPAREN expression')
@@ -613,19 +628,7 @@ class ArduinoParser(Parser):
     def expression(self, p):
         return ta.parenthesis(p.expression)
     
-    
-    #Symbols
-    @_('EQUAL')
-    def symbol(self, p):
-        return p.EQUAL
-    
-    @_('NOT_EQUAL')
-    def symbol(self, p):
-        return p.NOT_EQUAL
-    
-    @_('SEMICOLON')
-    def symbol(self, p):
-        return p.SEMICOLON    
+ 
     
     
     

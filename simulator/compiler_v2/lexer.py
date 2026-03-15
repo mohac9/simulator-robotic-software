@@ -62,7 +62,7 @@ class ArduinoLexer(Lexer):
               ,'AND','OR','NOT','EQ','NE','LT','LE','GT','GE','PLUS','MINUS','MULTIPLY','DIVIDE','MODULUS',
               'BITWISE_AND','BITWISE_OR','BITWISE_XOR','BITWISE_NOT','BITWISE_LEFT_SHIFT','BITWISE_RIGHT_SHIFT',
               'UNSIGNED_INT','SIGNED_INT','FLOAT','DOUBLE','LONG','SHORT','BYTE','WORD','UNSIGNED_LONG','UNSIGNED_CHAR',
-              'SIZE_T','BOOLEAN','DOT'
+              'SIZE_T','BOOLEAN','DOT','BITWISE_OR_EQ','BITWISE_XOR_EQ','DIV_EQ','MINUS_EQ','SUM_EQ','MUL_EQ','BITWISE_EQ','MOD_EQ'
               } | set(keywords.values())
     pass
 
@@ -77,6 +77,28 @@ class ArduinoLexer(Lexer):
     def BLOCK_COMMENT(self, t):
         self.lineno+= t.value.count("\n")
     
+    #Compuestos
+    #@_(r'%=|\&=|*=|+=|-=|/=|\^=|\|=')
+    @_(r'%=|\*=|\+=|-=|/=|\&=|\^=|\|=')
+    def COMPOUND_OP(self,t):
+        if t.value[0]=='%':
+            t.type = 'MOD_EQ'
+        elif t.value[0]=='&':
+            t.type = 'BITWISE_EQ'
+        elif t.value[0]=='*':
+            t.type = 'MUL_EQ'
+        elif t.value[0]=='+':
+            t.type = 'SUM_EQ'
+        elif t.value[0]=='-':
+            t.type = 'MINUS_EQ'
+        elif t.value[0]=='/':
+            t.type = 'DIV_EQ'
+        elif t.value[0]=='^':
+            t.type = 'BITWISE_XOR_EQ'
+        elif t.value[0]=='|':
+            t.type = 'BITWISE_OR_EQ'
+        return t
+
     @_(r'\b[a-zA-Z_][a-zA-Z0-9_]*\b')
     def ID(self, t):
         t.type = self.keywords.get(t.value, 'ID')
