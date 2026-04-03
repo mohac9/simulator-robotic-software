@@ -166,6 +166,57 @@ class Number(BaseType): #I'm not sure if this is needed
 
     def __str__(self):
         return f"Number({self.value})"
+    
+class Byte(Number):
+    def __init__(self, value):
+        if 0 <= value <= 255:
+            self.value = value
+        else:
+            raise ValueError("Byte value must be between 0 and 255")
+        
+    def cast_to(self, target_type):
+        if target_type == 'Int':
+            return Int(int(self.value))
+        elif target_type == 'Float':
+            return Float(float(self.value))
+        elif target_type == 'Double':
+            return Double(float(self.value))
+        elif target_type == 'Bool':
+            return Bool(bool(self.value))
+        return self
+    
+    def __type__(self, env=None):
+        return 'Byte'
+    
+    def __str__(self):
+        return f"Byte({self.value})"
+    
+class word:
+    def __init__(self,value):
+            if 0 <= value <= 65535:
+                self.value = value
+            else:
+                raise ValueError("Word value must be between 0 and 65535")
+            
+    def cast_to(self, target_type):
+        if target_type == 'Int':
+            return Int(int(self.value))
+        elif target_type == 'Float':
+            return Float(float(self.value))
+        elif target_type == 'Double':
+            return Double(float(self.value))
+        elif target_type == 'Bool':
+            return Bool(bool(self.value))
+        return self
+    
+    def __type__(self, env=None):
+        return 'Word'
+    
+    def __str__(self):
+        return f"Word({self.value})"
+    
+
+
 
 class Int(Number):
     def __init__(self, value):
@@ -185,6 +236,47 @@ class Int(Number):
     
     def __str__(self):
         return f"Int({self.value})"
+    
+class Long(Int):
+    def __init__(self, value):
+        self.value = int(value)
+        
+    def cast_to(self, target_type):
+        if target_type == 'Float':
+            return Float(float(self.value))
+        elif target_type == 'Double':
+            return Double(float(self.value))
+        elif target_type == 'Bool':
+            return Bool(bool(self.value))
+        return self
+    
+    def __type__(self, env=None):
+        return 'Long'
+    
+    def __str__(self):
+        return f"Long({self.value})"
+    
+class Short(Int):
+    def __init__(self, value):
+        if -32768 <= value <= 32767:
+            self.value = int(value)
+        else:
+            raise ValueError("Short value must be between -32768 and 32767")
+        
+    def cast_to(self, target_type):
+        if target_type == 'Float':
+            return Float(float(self.value))
+        elif target_type == 'Double':
+            return Double(float(self.value))
+        elif target_type == 'Bool':
+            return Bool(bool(self.value))
+        return self
+    
+    def __type__(self, env=None):
+        return 'Short'
+    
+    def __str__(self):
+        return f"Short({self.value})"
 
 class Float(Number):
     def __init__(self, value):
@@ -288,6 +380,58 @@ class String(BaseType):
     def __type__(self, env=None):
         return 'String'
     
+
+class unsigned_int(Int):
+    def __init__(self, value):
+        if value < 0:
+            raise ValueError("Unsigned int cannot be negative")
+        self.value = int(value)
+    
+    def __type__(self, env=None):
+        return 'UnsignedInt'
+    
+    def __str__(self):
+        return f"UnsignedInt({self.value})"
+    
+class unsigned_long(Long):
+    def __init__(self, value):
+        if value < 0:
+            raise ValueError("Unsigned long cannot be negative")
+        self.value = int(value)
+    
+    def __type__(self, env=None):
+        return 'UnsignedLong'
+    
+    def __str__(self):
+        return f"UnsignedLong({self.value})"
+    
+class unsigned_char(Char):
+    def __init__(self, value):
+        if isinstance(value, str) and len(value) == 1:
+            self.value = value
+        else:
+            raise ValueError("Unsigned char must be a single character string")
+        
+    def __str__(self):
+        return f"UnsignedChar('{self.value}')"
+    
+    def cast_to(self, target_type):
+        pass 
+
+    def __type__(self, env=None):
+        return 'UnsignedChar'
+
+class size_t(Int):
+    def __init__(self, value):
+        if value < 0:
+            raise ValueError("size_t cannot be negative")
+        self.value = int(value)
+    
+    def __type__(self, env=None):
+        return 'size_t'
+    
+    def __str__(self):
+        return f"size_t({self.value})"
     
 class Object(BaseType):
     def __init__(self, value):

@@ -55,22 +55,22 @@ array_elements
        ;
 
 var_type 
-       : 'bool'
-       | 'boolean'
-       | 'byte'
-       | 'char'
-       | 'double'
-       | 'float'
-       | 'int'
-       | 'long'
-       | 'short'
-       | 'size_t'
-       | 'String'
-       | 'unsigned int'
-       | 'unsigned char'
-       | 'unsigned long'
-       | 'void'
-       | 'word'
+       : 'bool' #Hecho
+       | 'boolean' #Hecho
+       | 'byte' #Hecho
+       | 'char' #Hecho
+       | 'double' #Hecho
+       | 'float' #Hecho
+       | 'int' #Hecho
+       | 'long' #Hecho
+       | 'short' #Hecho
+       | 'size_t'#Hecho
+       | 'String' #Hecho
+       | 'unsigned int' #Hecho
+       | 'unsigned char' #Hecho
+       | 'unsigned long' #Hecho
+       | 'void' 
+       | 'word' #Hecho
        | ID
        ;
 
