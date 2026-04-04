@@ -1,6 +1,6 @@
 import threading
 import time
-from debugger import Debugger
+from debugger.debugger import Debugger
 
 class DebugManager:
     def __init__(self,application,callback_pause=None):

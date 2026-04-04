@@ -34,6 +34,10 @@ class ArduinoInterpreter:
         self.tokens = lexer.tokenize(code)
         self.parser = parser.ArduinoParser()
         self.parser_object = self.parser.parse(self.tokens)
+
+        # This part is responsible with the communication with the debugger
+        self.line = 0
+        
         
         
     #Todo: Delete visit if not used in any part

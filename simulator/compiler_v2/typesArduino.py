@@ -803,6 +803,9 @@ class sentence(parserTypes):
         self.children_list = [sentence]
 
     def execute(self, env):
+        #Solo si el debugger esta activo, se checkea y se pausa, sino se ejecuta directamente
+        if hasattr(env, 'debugger') and env.debugger:
+            env.debugger.check_and_pause(self.lineno, env)
         return self.sentence.execute(env)
     
     def __str__(self):
@@ -1223,11 +1226,11 @@ def arduino_to_python_name(lib_module, arduino_name: str) -> str:
 
 
 class function_call(parserTypes):
-    def __init__(self,name, parameters):
+    def __init__(self, name, parameters):
         self.name = name
-        self.parameters =parameters
+        self.parameters = parameters
         
-    def name_mangling(self, env = None): #Builds signature
+    def name_mangling(self, env = None):
         signature = f'{self.name}#'
         if self.parameters is not None:
             types = self.parameters.__type__(env)
@@ -1237,48 +1240,47 @@ class function_call(parserTypes):
         else:
             return signature
 
-
     def execute(self, env):
-        # Handle library method calls 
+        args = self.parameters.execute(env) if self.parameters else []
+        python_args = [types_arduino_to_python(arg) for arg in args]
         if '.' in self.name:
             lib_name, func_name = self.name.split('.')
-            
             lib = env.libraries.get(lib_name)
             if lib is None:
-                raise RuntimeError(f"Library '{lib_name}' not found.")
-                
-            args = self.parameters.execute(env) if self.parameters else []
-            python_args = [types_arduino_to_python(arg) for arg in args]
-
+                raise RuntimeError(f"Librería '{lib_name}' no encontrada. Usa #include")
             py_name = arduino_to_python_name(lib, func_name)
-
             if hasattr(lib, py_name):
                 return getattr(lib, py_name)(*python_args)
-            elif hasattr(lib, lib_name):  # Clase como Servo, String
+            elif hasattr(lib, lib_name):  
                 lib_class = getattr(lib, lib_name)
                 instance = lib_class()
                 if hasattr(instance, py_name):
                     return getattr(instance, py_name)(*python_args)
-            
-            raise RuntimeError(f"Method '{func_name}' not found in library '{lib_name}'")
-        
-        # Check for built-in functions (Arduino standard functions)
+            raise RuntimeError(f"Método '{func_name}' no encontrado en librería '{lib_name}'")
+
         elif hasattr(env, 'built_in_functions') and self.name in env.built_in_functions:
-            args = []
-            if self.parameters:
-                args = [arg.execute(env) for arg in self.parameters.expressions]
-            return env.built_in_functions[self.name](*args)
+            # Aquí pasamos los python_args ¡NO los args del AST!
+            return env.built_in_functions[self.name](*python_args)
             
-        # Regular user-defined functions
         else:
-            args = self.parameters.execute(env) if self.parameters else []
             signature = self.name_mangling(env)
             function_object = env.get_function(signature)
             new_env = function_object.scope_generator(env)
+            
+
             if function_object.function_args is not None:
                 function_object.args_binding(args, new_env)
-            print(f"El env es: {new_env.variables}")
-            return function_object.body_execution(new_env)
+                
+
+            if hasattr(env, 'call_stack'):
+                env.call_stack.append(self.name)
+                
+            try:
+                result = function_object.body_execution(new_env)
+                return result
+            finally:
+                if hasattr(env, 'call_stack'):
+                    env.call_stack.pop()
 
 class argument_list(parserTypes):
     def __init__(self, expressions):

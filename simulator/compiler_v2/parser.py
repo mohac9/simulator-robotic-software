@@ -184,47 +184,67 @@ class ArduinoParser(Parser):
     #Sentence rules
     @_('declaration SEMICOLON')
     def sentence(self, p):
-        return ta.sentence(p.declaration)
+        node =ta.sentence(p.declaration)
+        node.lineno = p.lineno
+        return node
         
     
     @_('iteration_sentence')
     def sentence(self, p):
-        return ta.sentence(p.iteration_sentence)
+        node = ta.sentence(p.iteration_sentence)
+        node.lineno = p.lineno
+        return node
         
     
     @_('conditional_sentence')
     def sentence(self, p):
-        return ta.sentence(p.conditional_sentence)
+        node = ta.sentence(p.conditional_sentence)
+        node.lineno = p.lineno
+        return node
     
     @_('assignment SEMICOLON')
     def sentence(self, p):
-        return ta.sentence(p.assignment)
+        node = ta.sentence(p.assignment)
+        node.lineno = p.lineno
+        return node
         
     
     @_('expression SEMICOLON')
     def sentence(self, p):
-        return ta.sentence(p.expression)     
+        node = ta.sentence(p.expression)
+        node.lineno = p.lineno
+        return node   
     
     @_('define_macro')
     def sentence(self, p):
-        return ta.sentence(p.define_macro)
+        node = ta.sentence(p.define_macro)
+        node.lineno = p.lineno
+        return node
     
     @_('RETURN expression SEMICOLON')
     def sentence(self, p):
-        return ta.sentence(ta.return_statement(p.expression))
+        node = ta.sentence(ta.return_statement(p.expression))
+        node.lineno = p.lineno
+        return node
         
     
     @_('RETURN SEMICOLON')
     def sentence(self, p):
-        return ta.sentence(ta.return_statement(None))
+        node = ta.sentence(ta.return_statement(None))
+        node.lineno = p.lineno
+        return node
     
     @_('BREAK SEMICOLON')
     def sentence(self, p):
-        return ta.sentence(ta.break_statement())
+        node = ta.sentence(ta.break_statement())
+        node.lineno = p.lineno
+        return node
     
     @_('CONTINUE SEMICOLON')
     def sentence(self, p):
-        return ta.sentence(ta.continue_statement())
+        node = ta.sentence(ta.continue_statement())
+        node.lineno = p.lineno
+        return node
     
     #Assignment rules
     @_('ID EQUAL expression')

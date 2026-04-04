@@ -43,6 +43,10 @@ class Compile(Command):
             code = self.controller.get_code()
             self.interpreter = ArduinoInterpreter(code)
 
+            #Si se esta en modo debug
+            if hasattr(self.controller, 'debug_manager') and self.controller.debug_manager:
+                self.interpreter.env.debugger = self.controller.debug_manager.debugger
+
             self.interpreter.run(self.interpreter.parser_object)
             
             if self.interpreter.had_runtime_error:
@@ -63,6 +67,8 @@ class Compile(Command):
     def compile(self,code):
         try:
             interpreter = ArduinoInterpreter(code)
+            if hasattr(self.controller, 'debug_manager') and self.controller.debug_manager:
+                interpreter.env.debugger = self.controller.debug_manager.debugger
             if interpreter.had_runtime_error:
                 return None
             return interpreter

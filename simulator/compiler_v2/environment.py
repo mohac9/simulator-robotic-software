@@ -8,6 +8,14 @@ class Environment:
         self.built_in_functions = {} # key: function name, value: function object
         self.built_in_functions = {}
 
+        #Debugger related attributes
+        if parent_env is not None:
+            self.call_stack = self.parent_env.call_stack
+            self.debugger = getattr(self.parent_env, 'debugger', None)
+        else:
+            self.call_stack = []
+            self.debugger = None
+
     #Auxilliary functions
     def get_name_from_signature(self,signature):
         return signature.split('#')[0]

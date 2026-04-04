@@ -86,7 +86,8 @@ class MainApplication(tk.Tk):
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.challenge = 0
         
-        
+        from debugger.debug_manager import DebugManager 
+        self.debug_manager = DebugManager(self, self.pause)
 
     def prepare_controller(self):
         self.__update_robot()  # call first so the robot_layer is created
@@ -103,7 +104,11 @@ class MainApplication(tk.Tk):
         self.controller.execute(self.selector_bar.gamification_option_selector.current())
 
     def stop(self):
-        self.controller.stop()
+        self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
+        if hasattr(self, 'debug_manager') and self.debug_manager.is_executing:
+            self.debug_manager.stop()
+        else:
+            self.controller.stop()
 
     def editor_undo(self):
         self.editor_frame.text.edit_undo()
@@ -217,7 +222,7 @@ class MainApplication(tk.Tk):
                                                   get_robot_challenge(3).get_challenge())
             if challenge == 4:
                 self.console_frame.console.insert(tk.END,
-                                                  self.controller.robot_layer.drawing.
+                                                  self.controller.robot_layer.drawing. 
                                                   get_robot_challenge(4).get_challenge())
             if challenge == 5:
                 self.console_frame.console.insert(tk.END,
@@ -359,15 +364,42 @@ class MainApplication(tk.Tk):
             
     # Debug methods logic will be implemented later
     
-    def step_next_line(self): #I shiuld add a color to the line in the editor
-        print("Avanza una linea")
+    def pause(self,linea,env):
+        self.after(0, self._update_paused_gui, linea, env)
+
+    def _update_paused_gui(self, linea, env):
+        self.show_debug_panel()
+
+        if hasattr(env, 'variables_contents'):
+            self.update_debug_variables(env.variables_contents)
+        elif hasattr(env, 'get_all_variables'):
+            self.update_debug_variables(env.get_all_variables())
+
+        if hasattr(env, 'call_stack'):
+            self.update_debug_stack(env.call_stack)
+        editor = self.editor_frame.text
+
+        editor.tag_remove("linea_pausada", "1.0", tk.END)
+        editor.tag_configure("linea_pausada", background="#FFFACD", foreground="black")
+
+        inicio = f"{linea}.0"
+        fin = f"{linea}.end"
+
+        editor.tag_add("linea_pausada", inicio, fin)
+        editor.see(inicio)
+        
+    def step_next_line(self):
+        self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
+        self.debug_manager.step()
         
     def step_to_tracepoint(self):
-        print("Avanza hasta el siguiente tracepoint")
-        
+        self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
+        self.debug_manager.step_to_tracepoint()
+
     def continue_execution(self):
-        print("Continua la ejecución")
-        
+        self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
+        self.debug_manager.continue_execution()
+
     def update_debug_variables(self, variables):
         if self.debug_panel_visible:
             self.debug_panel.update_variables(variables)
