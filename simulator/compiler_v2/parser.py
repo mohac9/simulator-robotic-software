@@ -102,7 +102,7 @@ class ArduinoParser(Parser):
     #TODO: Change this to a ta.* return
     @_('array_declaration')
     def declaration(self, p):
-        return ('array_declaration', p.array_declaration)
+        return ta.array_declaration(p.array_declaration)
     
     @_('CONST declaration')
     def declaration(self, p):

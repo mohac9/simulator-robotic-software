@@ -1325,6 +1325,47 @@ class return_statement(parserTypes):
     
     def __str__(self):
         return f"ReturnStatement(expression={self.expression})"
+    
+    ##Estructuras de datos
+
+class array_declaration(parserTypes):
+    def __init__(self, name, element_type, size):
+        self.name = name
+        self.element_type = element_type
+        self.size = size
+        self.children_list = [name, element_type, size]
+
+    def execute(self, env):
+        env.set_variable(self.name, f"Array({self.element_type}, {self.size})", [None] * self.size)
+    
+    def __str__(self):
+        return f"ArrayDeclaration(name={self.name}, element_type={self.element_type}, size={self.size})"
+    
+class array(parserTypes):
+    def __init__(self, name, index):
+        self.name = name
+        self.index = index
+        self.children_list = [name, index]
+
+    def execute(self, env):
+        array_info = env.get_variable_type(self.name)
+        if not array_info.startswith("Array"):
+            raise RuntimeError(f"Variable '{self.name}' is not an array.")
+        
+        element_type = array_info[array_info.find("(")+1:array_info.find(",")].strip()
+        size = int(array_info[array_info.find(",")+1:array_info.find(")")].strip())
+        
+        index_value = self.index.execute(env)
+        if index_value.__type__() != 'Int':
+            raise RuntimeError(f"Array index must be of type 'Int', got {index_value.__type__()}.")
+        
+        if index_value.__value__() < 0 or index_value.__value__() >= size:
+            raise RuntimeError(f"Array index out of bounds: {index_value.__value__()} for array of size {size}.")
+        
+        return env.get_variable_contents(self.name)[index_value.__value__()]
+    
+    def __str__(self):
+        return f"Array(name={self.name}, index={self.index})"
 
 if __name__ == "__main__":
     int1 = Int(5)
