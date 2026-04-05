@@ -43,11 +43,10 @@ class Compile(Command):
             code = self.controller.get_code()
             self.interpreter = ArduinoInterpreter(code)
 
+            self.interpreter.run(self.interpreter.parser_object)
             #Si se esta en modo debug
             if hasattr(self.controller, 'debug_manager') and self.controller.debug_manager:
                 self.interpreter.env.debugger = self.controller.debug_manager.debugger
-
-            self.interpreter.run(self.interpreter.parser_object)
             
             if self.interpreter.had_runtime_error:
                 self.controller.console.print_error(

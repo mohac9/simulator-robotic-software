@@ -10,7 +10,7 @@ class DebugManager:
         self.is_executing = False
 
     def start_execution(self,breakpoints):
-        self.uptdate_breakpoints(breakpoints)
+        self.update_breakpoints(breakpoints)
 
         self.application.controller.debug_manager = self
         self.is_executing = True
@@ -43,12 +43,16 @@ class DebugManager:
 
     def _gui_drawing_loop(self):
         if self.is_executing:
-            import graphics.screen_updater as screen_updater
-            screen_updater.refresh()
+            if hasattr(self.application, 'controller') and self.application.controller.executing:
+                import graphics.screen_updater as screen_updater
+                try:
+                    screen_updater.refresh()
+                except Exception as e:
+                    pass
             # Tkinter vuelve a llamar a esta función en 16ms (~60FPS)
             self.application.identifier = self.application.after(16, self._gui_drawing_loop)
 
-    def uptdate_breakpoints(self,tracepoints_set):
+    def update_breakpoints(self,tracepoints_set):
         lines = {int(str(tp).split(".")[0]) for tp in tracepoints_set}
         self.debugger.breakpoints = lines
 

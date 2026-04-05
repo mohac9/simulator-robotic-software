@@ -108,8 +108,23 @@ if __name__ == '__main__':
     # Break are correctly implemented
     
     code = """
-        int res;
-        res = map(25, 0, 100, 0, 1000);
+        int contador_global = 0;
+        int limite = 5;
+
+        void actualizarContador() {
+            int paso = 1;
+            contador_global = contador_global + paso;
+        }
+
+        void setup() {
+            contador_global = 0;
+        }
+
+        void loop() {
+            if (contador_global < limite) {
+            actualizarContador();
+        }
+    }
 
         
     

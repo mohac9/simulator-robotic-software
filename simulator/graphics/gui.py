@@ -86,6 +86,8 @@ class MainApplication(tk.Tk):
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.challenge = 0
         
+        self.tracepoints = set()
+
         from debugger.debug_manager import DebugManager 
         self.debug_manager = DebugManager(self, self.pause)
 
@@ -343,13 +345,22 @@ class MainApplication(tk.Tk):
 
     def update_tracepoints(self, tracepoints):
         self.tracepoints = tracepoints
+        if hasattr(self, 'debug_manager'):
+            self.debug_manager.update_breakpoints(tracepoints)
         
     def toggle_debug_panel(self):
         if self.debug_panel_visible:
             self.hide_debug_panel()
+            if hasattr(self, 'debug_manager') and self.debug_manager.is_executing:
+                self.debug_manager.stop()
         else:
             self.show_debug_panel()
+            if hasattr(self, 'debug_manager'):
+                self.console_frame.console.config(state=tk.NORMAL)
+                self.console_frame.console.insert(tk.END, "\n[Depurador] Iniciado...\n")
+                self.console_frame.console.config(state=tk.DISABLED) 
             
+                self.debug_manager.start_execution(self.tracepoints)
     def show_debug_panel(self):
         if not self.debug_panel_visible:
             # CORREGIR: Usar add() en lugar de insert() para PanedWindow
@@ -380,15 +391,17 @@ class MainApplication(tk.Tk):
         editor = self.editor_frame.text
 
         editor.tag_remove("linea_pausada", "1.0", tk.END)
-        editor.tag_configure("linea_pausada", background="#FFFACD", foreground="black")
+        editor.tag_configure("linea_pausada", background="#C94322", foreground="black")
 
         inicio = f"{linea}.0"
         fin = f"{linea}.end"
 
         editor.tag_add("linea_pausada", inicio, fin)
+        editor.tag_raise("linea_pausada")
         editor.see(inicio)
         
     def step_next_line(self):
+        print("Paso a paso")
         self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
         self.debug_manager.step()
         

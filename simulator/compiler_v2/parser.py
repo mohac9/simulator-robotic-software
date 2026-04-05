@@ -708,10 +708,23 @@ if __name__ == '__main__':
     }   
     '''
     data = code = '''
-        int inicioCuentaTiempo = millis();
-        void loop() { 
-            digitalWrite(led13, HIGH); 
+        int contador_global = 0;
+        int limite = 5;
+
+        void actualizarContador() {
+            int paso = 1;
+            contador_global = contador_global + paso;
         }
+
+        void setup() {
+            contador_global = 0;
+        }
+
+        void loop() {
+            if (contador_global < limite) {
+            actualizarContador();
+        }
+    }
         
     
     '''

@@ -803,9 +803,11 @@ class sentence(parserTypes):
         self.children_list = [sentence]
 
     def execute(self, env):
+        print(f"[AST] Ejecutando instrucción en línea: {self.lineno}")
         #Solo si el debugger esta activo, se checkea y se pausa, sino se ejecuta directamente
         if hasattr(env, 'debugger') and env.debugger:
-            env.debugger.check_and_pause(self.lineno, env)
+            print(f"[AST] ¡Depurador detectado! Comprobando pausa...")
+            env.debugger.check_pause(self.lineno, env)
         return self.sentence.execute(env)
     
     def __str__(self):
