@@ -359,7 +359,7 @@ class MainApplication(tk.Tk):
                 self.console_frame.console.config(state=tk.NORMAL)
                 self.console_frame.console.insert(tk.END, "\n[Depurador] Iniciado...\n")
                 self.console_frame.console.config(state=tk.DISABLED) 
-            
+                print("Depurador iniciado")
                 self.debug_manager.start_execution(self.tracepoints)
     def show_debug_panel(self):
         if not self.debug_panel_visible:
@@ -379,6 +379,7 @@ class MainApplication(tk.Tk):
         self.after(0, self._update_paused_gui, linea, env)
 
     def _update_paused_gui(self, linea, env):
+        print("Llega aqui al update_paused_gui", linea, env)
         self.show_debug_panel()
 
         if hasattr(env, 'variables_contents'):
@@ -403,7 +404,7 @@ class MainApplication(tk.Tk):
     def step_next_line(self):
         print("Paso a paso")
         self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
-        self.debug_manager.step()
+        self.debug_manager.send_command('step_into')
         
     def step_to_tracepoint(self):
         self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
@@ -411,7 +412,7 @@ class MainApplication(tk.Tk):
 
     def continue_execution(self):
         self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
-        self.debug_manager.continue_execution()
+        self.debug_manager.send_command('continue')
 
     def update_debug_variables(self, variables):
         if self.debug_panel_visible:

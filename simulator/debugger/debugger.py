@@ -1,16 +1,50 @@
 import threading
+import queue
+import time
+
 
 class Debugger:
-    def __init__(self,pause_callback=None):
+    def __init__(self,pause_callback=None,controller=None):
         self.breakpoints = set()
-        self.step_mode = False
-        self.abort = False
+        self.is_executing = False
+        self.controller = controller  
+        self.iteration = 0
+             
 
-        # Dormir el hilo del depurador hasta que se le indique que continúe
-        self.pause_event = threading.Event()
-        self.pause_callback = pause_callback
+        
+        
+  
 
-        self.current_command = None
+    #Loop del depurador
+    def debugger_loop(self,command_queue, env_queue):
+        debug_mode = True
+        while debug_mode:
+            #Leer cmd
+            cmd = command_queue.get()
+            if cmd == 'stop':
+                debug_mode = False
+                continue
+            else:
+                self.execute_arduino_code(cmd)
+                
+            
+    def execute_arduino_code(self,cmd): 
+        try:
+            self.is_executing = True
+            #Cargar includes y variables globales
+            if self.controller.compile_command.execute():
+                if self.controller.setup_command.execute():
+                    for i in range(60*1000):#Iteraciones del bucle loop
+                        self.controller.loop_command.execute()
+                        time.sleep(0.01)
+        except Exception as e:
+            print(f'Error en ejecución: {e}')
+
+                    
+              
+
+
+
 
     def add_breakpoint(self, line):
         self.breakpoints.add(line)
@@ -19,15 +53,14 @@ class Debugger:
         self.breakpoints.discard(line)
     
     #Recibe un comando del intérprete, lo procesa y decide si se debe pausar la ejecución o no
-    def cmd_process(self, cmd):
-        self.current_comand = cmd
-        self.pause_event.set()
+
 
     def stop(self):
         self.abort = True
         self.pause_event.set()
 
     def check_pause(self, current_line, env):
+        print("Llega aqui al check_pause", current_line, env)
         if self.abort:
             raise Exception("Ejecución abortada por el usuario")
 

@@ -175,6 +175,10 @@ class ArduinoParser(Parser):
         new_sentences = p.sentence_list.sentences.copy()
         new_sentences.append(p.sentence)
         return ta.sentence_list(new_sentences)
+    
+    @_('')
+    def sentence_list(self, p):
+        return ta.sentence_list([])
         
     
     @_('sentence')
@@ -334,10 +338,11 @@ class ArduinoParser(Parser):
     def code_block(self, p):
         return p.sentence_list
        
+    '''
     @_('LBRACE RBRACE') #I'm not sure of this one
     def code_block(self, p):
         return ta.sentence_list([])
-    
+    '''
     
     
     

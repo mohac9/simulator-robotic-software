@@ -25,7 +25,7 @@ class ArduinoInterpreter:
     def __init__(self, code):
         self.code = code
         self.current_line = 0
-        self.env = None
+        self.env = environment.Environment()
         self.lines = []
         self.had_runtime_error = False
         
@@ -49,7 +49,7 @@ class ArduinoInterpreter:
     
     
     def run(self,node):
-        self.env = environment.Environment()
+        #self.env = environment.Environment()
         
         node.execute(self.env)
         
@@ -134,6 +134,8 @@ if __name__ == '__main__':
     interpreter.run(interpreter.parser_object)
     interpreter.get_variables()
     interpreter.get_functions()
+
+    
 
         
         
