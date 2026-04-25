@@ -9,12 +9,12 @@ class DebugManager:
     def __init__(self,application,callback_pause=None):
         self.application = application
         self.debugger = Debugger(pause_callback=callback_pause,controller=self.application.controller)
-        self.execution_thread = None
         self.is_executing = False
         self.debugger_thread = None
-        #Variables de paso de mensajes, uso de colas para no usar mutex
-        self.command_queue = None
-        self.env_queue = None
+        #Comunicación al thread de depuración
+        self.init_pause = threading.Event()
+
+
         
         
 
@@ -22,13 +22,14 @@ class DebugManager:
         self.update_breakpoints(breakpoints)
 
         self.application.controller.debug_manager = self
-        self.is_executing = False
+        self.is_executing = True
 
         self.command_queue = queue.Queue()
         self.env_queue = queue.Queue()
 
-        self.debugger_thread = self.execution_thread = threading.Thread(target=self.debugger.debugger_loop, daemon=True, args=(self.command_queue, self.env_queue))
-        self.execution_thread.start()
+        #Crea el thread de ejecucion del debugger
+        self.debugger_thread = threading.Thread(target=self.debugger.execute_arduino_code, daemon=True, args=(self.init_pause,))
+        self.debugger_thread.start()
         
         self._gui_drawing_loop()
 
@@ -50,7 +51,9 @@ class DebugManager:
     #Botones del thread de depuración
 
     def send_command(self, command):
-        self.command_queue.put(command)
+        self.debugger.cmd_processor(command)
+        self.init_pause.set()  # Desbloquea la ejecución del código
+        
 
         
 

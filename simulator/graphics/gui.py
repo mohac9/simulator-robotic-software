@@ -392,7 +392,7 @@ class MainApplication(tk.Tk):
         editor = self.editor_frame.text
 
         editor.tag_remove("linea_pausada", "1.0", tk.END)
-        editor.tag_configure("linea_pausada", background="#C94322", foreground="black")
+        editor.tag_configure("linea_pausada", background="#D38C8C", foreground="black")
 
         inicio = f"{linea}.0"
         fin = f"{linea}.end"
@@ -402,7 +402,6 @@ class MainApplication(tk.Tk):
         editor.see(inicio)
         
     def step_next_line(self):
-        print("Paso a paso")
         self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
         self.debug_manager.send_command('step_into')
         

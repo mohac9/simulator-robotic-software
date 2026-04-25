@@ -43,6 +43,7 @@ class RobotsController:
 
     def drawing_loop(self):
         screen_updater.refresh()
+        #Esto aparentemente hace que el loop solo se ejecute cuando la casilla de movimento con el teclado esta desmarcada
         if not self.view.keys_used:
             self.loop_command.execute()
         self.view.identifier = self.view.after(10, self.drawing_loop)

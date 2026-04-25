@@ -44,6 +44,11 @@ class Compile(Command):
             self.interpreter = ArduinoInterpreter(code)
 
             self.interpreter.run(self.interpreter.parser_object)
+
+            self.interpreter.register_libraries(
+            self.controller.robot_layer.robot.board,
+            self.controller.console
+            )
             #Si se esta en modo debug
             if hasattr(self.controller, 'debug_manager') and self.controller.debug_manager:
                 self.interpreter.env.debugger = self.controller.debug_manager.debugger
@@ -94,10 +99,7 @@ class Setup(Command):
             )
             return False
         
-        interpreter.register_libraries(
-        self.controller.robot_layer.robot.board,
-        self.controller.console
-        )
+        
 
         #board = self.controller.robot_layer.robot.board
         #console_obj = self.controller.console
@@ -117,7 +119,9 @@ class Setup(Command):
                         setup_func = func['function_object']
                         break
                 if setup_func:
+                    print("Ejecutando setup()")
                     setup_func.body_execution(interpreter.env)
+                    print("Se ha ejecutado setup() correctamente")
                 else:
                     self.controller.console.write_warning(
                     console.Warning("Aviso", 0, 0, "No se ha encontrado la función setup()")
@@ -139,6 +143,7 @@ class Loop(Command):
         super().__init__(controller)
 
     def execute(self):
+        print("Entrando en execute loop()")
         if not self.ready:
             self.prepare_exec()
 
@@ -154,7 +159,7 @@ class Loop(Command):
         if (
             not standard.state.exec_time_us > curr_time_ns / 1000
             and not standard.state.exec_time_ms > curr_time_ns / 1000000
-            and not standard.state.exited and self.controller.executing
+            #and not standard.state.exited and self.controller.executing
         ):
             try:
                 loop_func = None
@@ -164,7 +169,9 @@ class Loop(Command):
                         break
                         
                 if loop_func:
+                    print("Ejecutando loop()")
                     loop_func.body_execution(interpreter.env)
+                    print("Se ha ejecutado loop() correctamente")
                 else:
                     self.controller.console.write_warning(
                         console.Warning("Aviso", 0, 0, "No se ha encontrado la función loop()")

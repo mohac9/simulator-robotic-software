@@ -612,7 +612,6 @@ class declaration(parserTypes):
         self.children_list = [declaration]
         
     def execute(self, env):
-        print(f"Executing declaration: {self.declaration}")
         declaration_types = ['simple_declaration', 'array_declaration', 'struct_declaration']
         if self.declaration.__class__.__name__ not in declaration_types:
             raise RuntimeError(f"Invalid declaration type: {self.declaration.__class__.__name__}. Expected one of {declaration_types}.")
@@ -659,13 +658,9 @@ class simple_declaration(parserTypes):
             env.set_variable(self.name, self.var_type)
             
     def type_conversion(self,object, target_type):
-        og_type = object.__class__.__name__.lower() # Original type of the object
-        print(object)
-        print(f"Original type: {og_type}, Target type: {target_type}")
-        
+        og_type = object.__class__.__name__.lower() # Original type of the object   
         if og_type == target_type:
             return object
-        print(f"Converting {object.__class__} to {target_type}")
         if og_type != 'Object':
             
             raise RuntimeError(f"Cannot convert {object.__class__.__name__} to {target_type}. Only 'Object' type can be converted.")
@@ -749,7 +744,6 @@ class program_code_list(parserTypes):
         return f"ProgramCodeList({len(self.code_list)} elements)"
     
     def append(self, code):
-        print(f"Appending code: {code}")
         print(code)
         if not isinstance(code, program_code):
             raise RuntimeError(f"Expected a 'program_code' type, got {code.__class__.__name__}.")

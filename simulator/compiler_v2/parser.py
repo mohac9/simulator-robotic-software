@@ -79,7 +79,6 @@ class ArduinoParser(Parser):
     
     @_('function')
     def program_code(self, p):
-        print("Entra aqui")
         return ta.program_code(p.function)    
     
     
