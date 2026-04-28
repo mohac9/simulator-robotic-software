@@ -24,6 +24,7 @@ class Debugger:
         self.abort = False
         self.current_env = None
 
+
         
         
              
@@ -34,16 +35,16 @@ class Debugger:
 
     #Procesador de comandos del debugger
     def cmd_processor(self,cmd):
-        if cmd == "continue":
-            self.debugger_mode = DebugCommand.CONTINUE
-        elif cmd == "step_into":
-            self.debugger_mode = DebugCommand.STEP_INTO
-        elif cmd == "step_over":
-            self.debugger_mode = DebugCommand.STEP_OVER
-        elif cmd == "step_out":
-            self.debugger_mode = DebugCommand.STEP_OUT
-        else:
+        dic = {'continue': DebugCommand.CONTINUE,
+               'step_into': DebugCommand.STEP_INTO,
+               'step_into': DebugCommand.STEP_OVER,
+               'step_out': DebugCommand.STEP_OUT
+               }
+ 
+        self.debugger_mode = dic.get(cmd, None)
+        if self.debugger_mode is None:
             print(f"Comando desconocido: {cmd}")
+            return
         
         self.pause_event.set()
         
@@ -94,6 +95,16 @@ class Debugger:
 
 
     def check_pause(self, current_line, env):
+        print(f"Check pause: línea {current_line}, entorno {env}, modo {self.debugger_mode}")
+        print(f"Modo de depuración: {self.debugger_mode}, breakpoints: {self.breakpoints}")
+        print(f"debugger_mode: {self.debugger_mode}, step_into: {DebugCommand.STEP_INTO}, step_over: {DebugCommand.STEP_OVER}, step_out: {DebugCommand.STEP_OUT}")
+        x = self.debugger_mode
+        y = DebugCommand.STEP_INTO
+
+        
+        if x == y:
+            print("Los valores son iguales")
+
         if self.abort:
             raise Exception("Ejecución abortada por el usuario")
         # Casos en los que no se hace nada:
@@ -104,17 +115,17 @@ class Debugger:
         # Logica de ejecución :
         if current_line == -1:
             return
-        elif DebugCommand.CONTINUE:
+        elif self.debugger_mode == DebugCommand.CONTINUE:
             if current_line in self.breakpoints:
                 self.pause(current_line, env)
         elif self.debugger_mode == DebugCommand.STEP_INTO:
             self.pause(current_line, env)
         elif self.debugger_mode == DebugCommand.STEP_OVER:
-            self.current_env = env
-            if env == self.current_env:
+            if env == self.current_env or current_line in self.breakpoints:
                 self.pause(current_line, env)
+            self.current_env = env
         elif self.debugger_mode == DebugCommand.STEP_OUT:
-            if env != self.current_env or env.parent is None:
+            if env != self.current_env or env.parent is None or current_line in self.breakpoints:
                 self.pause(current_line, env)
 
         if self.abort:

@@ -401,13 +401,18 @@ class MainApplication(tk.Tk):
         editor.tag_raise("linea_pausada")
         editor.see(inicio)
         
-    def step_next_line(self):
+    def step_into(self):
         self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
         self.debug_manager.send_command('step_into')
-        
-    def step_to_tracepoint(self):
+
+    def step_over(self):
         self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
-        self.debug_manager.step_to_tracepoint()
+        self.debug_manager.send_command('step_over')
+    
+    def step_out(self):
+        self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
+        self.debug_manager.send_command('step_out')
+        
 
     def continue_execution(self):
         self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
@@ -428,28 +433,14 @@ class DebugPanel(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.application = application
 
+        # Cargar imágenes de los botones de depuración
+        #self.__load_images()
         # Frame para los controles de debug
         self.controls_frame = tk.Frame(self, bg=DARK_BLUE, height=60)
         self.controls_frame.pack(fill=tk.X, padx=5, pady=5)
         self.controls_frame.pack_propagate(False)
 
         # Botones de control
-        self.step_button = tk.Button(
-            self.controls_frame,
-            text="Paso",
-            bg=BLUE,
-            fg=DARK_BLUE,
-            font=("Consolas", 10),
-            command=self.application.step_next_line
-        )
-        self.trace_button = tk.Button(
-            self.controls_frame,
-            text="Traza",
-            bg=BLUE,
-            fg=DARK_BLUE,
-            font=("Consolas", 10),
-            command=self.application.step_to_tracepoint
-        )
         self.continue_button = tk.Button(
             self.controls_frame,
             text="Continuar",
@@ -458,10 +449,35 @@ class DebugPanel(tk.Frame):
             font=("Consolas", 10),
             command=self.application.continue_execution
         )
+        self.step_into_button = tk.Button(
+            self.controls_frame,
+            text="Step Into",
+            bg=BLUE,
+            fg=DARK_BLUE,
+            font=("Consolas", 10),
+            command=self.application.step_into
+        )
+        self.step_over_button = tk.Button(
+            self.controls_frame,
+            text="Step Over",
+            bg=BLUE,
+            fg=DARK_BLUE,
+            font=("Consolas", 10),
+            command=self.application.step_over
+        )
+        self.step_out_button = tk.Button(
+            self.controls_frame,
+            text="Step Out",
+            bg=BLUE,
+            fg=DARK_BLUE,
+            font=("Consolas", 10),
+            command=self.application.step_out
+        )
 
-        self.step_button.pack(side=tk.LEFT, padx=2, pady=5)
-        self.trace_button.pack(side=tk.LEFT, padx=2, pady=5)
         self.continue_button.pack(side=tk.LEFT, padx=2, pady=5)
+        self.step_into_button.pack(side=tk.LEFT, padx=2, pady=5)
+        self.step_over_button.pack(side=tk.LEFT, padx=2, pady=5)
+        self.step_out_button.pack(side=tk.LEFT, padx=2, pady=5)
 
         # Panel dividido para variables y stack
         self.debug_pane = tk.PanedWindow(
@@ -547,6 +563,8 @@ class DebugPanel(tk.Frame):
         for i, function in enumerate(stack):
             self.stack_listbox.insert(tk.END, f"{i}: {function}")
         
+    def  __load_images(self):
+        pass
 
 class PinConfigurationWindow(tk.Toplevel):
 
