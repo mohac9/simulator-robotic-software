@@ -89,7 +89,7 @@ Rule 85    expression -> MINUS MINUS expression  [precedence=right, level=11]
 Rule 86    expression -> PLUS PLUS expression  [precedence=right, level=11]
 Rule 87    expression -> conversion
 Rule 88    expression -> expression DOT ID
-Rule 89    expression -> expression LPAREN parameter RPAREN
+Rule 89    expression -> expression LPAREN argument_list RPAREN
 Rule 90    expression -> expression LPAREN RPAREN
 Rule 91    expression -> ID LBRACKET expression_list RBRACKET
 Rule 92    expression -> ID
@@ -125,24 +125,23 @@ Rule 121   type_convert -> INT
 Rule 122   type_convert -> FLOAT
 Rule 123   type_convert -> CHAR
 Rule 124   type_convert -> BYTE
-Rule 125   parameter -> expression_list
-Rule 126   var_type -> ID
-Rule 127   var_type -> WORD
-Rule 128   var_type -> VOID
-Rule 129   var_type -> UNSIGNED_LONG
-Rule 130   var_type -> UNSIGNED_CHAR
-Rule 131   var_type -> UNSIGNED_INT
-Rule 132   var_type -> STRING
-Rule 133   var_type -> SIZE_T
-Rule 134   var_type -> SHORT
-Rule 135   var_type -> LONG
-Rule 136   var_type -> INT
-Rule 137   var_type -> FLOAT
-Rule 138   var_type -> DOUBLE
-Rule 139   var_type -> CHAR
-Rule 140   var_type -> BYTE
-Rule 141   var_type -> BOOLEAN
-Rule 142   var_type -> BOOL
+Rule 125   var_type -> ID
+Rule 126   var_type -> WORD
+Rule 127   var_type -> VOID
+Rule 128   var_type -> UNSIGNED_LONG
+Rule 129   var_type -> UNSIGNED_CHAR
+Rule 130   var_type -> UNSIGNED_INT
+Rule 131   var_type -> STRING
+Rule 132   var_type -> SIZE_T
+Rule 133   var_type -> SHORT
+Rule 134   var_type -> LONG
+Rule 135   var_type -> INT
+Rule 136   var_type -> FLOAT
+Rule 137   var_type -> DOUBLE
+Rule 138   var_type -> CHAR
+Rule 139   var_type -> BYTE
+Rule 140   var_type -> BOOLEAN
+Rule 141   var_type -> BOOL
 
 Unused terminals:
 
@@ -164,13 +163,13 @@ BITWISE_OR_EQ        : 58
 BITWISE_RIGHT_SHIFT  : 77
 BITWISE_XOR          : 68
 BITWISE_XOR_EQ       : 59
-BOOL                 : 142
-BOOLEAN              : 141
+BOOL                 : 141
+BOOLEAN              : 140
 BOOL_CONST           : 108
 BREAK                : 31
-BYTE                 : 124 140
+BYTE                 : 124 139
 CASE                 : 55
-CHAR                 : 123 139
+CHAR                 : 123 138
 CHAR_CONST           : 94
 COLON                : 54 55
 COMMA                : 26 110 112
@@ -182,29 +181,29 @@ DIVIDE               : 81
 DIV_EQ               : 60
 DO                   : 47
 DOT                  : 88
-DOUBLE               : 138
+DOUBLE               : 137
 ELSE                 : 51
 EQ                   : 71
 EQUAL                : 15 17 18 22 40
 FALSE                : 106
-FLOAT                : 122 137
+FLOAT                : 122 136
 FLOAT_CONST          : 95
 FOR                  : 41 42 43 44 45 46
 GE                   : 72
 GT                   : 73
 HEX_CONST            : 99
 HIGH                 : 104
-ID                   : 14 15 16 17 18 21 22 23 24 40 88 91 92 126
+ID                   : 14 15 16 17 18 21 22 23 24 40 88 91 92 125
 IF                   : 50 51
 INCLUDE              : 5
 INPUT                : 102
 INPUT_PULLUP         : 101
-INT                  : 121 136
+INT                  : 121 135
 INT_CONST            : 96
 LBRACE               : 2 20 23 24 48 49 56
 LBRACKET             : 19 91
 LE                   : 74
-LONG                 : 120 135
+LONG                 : 120 134
 LOW                  : 105
 LPAREN               : 23 24 41 42 43 44 45 46 47 48 49 50 51 57 89 90 114 115 116 117 118
 LT                   : 75
@@ -226,26 +225,26 @@ RBRACKET             : 19 91
 RETURN               : 32 33
 RPAREN               : 23 24 41 42 43 44 45 46 47 48 49 50 51 57 89 90 114 115 116 117 118
 SEMICOLON            : 9 30 31 32 33 35 36 39 41 41 42 42 43 43 44 44 45 45 46 46 47
-SHORT                : 134
+SHORT                : 133
 SIGNED_INT           : 
-SIZE_T               : 133
+SIZE_T               : 132
 STATIC               : 10
-STRING               : 115 132
+STRING               : 115 131
 STRING_CONST         : 5 93
 SUM_EQ               : 62
 SWITCH               : 49
 TRUE                 : 107
-UNSIGNED_CHAR        : 130
-UNSIGNED_INT         : 118 131
-UNSIGNED_LONG        : 117 129
-VOID                 : 128
+UNSIGNED_CHAR        : 129
+UNSIGNED_INT         : 118 130
+UNSIGNED_LONG        : 117 128
+VOID                 : 127
 WHILE                : 47 48
-WORD                 : 119 127
+WORD                 : 119 126
 error                : 
 
 Nonterminals, with rules where they appear:
 
-argument_list        : 112
+argument_list        : 89 112
 array_declaration    : 12
 array_elements       : 17 21
 array_index          : 16 17 18
@@ -258,13 +257,12 @@ conversion           : 87
 declaration          : 9 10 11 25 26 39
 define_macro         : 34
 expression           : 15 18 19 22 33 35 40 41 41 42 43 46 46 47 48 49 50 51 55 57 58 58 59 59 60 60 61 61 62 62 63 63 64 64 65 65 66 66 67 67 68 68 69 69 70 70 71 71 72 72 73 73 74 74 75 75 76 76 77 77 78 78 79 79 80 80 81 81 82 82 83 84 85 86 88 89 90 109 110 112 113 114 115 116 117 118
-expression_list      : 20 91 110 125
+expression_list      : 20 91 110
 function             : 8
 function_args        : 24 26
 include              : 3
 include_list         : 1 3
 iteration_sentence   : 38
-parameter            : 89
 program              : 0
 program_code         : 6
 program_code_list    : 1 6
@@ -363,23 +361,23 @@ state 4
     (11) declaration -> . CONST declaration
     (12) declaration -> . array_declaration
     (13) declaration -> . simple_declaration
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
     (16) array_declaration -> . var_type ID array_index
     (17) array_declaration -> . var_type ID array_index EQUAL array_elements
     (18) array_declaration -> . var_type ID array_index EQUAL expression
@@ -521,8 +519,8 @@ state 11
 
 state 12
 
-    (126) var_type -> ID .
-    ID              reduce using rule 126 (var_type -> ID .)
+    (125) var_type -> ID .
+    ID              reduce using rule 125 (var_type -> ID .)
 
 
 state 13
@@ -537,23 +535,23 @@ state 13
     (18) array_declaration -> . var_type ID array_index EQUAL expression
     (14) simple_declaration -> . var_type ID
     (15) simple_declaration -> . var_type ID EQUAL expression
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
     STATIC          shift and go to state 13
     CONST           shift and go to state 14
     ID              shift and go to state 12
@@ -591,23 +589,23 @@ state 14
     (18) array_declaration -> . var_type ID array_index EQUAL expression
     (14) simple_declaration -> . var_type ID
     (15) simple_declaration -> . var_type ID EQUAL expression
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
     STATIC          shift and go to state 13
     CONST           shift and go to state 14
     ID              shift and go to state 12
@@ -651,98 +649,98 @@ state 16
 
 state 17
 
-    (127) var_type -> WORD .
-    ID              reduce using rule 127 (var_type -> WORD .)
+    (126) var_type -> WORD .
+    ID              reduce using rule 126 (var_type -> WORD .)
 
 
 state 18
 
-    (128) var_type -> VOID .
-    ID              reduce using rule 128 (var_type -> VOID .)
+    (127) var_type -> VOID .
+    ID              reduce using rule 127 (var_type -> VOID .)
 
 
 state 19
 
-    (129) var_type -> UNSIGNED_LONG .
-    ID              reduce using rule 129 (var_type -> UNSIGNED_LONG .)
+    (128) var_type -> UNSIGNED_LONG .
+    ID              reduce using rule 128 (var_type -> UNSIGNED_LONG .)
 
 
 state 20
 
-    (130) var_type -> UNSIGNED_CHAR .
-    ID              reduce using rule 130 (var_type -> UNSIGNED_CHAR .)
+    (129) var_type -> UNSIGNED_CHAR .
+    ID              reduce using rule 129 (var_type -> UNSIGNED_CHAR .)
 
 
 state 21
 
-    (131) var_type -> UNSIGNED_INT .
-    ID              reduce using rule 131 (var_type -> UNSIGNED_INT .)
+    (130) var_type -> UNSIGNED_INT .
+    ID              reduce using rule 130 (var_type -> UNSIGNED_INT .)
 
 
 state 22
 
-    (132) var_type -> STRING .
-    ID              reduce using rule 132 (var_type -> STRING .)
+    (131) var_type -> STRING .
+    ID              reduce using rule 131 (var_type -> STRING .)
 
 
 state 23
 
-    (133) var_type -> SIZE_T .
-    ID              reduce using rule 133 (var_type -> SIZE_T .)
+    (132) var_type -> SIZE_T .
+    ID              reduce using rule 132 (var_type -> SIZE_T .)
 
 
 state 24
 
-    (134) var_type -> SHORT .
-    ID              reduce using rule 134 (var_type -> SHORT .)
+    (133) var_type -> SHORT .
+    ID              reduce using rule 133 (var_type -> SHORT .)
 
 
 state 25
 
-    (135) var_type -> LONG .
-    ID              reduce using rule 135 (var_type -> LONG .)
+    (134) var_type -> LONG .
+    ID              reduce using rule 134 (var_type -> LONG .)
 
 
 state 26
 
-    (136) var_type -> INT .
-    ID              reduce using rule 136 (var_type -> INT .)
+    (135) var_type -> INT .
+    ID              reduce using rule 135 (var_type -> INT .)
 
 
 state 27
 
-    (137) var_type -> FLOAT .
-    ID              reduce using rule 137 (var_type -> FLOAT .)
+    (136) var_type -> FLOAT .
+    ID              reduce using rule 136 (var_type -> FLOAT .)
 
 
 state 28
 
-    (138) var_type -> DOUBLE .
-    ID              reduce using rule 138 (var_type -> DOUBLE .)
+    (137) var_type -> DOUBLE .
+    ID              reduce using rule 137 (var_type -> DOUBLE .)
 
 
 state 29
 
-    (139) var_type -> CHAR .
-    ID              reduce using rule 139 (var_type -> CHAR .)
+    (138) var_type -> CHAR .
+    ID              reduce using rule 138 (var_type -> CHAR .)
 
 
 state 30
 
-    (140) var_type -> BYTE .
-    ID              reduce using rule 140 (var_type -> BYTE .)
+    (139) var_type -> BYTE .
+    ID              reduce using rule 139 (var_type -> BYTE .)
 
 
 state 31
 
-    (141) var_type -> BOOLEAN .
-    ID              reduce using rule 141 (var_type -> BOOLEAN .)
+    (140) var_type -> BOOLEAN .
+    ID              reduce using rule 140 (var_type -> BOOLEAN .)
 
 
 state 32
 
-    (142) var_type -> BOOL .
-    ID              reduce using rule 142 (var_type -> BOOL .)
+    (141) var_type -> BOOL .
+    ID              reduce using rule 141 (var_type -> BOOL .)
 
 
 state 33
@@ -854,23 +852,23 @@ state 39
     (18) array_declaration -> . var_type ID array_index EQUAL expression
     (14) simple_declaration -> . var_type ID
     (15) simple_declaration -> . var_type ID EQUAL expression
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
     RPAREN          shift and go to state 44
     STATIC          shift and go to state 13
     CONST           shift and go to state 14
@@ -944,7 +942,7 @@ state 41
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -1044,7 +1042,7 @@ state 42
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -1183,7 +1181,7 @@ state 47
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -1367,7 +1365,7 @@ state 49
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     SEMICOLON       reduce using rule 15 (simple_declaration -> var_type ID EQUAL expression .)
     RPAREN          reduce using rule 15 (simple_declaration -> var_type ID EQUAL expression .)
@@ -1439,7 +1437,7 @@ state 50
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -1553,7 +1551,7 @@ state 53
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -1653,7 +1651,7 @@ state 54
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -3263,7 +3261,7 @@ state 80
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     RBRACKET        shift and go to state 125
     BITWISE_OR_EQ   shift and go to state 88
@@ -3345,7 +3343,7 @@ state 81
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -3397,23 +3395,23 @@ state 81
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
   ! shift/reduce conflict for CONTINUE resolved as shift
   ! shift/reduce conflict for BREAK resolved as shift
   ! shift/reduce conflict for RETURN resolved as shift
@@ -3546,23 +3544,23 @@ state 83
     (18) array_declaration -> . var_type ID array_index EQUAL expression
     (14) simple_declaration -> . var_type ID
     (15) simple_declaration -> . var_type ID EQUAL expression
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
     STATIC          shift and go to state 13
     CONST           shift and go to state 14
     ID              shift and go to state 12
@@ -3625,7 +3623,7 @@ state 85
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     SEMICOLON       reduce using rule 18 (array_declaration -> var_type ID array_index EQUAL expression .)
     RPAREN          reduce using rule 18 (array_declaration -> var_type ID array_index EQUAL expression .)
@@ -3696,7 +3694,7 @@ state 86
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -3799,7 +3797,7 @@ state 87
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -3900,7 +3898,7 @@ state 88
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -4000,7 +3998,7 @@ state 89
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -4100,7 +4098,7 @@ state 90
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -4200,7 +4198,7 @@ state 91
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -4300,7 +4298,7 @@ state 92
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -4400,7 +4398,7 @@ state 93
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -4500,7 +4498,7 @@ state 94
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -4600,7 +4598,7 @@ state 95
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -4700,7 +4698,7 @@ state 96
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -4800,7 +4798,7 @@ state 97
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -4900,7 +4898,7 @@ state 98
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -5000,7 +4998,7 @@ state 99
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -5100,7 +5098,7 @@ state 100
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -5200,7 +5198,7 @@ state 101
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -5300,7 +5298,7 @@ state 102
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -5400,7 +5398,7 @@ state 103
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -5500,7 +5498,7 @@ state 104
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -5600,7 +5598,7 @@ state 105
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -5700,7 +5698,7 @@ state 106
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -5800,7 +5798,7 @@ state 107
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -5900,7 +5898,7 @@ state 108
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -6000,7 +5998,7 @@ state 109
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -6100,7 +6098,7 @@ state 110
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -6200,7 +6198,7 @@ state 111
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -6300,7 +6298,7 @@ state 112
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -6373,11 +6371,11 @@ state 113
 
 state 114
 
-    (89) expression -> expression LPAREN . parameter RPAREN
+    (89) expression -> expression LPAREN . argument_list RPAREN
     (90) expression -> expression LPAREN . RPAREN
-    (125) parameter -> . expression_list
-    (109) expression_list -> . expression
-    (110) expression_list -> . expression_list COMMA expression
+    (111) argument_list -> .
+    (112) argument_list -> . argument_list COMMA expression
+    (113) argument_list -> . expression
     (57) expression -> . LPAREN expression RPAREN
     (58) expression -> . expression BITWISE_OR_EQ expression
     (59) expression -> . expression BITWISE_XOR_EQ expression
@@ -6410,7 +6408,7 @@ state 114
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -6441,7 +6439,9 @@ state 114
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    RPAREN          shift and go to state 183
+  ! shift/reduce conflict for RPAREN resolved as shift
+    RPAREN          shift and go to state 184
+    COMMA           reduce using rule 111 (argument_list -> .)
     LPAREN          shift and go to state 50
     BITWISE_NOT     shift and go to state 53
     NOT             shift and go to state 54
@@ -6472,9 +6472,8 @@ state 114
     CHAR            shift and go to state 78
     BYTE            shift and go to state 79
 
-    expression                     shift and go to state 154
-    parameter                      shift and go to state 182
-    expression_list                shift and go to state 184
+    expression                     shift and go to state 182
+    argument_list                  shift and go to state 183
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
@@ -6507,7 +6506,7 @@ state 115
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     RPAREN          shift and go to state 185
     BITWISE_OR_EQ   shift and go to state 88
@@ -6594,7 +6593,7 @@ state 119
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -6694,7 +6693,7 @@ state 120
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -6788,7 +6787,7 @@ state 121
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 83 (expression -> BITWISE_NOT expression .)
     AND             reduce using rule 83 (expression -> BITWISE_NOT expression .)
@@ -6902,7 +6901,7 @@ state 122
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 84 (expression -> NOT expression .)
     AND             reduce using rule 84 (expression -> NOT expression .)
@@ -7022,7 +7021,7 @@ state 123
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -7122,7 +7121,7 @@ state 124
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -7201,7 +7200,7 @@ state 126
     (91) expression -> ID . LBRACKET expression_list RBRACKET
     (92) expression -> ID .
     (40) assignment -> ID . EQUAL expression
-    (126) var_type -> ID .
+    (125) var_type -> ID .
     LBRACKET        shift and go to state 87
     SEMICOLON       reduce using rule 92 (expression -> ID .)
     BITWISE_OR_EQ   reduce using rule 92 (expression -> ID .)
@@ -7232,7 +7231,7 @@ state 126
     DOT             reduce using rule 92 (expression -> ID .)
     LPAREN          reduce using rule 92 (expression -> ID .)
     EQUAL           shift and go to state 193
-    ID              reduce using rule 126 (var_type -> ID .)
+    ID              reduce using rule 125 (var_type -> ID .)
 
 
 state 127
@@ -7283,7 +7282,7 @@ state 127
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -7335,23 +7334,23 @@ state 127
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
     RBRACE          shift and go to state 194
     CONTINUE        shift and go to state 129
     BREAK           shift and go to state 130
@@ -7521,7 +7520,7 @@ state 131
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -7616,7 +7615,7 @@ state 132
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     SEMICOLON       shift and go to state 200
     BITWISE_OR_EQ   shift and go to state 88
@@ -7879,57 +7878,57 @@ state 143
 state 144
 
     (115) conversion -> STRING . LPAREN expression RPAREN
-    (132) var_type -> STRING .
+    (131) var_type -> STRING .
     LPAREN          shift and go to state 124
-    ID              reduce using rule 132 (var_type -> STRING .)
+    ID              reduce using rule 131 (var_type -> STRING .)
 
 
 state 145
 
     (119) type_convert -> WORD .
-    (127) var_type -> WORD .
+    (126) var_type -> WORD .
     LPAREN          reduce using rule 119 (type_convert -> WORD .)
-    ID              reduce using rule 127 (var_type -> WORD .)
+    ID              reduce using rule 126 (var_type -> WORD .)
 
 
 state 146
 
     (120) type_convert -> LONG .
-    (135) var_type -> LONG .
+    (134) var_type -> LONG .
     LPAREN          reduce using rule 120 (type_convert -> LONG .)
-    ID              reduce using rule 135 (var_type -> LONG .)
+    ID              reduce using rule 134 (var_type -> LONG .)
 
 
 state 147
 
     (121) type_convert -> INT .
-    (136) var_type -> INT .
+    (135) var_type -> INT .
     LPAREN          reduce using rule 121 (type_convert -> INT .)
-    ID              reduce using rule 136 (var_type -> INT .)
+    ID              reduce using rule 135 (var_type -> INT .)
 
 
 state 148
 
     (122) type_convert -> FLOAT .
-    (137) var_type -> FLOAT .
+    (136) var_type -> FLOAT .
     LPAREN          reduce using rule 122 (type_convert -> FLOAT .)
-    ID              reduce using rule 137 (var_type -> FLOAT .)
+    ID              reduce using rule 136 (var_type -> FLOAT .)
 
 
 state 149
 
     (123) type_convert -> CHAR .
-    (139) var_type -> CHAR .
+    (138) var_type -> CHAR .
     LPAREN          reduce using rule 123 (type_convert -> CHAR .)
-    ID              reduce using rule 139 (var_type -> CHAR .)
+    ID              reduce using rule 138 (var_type -> CHAR .)
 
 
 state 150
 
     (124) type_convert -> BYTE .
-    (140) var_type -> BYTE .
+    (139) var_type -> BYTE .
     LPAREN          reduce using rule 124 (type_convert -> BYTE .)
-    ID              reduce using rule 140 (var_type -> BYTE .)
+    ID              reduce using rule 139 (var_type -> BYTE .)
 
 
 state 151
@@ -7982,7 +7981,7 @@ state 151
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -8034,23 +8033,23 @@ state 151
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
   ! shift/reduce conflict for CONTINUE resolved as shift
   ! shift/reduce conflict for BREAK resolved as shift
   ! shift/reduce conflict for RETURN resolved as shift
@@ -8209,12 +8208,11 @@ state 154
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     RBRACE          reduce using rule 109 (expression_list -> expression .)
     COMMA           reduce using rule 109 (expression_list -> expression .)
     RBRACKET        reduce using rule 109 (expression_list -> expression .)
-    RPAREN          reduce using rule 109 (expression_list -> expression .)
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -8281,7 +8279,7 @@ state 156
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 58 (expression -> expression BITWISE_OR_EQ expression .)
     AND             reduce using rule 58 (expression -> expression BITWISE_OR_EQ expression .)
@@ -8395,7 +8393,7 @@ state 157
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 59 (expression -> expression BITWISE_XOR_EQ expression .)
     AND             reduce using rule 59 (expression -> expression BITWISE_XOR_EQ expression .)
@@ -8509,7 +8507,7 @@ state 158
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 60 (expression -> expression DIV_EQ expression .)
     AND             reduce using rule 60 (expression -> expression DIV_EQ expression .)
@@ -8623,7 +8621,7 @@ state 159
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 61 (expression -> expression MINUS_EQ expression .)
     AND             reduce using rule 61 (expression -> expression MINUS_EQ expression .)
@@ -8737,7 +8735,7 @@ state 160
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 62 (expression -> expression SUM_EQ expression .)
     AND             reduce using rule 62 (expression -> expression SUM_EQ expression .)
@@ -8851,7 +8849,7 @@ state 161
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 63 (expression -> expression MUL_EQ expression .)
     AND             reduce using rule 63 (expression -> expression MUL_EQ expression .)
@@ -8965,7 +8963,7 @@ state 162
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 64 (expression -> expression MOD_EQ expression .)
     AND             reduce using rule 64 (expression -> expression MOD_EQ expression .)
@@ -9079,7 +9077,7 @@ state 163
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 65 (expression -> expression OR expression .)
     SEMICOLON       reduce using rule 65 (expression -> expression OR expression .)
@@ -9193,7 +9191,7 @@ state 164
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 66 (expression -> expression AND expression .)
     AND             reduce using rule 66 (expression -> expression AND expression .)
@@ -9307,7 +9305,7 @@ state 165
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 67 (expression -> expression BITWISE_OR expression .)
     AND             reduce using rule 67 (expression -> expression BITWISE_OR expression .)
@@ -9421,7 +9419,7 @@ state 166
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 68 (expression -> expression BITWISE_XOR expression .)
     AND             reduce using rule 68 (expression -> expression BITWISE_XOR expression .)
@@ -9535,7 +9533,7 @@ state 167
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 69 (expression -> expression BITWISE_AND expression .)
     AND             reduce using rule 69 (expression -> expression BITWISE_AND expression .)
@@ -9649,7 +9647,7 @@ state 168
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 70 (expression -> expression NE expression .)
     AND             reduce using rule 70 (expression -> expression NE expression .)
@@ -9763,7 +9761,7 @@ state 169
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 71 (expression -> expression EQ expression .)
     AND             reduce using rule 71 (expression -> expression EQ expression .)
@@ -9877,7 +9875,7 @@ state 170
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 72 (expression -> expression GE expression .)
     AND             reduce using rule 72 (expression -> expression GE expression .)
@@ -9991,7 +9989,7 @@ state 171
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 73 (expression -> expression GT expression .)
     AND             reduce using rule 73 (expression -> expression GT expression .)
@@ -10105,7 +10103,7 @@ state 172
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 74 (expression -> expression LE expression .)
     AND             reduce using rule 74 (expression -> expression LE expression .)
@@ -10219,7 +10217,7 @@ state 173
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 75 (expression -> expression LT expression .)
     AND             reduce using rule 75 (expression -> expression LT expression .)
@@ -10333,7 +10331,7 @@ state 174
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 76 (expression -> expression BITWISE_LEFT_SHIFT expression .)
     AND             reduce using rule 76 (expression -> expression BITWISE_LEFT_SHIFT expression .)
@@ -10447,7 +10445,7 @@ state 175
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 77 (expression -> expression BITWISE_RIGHT_SHIFT expression .)
     AND             reduce using rule 77 (expression -> expression BITWISE_RIGHT_SHIFT expression .)
@@ -10561,7 +10559,7 @@ state 176
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 78 (expression -> expression MINUS expression .)
     AND             reduce using rule 78 (expression -> expression MINUS expression .)
@@ -10675,7 +10673,7 @@ state 177
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 79 (expression -> expression PLUS expression .)
     AND             reduce using rule 79 (expression -> expression PLUS expression .)
@@ -10789,7 +10787,7 @@ state 178
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 80 (expression -> expression MODULUS expression .)
     AND             reduce using rule 80 (expression -> expression MODULUS expression .)
@@ -10903,7 +10901,7 @@ state 179
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 81 (expression -> expression DIVIDE expression .)
     AND             reduce using rule 81 (expression -> expression DIVIDE expression .)
@@ -11017,7 +11015,7 @@ state 180
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 82 (expression -> expression MULTIPLY expression .)
     AND             reduce using rule 82 (expression -> expression MULTIPLY expression .)
@@ -11190,11 +11188,75 @@ state 181
 
 state 182
 
-    (89) expression -> expression LPAREN parameter . RPAREN
-    RPAREN          shift and go to state 214
+    (113) argument_list -> expression .
+    (58) expression -> expression . BITWISE_OR_EQ expression
+    (59) expression -> expression . BITWISE_XOR_EQ expression
+    (60) expression -> expression . DIV_EQ expression
+    (61) expression -> expression . MINUS_EQ expression
+    (62) expression -> expression . SUM_EQ expression
+    (63) expression -> expression . MUL_EQ expression
+    (64) expression -> expression . MOD_EQ expression
+    (65) expression -> expression . OR expression
+    (66) expression -> expression . AND expression
+    (67) expression -> expression . BITWISE_OR expression
+    (68) expression -> expression . BITWISE_XOR expression
+    (69) expression -> expression . BITWISE_AND expression
+    (70) expression -> expression . NE expression
+    (71) expression -> expression . EQ expression
+    (72) expression -> expression . GE expression
+    (73) expression -> expression . GT expression
+    (74) expression -> expression . LE expression
+    (75) expression -> expression . LT expression
+    (76) expression -> expression . BITWISE_LEFT_SHIFT expression
+    (77) expression -> expression . BITWISE_RIGHT_SHIFT expression
+    (78) expression -> expression . MINUS expression
+    (79) expression -> expression . PLUS expression
+    (80) expression -> expression . MODULUS expression
+    (81) expression -> expression . DIVIDE expression
+    (82) expression -> expression . MULTIPLY expression
+    (88) expression -> expression . DOT ID
+    (89) expression -> expression . LPAREN argument_list RPAREN
+    (90) expression -> expression . LPAREN RPAREN
+    RPAREN          reduce using rule 113 (argument_list -> expression .)
+    COMMA           reduce using rule 113 (argument_list -> expression .)
+    BITWISE_OR_EQ   shift and go to state 88
+    BITWISE_XOR_EQ  shift and go to state 89
+    DIV_EQ          shift and go to state 90
+    MINUS_EQ        shift and go to state 91
+    SUM_EQ          shift and go to state 92
+    MUL_EQ          shift and go to state 93
+    MOD_EQ          shift and go to state 94
+    OR              shift and go to state 95
+    AND             shift and go to state 96
+    BITWISE_OR      shift and go to state 97
+    BITWISE_XOR     shift and go to state 98
+    BITWISE_AND     shift and go to state 99
+    NE              shift and go to state 100
+    EQ              shift and go to state 101
+    GE              shift and go to state 102
+    GT              shift and go to state 103
+    LE              shift and go to state 104
+    LT              shift and go to state 105
+    BITWISE_LEFT_SHIFT shift and go to state 106
+    BITWISE_RIGHT_SHIFT shift and go to state 107
+    MINUS           shift and go to state 108
+    PLUS            shift and go to state 109
+    MODULUS         shift and go to state 110
+    DIVIDE          shift and go to state 111
+    MULTIPLY        shift and go to state 112
+    DOT             shift and go to state 113
+    LPAREN          shift and go to state 114
 
 
 state 183
+
+    (89) expression -> expression LPAREN argument_list . RPAREN
+    (112) argument_list -> argument_list . COMMA expression
+    RPAREN          shift and go to state 214
+    COMMA           shift and go to state 215
+
+
+state 184
 
     (90) expression -> expression LPAREN RPAREN .
     BITWISE_OR_EQ   reduce using rule 90 (expression -> expression LPAREN RPAREN .)
@@ -11278,14 +11340,6 @@ state 183
     DEFAULT         reduce using rule 90 (expression -> expression LPAREN RPAREN .)
     CASE            reduce using rule 90 (expression -> expression LPAREN RPAREN .)
     COLON           reduce using rule 90 (expression -> expression LPAREN RPAREN .)
-
-
-state 184
-
-    (125) parameter -> expression_list .
-    (110) expression_list -> expression_list . COMMA expression
-    RPAREN          reduce using rule 125 (parameter -> expression_list .)
-    COMMA           shift and go to state 212
 
 
 state 185
@@ -11409,7 +11463,7 @@ state 186
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -11471,7 +11525,7 @@ state 186
     BYTE            shift and go to state 79
 
     type_convert                   shift and go to state 72
-    expression                     shift and go to state 215
+    expression                     shift and go to state 216
     conversion                     shift and go to state 55
 
 state 187
@@ -11509,107 +11563,7 @@ state 187
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
-    (90) expression -> . expression LPAREN RPAREN
-    (91) expression -> . ID LBRACKET expression_list RBRACKET
-    (92) expression -> . ID
-    (93) expression -> . STRING_CONST
-    (94) expression -> . CHAR_CONST
-    (95) expression -> . FLOAT_CONST
-    (96) expression -> . INT_CONST
-    (97) expression -> . BINARY_CONST
-    (98) expression -> . OCTAL_CONST
-    (99) expression -> . HEX_CONST
-    (100) expression -> . OUTPUT
-    (101) expression -> . INPUT_PULLUP
-    (102) expression -> . INPUT
-    (103) expression -> . ANALOG_PIN
-    (104) expression -> . HIGH
-    (105) expression -> . LOW
-    (106) expression -> . FALSE
-    (107) expression -> . TRUE
-    (108) expression -> . BOOL_CONST
-    (114) conversion -> . type_convert LPAREN expression RPAREN
-    (115) conversion -> . STRING LPAREN expression RPAREN
-    (116) conversion -> . LPAREN type_convert RPAREN expression
-    (117) conversion -> . LPAREN UNSIGNED_LONG RPAREN expression
-    (118) conversion -> . LPAREN UNSIGNED_INT RPAREN expression
-    (119) type_convert -> . WORD
-    (120) type_convert -> . LONG
-    (121) type_convert -> . INT
-    (122) type_convert -> . FLOAT
-    (123) type_convert -> . CHAR
-    (124) type_convert -> . BYTE
-    LPAREN          shift and go to state 50
-    BITWISE_NOT     shift and go to state 53
-    NOT             shift and go to state 54
-    MINUS           shift and go to state 51
-    PLUS            shift and go to state 52
-    ID              shift and go to state 48
-    STRING_CONST    shift and go to state 56
-    CHAR_CONST      shift and go to state 57
-    FLOAT_CONST     shift and go to state 58
-    INT_CONST       shift and go to state 59
-    BINARY_CONST    shift and go to state 60
-    OCTAL_CONST     shift and go to state 61
-    HEX_CONST       shift and go to state 62
-    OUTPUT          shift and go to state 63
-    INPUT_PULLUP    shift and go to state 64
-    INPUT           shift and go to state 65
-    ANALOG_PIN      shift and go to state 66
-    HIGH            shift and go to state 67
-    LOW             shift and go to state 68
-    FALSE           shift and go to state 69
-    TRUE            shift and go to state 70
-    BOOL_CONST      shift and go to state 71
-    STRING          shift and go to state 73
-    WORD            shift and go to state 74
-    LONG            shift and go to state 75
-    INT             shift and go to state 76
-    FLOAT           shift and go to state 77
-    CHAR            shift and go to state 78
-    BYTE            shift and go to state 79
-
-    expression                     shift and go to state 216
-    conversion                     shift and go to state 55
-    type_convert                   shift and go to state 72
-
-state 188
-
-    (118) conversion -> LPAREN UNSIGNED_INT RPAREN . expression
-    (57) expression -> . LPAREN expression RPAREN
-    (58) expression -> . expression BITWISE_OR_EQ expression
-    (59) expression -> . expression BITWISE_XOR_EQ expression
-    (60) expression -> . expression DIV_EQ expression
-    (61) expression -> . expression MINUS_EQ expression
-    (62) expression -> . expression SUM_EQ expression
-    (63) expression -> . expression MUL_EQ expression
-    (64) expression -> . expression MOD_EQ expression
-    (65) expression -> . expression OR expression
-    (66) expression -> . expression AND expression
-    (67) expression -> . expression BITWISE_OR expression
-    (68) expression -> . expression BITWISE_XOR expression
-    (69) expression -> . expression BITWISE_AND expression
-    (70) expression -> . expression NE expression
-    (71) expression -> . expression EQ expression
-    (72) expression -> . expression GE expression
-    (73) expression -> . expression GT expression
-    (74) expression -> . expression LE expression
-    (75) expression -> . expression LT expression
-    (76) expression -> . expression BITWISE_LEFT_SHIFT expression
-    (77) expression -> . expression BITWISE_RIGHT_SHIFT expression
-    (78) expression -> . expression MINUS expression
-    (79) expression -> . expression PLUS expression
-    (80) expression -> . expression MODULUS expression
-    (81) expression -> . expression DIVIDE expression
-    (82) expression -> . expression MULTIPLY expression
-    (83) expression -> . BITWISE_NOT expression
-    (84) expression -> . NOT expression
-    (85) expression -> . MINUS MINUS expression
-    (86) expression -> . PLUS PLUS expression
-    (87) expression -> . conversion
-    (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -11674,6 +11628,106 @@ state 188
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
+state 188
+
+    (118) conversion -> LPAREN UNSIGNED_INT RPAREN . expression
+    (57) expression -> . LPAREN expression RPAREN
+    (58) expression -> . expression BITWISE_OR_EQ expression
+    (59) expression -> . expression BITWISE_XOR_EQ expression
+    (60) expression -> . expression DIV_EQ expression
+    (61) expression -> . expression MINUS_EQ expression
+    (62) expression -> . expression SUM_EQ expression
+    (63) expression -> . expression MUL_EQ expression
+    (64) expression -> . expression MOD_EQ expression
+    (65) expression -> . expression OR expression
+    (66) expression -> . expression AND expression
+    (67) expression -> . expression BITWISE_OR expression
+    (68) expression -> . expression BITWISE_XOR expression
+    (69) expression -> . expression BITWISE_AND expression
+    (70) expression -> . expression NE expression
+    (71) expression -> . expression EQ expression
+    (72) expression -> . expression GE expression
+    (73) expression -> . expression GT expression
+    (74) expression -> . expression LE expression
+    (75) expression -> . expression LT expression
+    (76) expression -> . expression BITWISE_LEFT_SHIFT expression
+    (77) expression -> . expression BITWISE_RIGHT_SHIFT expression
+    (78) expression -> . expression MINUS expression
+    (79) expression -> . expression PLUS expression
+    (80) expression -> . expression MODULUS expression
+    (81) expression -> . expression DIVIDE expression
+    (82) expression -> . expression MULTIPLY expression
+    (83) expression -> . BITWISE_NOT expression
+    (84) expression -> . NOT expression
+    (85) expression -> . MINUS MINUS expression
+    (86) expression -> . PLUS PLUS expression
+    (87) expression -> . conversion
+    (88) expression -> . expression DOT ID
+    (89) expression -> . expression LPAREN argument_list RPAREN
+    (90) expression -> . expression LPAREN RPAREN
+    (91) expression -> . ID LBRACKET expression_list RBRACKET
+    (92) expression -> . ID
+    (93) expression -> . STRING_CONST
+    (94) expression -> . CHAR_CONST
+    (95) expression -> . FLOAT_CONST
+    (96) expression -> . INT_CONST
+    (97) expression -> . BINARY_CONST
+    (98) expression -> . OCTAL_CONST
+    (99) expression -> . HEX_CONST
+    (100) expression -> . OUTPUT
+    (101) expression -> . INPUT_PULLUP
+    (102) expression -> . INPUT
+    (103) expression -> . ANALOG_PIN
+    (104) expression -> . HIGH
+    (105) expression -> . LOW
+    (106) expression -> . FALSE
+    (107) expression -> . TRUE
+    (108) expression -> . BOOL_CONST
+    (114) conversion -> . type_convert LPAREN expression RPAREN
+    (115) conversion -> . STRING LPAREN expression RPAREN
+    (116) conversion -> . LPAREN type_convert RPAREN expression
+    (117) conversion -> . LPAREN UNSIGNED_LONG RPAREN expression
+    (118) conversion -> . LPAREN UNSIGNED_INT RPAREN expression
+    (119) type_convert -> . WORD
+    (120) type_convert -> . LONG
+    (121) type_convert -> . INT
+    (122) type_convert -> . FLOAT
+    (123) type_convert -> . CHAR
+    (124) type_convert -> . BYTE
+    LPAREN          shift and go to state 50
+    BITWISE_NOT     shift and go to state 53
+    NOT             shift and go to state 54
+    MINUS           shift and go to state 51
+    PLUS            shift and go to state 52
+    ID              shift and go to state 48
+    STRING_CONST    shift and go to state 56
+    CHAR_CONST      shift and go to state 57
+    FLOAT_CONST     shift and go to state 58
+    INT_CONST       shift and go to state 59
+    BINARY_CONST    shift and go to state 60
+    OCTAL_CONST     shift and go to state 61
+    HEX_CONST       shift and go to state 62
+    OUTPUT          shift and go to state 63
+    INPUT_PULLUP    shift and go to state 64
+    INPUT           shift and go to state 65
+    ANALOG_PIN      shift and go to state 66
+    HIGH            shift and go to state 67
+    LOW             shift and go to state 68
+    FALSE           shift and go to state 69
+    TRUE            shift and go to state 70
+    BOOL_CONST      shift and go to state 71
+    STRING          shift and go to state 73
+    WORD            shift and go to state 74
+    LONG            shift and go to state 75
+    INT             shift and go to state 76
+    FLOAT           shift and go to state 77
+    CHAR            shift and go to state 78
+    BYTE            shift and go to state 79
+
+    expression                     shift and go to state 218
+    conversion                     shift and go to state 55
+    type_convert                   shift and go to state 72
+
 state 189
 
     (85) expression -> MINUS MINUS expression .
@@ -11703,7 +11757,7 @@ state 189
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 85 (expression -> MINUS MINUS expression .)
     AND             reduce using rule 85 (expression -> MINUS MINUS expression .)
@@ -11817,7 +11871,7 @@ state 190
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     OR              reduce using rule 86 (expression -> PLUS PLUS expression .)
     AND             reduce using rule 86 (expression -> PLUS PLUS expression .)
@@ -11931,9 +11985,9 @@ state 191
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
-    RPAREN          shift and go to state 218
+    RPAREN          shift and go to state 219
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -11992,9 +12046,9 @@ state 192
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
-    RPAREN          shift and go to state 219
+    RPAREN          shift and go to state 220
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -12059,7 +12113,7 @@ state 193
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -12120,7 +12174,7 @@ state 193
     CHAR            shift and go to state 78
     BYTE            shift and go to state 79
 
-    expression                     shift and go to state 220
+    expression                     shift and go to state 221
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
@@ -12406,9 +12460,9 @@ state 199
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
-    SEMICOLON       shift and go to state 221
+    SEMICOLON       shift and go to state 222
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -12614,10 +12668,10 @@ state 203
     (21) define_macro -> DEFINE ID . array_elements
     (22) define_macro -> DEFINE ID . EQUAL expression
     (20) array_elements -> . LBRACE expression_list RBRACE
-    EQUAL           shift and go to state 223
+    EQUAL           shift and go to state 224
     LBRACE          shift and go to state 86
 
-    array_elements                 shift and go to state 222
+    array_elements                 shift and go to state 223
 
 state 204
 
@@ -12654,108 +12708,7 @@ state 204
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
-    (90) expression -> . expression LPAREN RPAREN
-    (91) expression -> . ID LBRACKET expression_list RBRACKET
-    (92) expression -> . ID
-    (93) expression -> . STRING_CONST
-    (94) expression -> . CHAR_CONST
-    (95) expression -> . FLOAT_CONST
-    (96) expression -> . INT_CONST
-    (97) expression -> . BINARY_CONST
-    (98) expression -> . OCTAL_CONST
-    (99) expression -> . HEX_CONST
-    (100) expression -> . OUTPUT
-    (101) expression -> . INPUT_PULLUP
-    (102) expression -> . INPUT
-    (103) expression -> . ANALOG_PIN
-    (104) expression -> . HIGH
-    (105) expression -> . LOW
-    (106) expression -> . FALSE
-    (107) expression -> . TRUE
-    (108) expression -> . BOOL_CONST
-    (114) conversion -> . type_convert LPAREN expression RPAREN
-    (115) conversion -> . STRING LPAREN expression RPAREN
-    (116) conversion -> . LPAREN type_convert RPAREN expression
-    (117) conversion -> . LPAREN UNSIGNED_LONG RPAREN expression
-    (118) conversion -> . LPAREN UNSIGNED_INT RPAREN expression
-    (119) type_convert -> . WORD
-    (120) type_convert -> . LONG
-    (121) type_convert -> . INT
-    (122) type_convert -> . FLOAT
-    (123) type_convert -> . CHAR
-    (124) type_convert -> . BYTE
-    LPAREN          shift and go to state 50
-    BITWISE_NOT     shift and go to state 53
-    NOT             shift and go to state 54
-    MINUS           shift and go to state 51
-    PLUS            shift and go to state 52
-    ID              shift and go to state 48
-    STRING_CONST    shift and go to state 56
-    CHAR_CONST      shift and go to state 57
-    FLOAT_CONST     shift and go to state 58
-    INT_CONST       shift and go to state 59
-    BINARY_CONST    shift and go to state 60
-    OCTAL_CONST     shift and go to state 61
-    HEX_CONST       shift and go to state 62
-    OUTPUT          shift and go to state 63
-    INPUT_PULLUP    shift and go to state 64
-    INPUT           shift and go to state 65
-    ANALOG_PIN      shift and go to state 66
-    HIGH            shift and go to state 67
-    LOW             shift and go to state 68
-    FALSE           shift and go to state 69
-    TRUE            shift and go to state 70
-    BOOL_CONST      shift and go to state 71
-    STRING          shift and go to state 73
-    WORD            shift and go to state 74
-    LONG            shift and go to state 75
-    INT             shift and go to state 76
-    FLOAT           shift and go to state 77
-    CHAR            shift and go to state 78
-    BYTE            shift and go to state 79
-
-    expression                     shift and go to state 224
-    conversion                     shift and go to state 55
-    type_convert                   shift and go to state 72
-
-state 205
-
-    (50) conditional_sentence -> IF LPAREN . expression RPAREN code_block
-    (51) conditional_sentence -> IF LPAREN . expression RPAREN code_block ELSE code_block
-    (57) expression -> . LPAREN expression RPAREN
-    (58) expression -> . expression BITWISE_OR_EQ expression
-    (59) expression -> . expression BITWISE_XOR_EQ expression
-    (60) expression -> . expression DIV_EQ expression
-    (61) expression -> . expression MINUS_EQ expression
-    (62) expression -> . expression SUM_EQ expression
-    (63) expression -> . expression MUL_EQ expression
-    (64) expression -> . expression MOD_EQ expression
-    (65) expression -> . expression OR expression
-    (66) expression -> . expression AND expression
-    (67) expression -> . expression BITWISE_OR expression
-    (68) expression -> . expression BITWISE_XOR expression
-    (69) expression -> . expression BITWISE_AND expression
-    (70) expression -> . expression NE expression
-    (71) expression -> . expression EQ expression
-    (72) expression -> . expression GE expression
-    (73) expression -> . expression GT expression
-    (74) expression -> . expression LE expression
-    (75) expression -> . expression LT expression
-    (76) expression -> . expression BITWISE_LEFT_SHIFT expression
-    (77) expression -> . expression BITWISE_RIGHT_SHIFT expression
-    (78) expression -> . expression MINUS expression
-    (79) expression -> . expression PLUS expression
-    (80) expression -> . expression MODULUS expression
-    (81) expression -> . expression DIVIDE expression
-    (82) expression -> . expression MULTIPLY expression
-    (83) expression -> . BITWISE_NOT expression
-    (84) expression -> . NOT expression
-    (85) expression -> . MINUS MINUS expression
-    (86) expression -> . PLUS PLUS expression
-    (87) expression -> . conversion
-    (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -12820,6 +12773,107 @@ state 205
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
+state 205
+
+    (50) conditional_sentence -> IF LPAREN . expression RPAREN code_block
+    (51) conditional_sentence -> IF LPAREN . expression RPAREN code_block ELSE code_block
+    (57) expression -> . LPAREN expression RPAREN
+    (58) expression -> . expression BITWISE_OR_EQ expression
+    (59) expression -> . expression BITWISE_XOR_EQ expression
+    (60) expression -> . expression DIV_EQ expression
+    (61) expression -> . expression MINUS_EQ expression
+    (62) expression -> . expression SUM_EQ expression
+    (63) expression -> . expression MUL_EQ expression
+    (64) expression -> . expression MOD_EQ expression
+    (65) expression -> . expression OR expression
+    (66) expression -> . expression AND expression
+    (67) expression -> . expression BITWISE_OR expression
+    (68) expression -> . expression BITWISE_XOR expression
+    (69) expression -> . expression BITWISE_AND expression
+    (70) expression -> . expression NE expression
+    (71) expression -> . expression EQ expression
+    (72) expression -> . expression GE expression
+    (73) expression -> . expression GT expression
+    (74) expression -> . expression LE expression
+    (75) expression -> . expression LT expression
+    (76) expression -> . expression BITWISE_LEFT_SHIFT expression
+    (77) expression -> . expression BITWISE_RIGHT_SHIFT expression
+    (78) expression -> . expression MINUS expression
+    (79) expression -> . expression PLUS expression
+    (80) expression -> . expression MODULUS expression
+    (81) expression -> . expression DIVIDE expression
+    (82) expression -> . expression MULTIPLY expression
+    (83) expression -> . BITWISE_NOT expression
+    (84) expression -> . NOT expression
+    (85) expression -> . MINUS MINUS expression
+    (86) expression -> . PLUS PLUS expression
+    (87) expression -> . conversion
+    (88) expression -> . expression DOT ID
+    (89) expression -> . expression LPAREN argument_list RPAREN
+    (90) expression -> . expression LPAREN RPAREN
+    (91) expression -> . ID LBRACKET expression_list RBRACKET
+    (92) expression -> . ID
+    (93) expression -> . STRING_CONST
+    (94) expression -> . CHAR_CONST
+    (95) expression -> . FLOAT_CONST
+    (96) expression -> . INT_CONST
+    (97) expression -> . BINARY_CONST
+    (98) expression -> . OCTAL_CONST
+    (99) expression -> . HEX_CONST
+    (100) expression -> . OUTPUT
+    (101) expression -> . INPUT_PULLUP
+    (102) expression -> . INPUT
+    (103) expression -> . ANALOG_PIN
+    (104) expression -> . HIGH
+    (105) expression -> . LOW
+    (106) expression -> . FALSE
+    (107) expression -> . TRUE
+    (108) expression -> . BOOL_CONST
+    (114) conversion -> . type_convert LPAREN expression RPAREN
+    (115) conversion -> . STRING LPAREN expression RPAREN
+    (116) conversion -> . LPAREN type_convert RPAREN expression
+    (117) conversion -> . LPAREN UNSIGNED_LONG RPAREN expression
+    (118) conversion -> . LPAREN UNSIGNED_INT RPAREN expression
+    (119) type_convert -> . WORD
+    (120) type_convert -> . LONG
+    (121) type_convert -> . INT
+    (122) type_convert -> . FLOAT
+    (123) type_convert -> . CHAR
+    (124) type_convert -> . BYTE
+    LPAREN          shift and go to state 50
+    BITWISE_NOT     shift and go to state 53
+    NOT             shift and go to state 54
+    MINUS           shift and go to state 51
+    PLUS            shift and go to state 52
+    ID              shift and go to state 48
+    STRING_CONST    shift and go to state 56
+    CHAR_CONST      shift and go to state 57
+    FLOAT_CONST     shift and go to state 58
+    INT_CONST       shift and go to state 59
+    BINARY_CONST    shift and go to state 60
+    OCTAL_CONST     shift and go to state 61
+    HEX_CONST       shift and go to state 62
+    OUTPUT          shift and go to state 63
+    INPUT_PULLUP    shift and go to state 64
+    INPUT           shift and go to state 65
+    ANALOG_PIN      shift and go to state 66
+    HIGH            shift and go to state 67
+    LOW             shift and go to state 68
+    FALSE           shift and go to state 69
+    TRUE            shift and go to state 70
+    BOOL_CONST      shift and go to state 71
+    STRING          shift and go to state 73
+    WORD            shift and go to state 74
+    LONG            shift and go to state 75
+    INT             shift and go to state 76
+    FLOAT           shift and go to state 77
+    CHAR            shift and go to state 78
+    BYTE            shift and go to state 79
+
+    expression                     shift and go to state 226
+    conversion                     shift and go to state 55
+    type_convert                   shift and go to state 72
+
 state 206
 
     (41) iteration_sentence -> FOR LPAREN . SEMICOLON expression SEMICOLON expression RPAREN code_block
@@ -12830,24 +12884,24 @@ state 206
     (46) iteration_sentence -> FOR LPAREN . simple_declaration SEMICOLON expression SEMICOLON expression RPAREN code_block
     (14) simple_declaration -> . var_type ID
     (15) simple_declaration -> . var_type ID EQUAL expression
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
-    SEMICOLON       shift and go to state 226
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
+    SEMICOLON       shift and go to state 227
     ID              shift and go to state 12
     WORD            shift and go to state 17
     VOID            shift and go to state 18
@@ -12866,13 +12920,13 @@ state 206
     BOOLEAN         shift and go to state 31
     BOOL            shift and go to state 32
 
-    simple_declaration             shift and go to state 227
-    var_type                       shift and go to state 228
+    simple_declaration             shift and go to state 228
+    var_type                       shift and go to state 229
 
 state 207
 
     (47) iteration_sentence -> DO code_block . WHILE LPAREN expression RPAREN SEMICOLON
-    WHILE           shift and go to state 229
+    WHILE           shift and go to state 230
 
 
 state 208
@@ -12925,7 +12979,7 @@ state 208
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -12977,23 +13031,23 @@ state 208
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
   ! shift/reduce conflict for CONTINUE resolved as shift
   ! shift/reduce conflict for BREAK resolved as shift
   ! shift/reduce conflict for RETURN resolved as shift
@@ -13094,7 +13148,7 @@ state 208
     BOOLEAN         shift and go to state 31
     BOOL            shift and go to state 32
 
-    sentence_list                  shift and go to state 230
+    sentence_list                  shift and go to state 231
     sentence                       shift and go to state 128
     expression                     shift and go to state 132
     define_macro                   shift and go to state 133
@@ -13143,7 +13197,7 @@ state 209
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -13204,7 +13258,7 @@ state 209
     CHAR            shift and go to state 78
     BYTE            shift and go to state 79
 
-    expression                     shift and go to state 231
+    expression                     shift and go to state 232
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
@@ -13256,7 +13310,7 @@ state 210
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -13308,24 +13362,24 @@ state 210
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
-    RBRACE          shift and go to state 232
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
+    RBRACE          shift and go to state 233
     CONTINUE        shift and go to state 129
     BREAK           shift and go to state 130
     RETURN          shift and go to state 131
@@ -13484,7 +13538,7 @@ state 212
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -13545,7 +13599,7 @@ state 212
     CHAR            shift and go to state 78
     BYTE            shift and go to state 79
 
-    expression                     shift and go to state 233
+    expression                     shift and go to state 234
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
@@ -13637,91 +13691,191 @@ state 213
 
 state 214
 
-    (89) expression -> expression LPAREN parameter RPAREN .
-    BITWISE_OR_EQ   reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BITWISE_XOR_EQ  reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    DIV_EQ          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    MINUS_EQ        reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    SUM_EQ          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    MUL_EQ          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    MOD_EQ          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    OR              reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    AND             reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BITWISE_OR      reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BITWISE_XOR     reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BITWISE_AND     reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    NE              reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    EQ              reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    GE              reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    GT              reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    LE              reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    LT              reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BITWISE_LEFT_SHIFT reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BITWISE_RIGHT_SHIFT reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    MINUS           reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    PLUS            reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    MODULUS         reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    DIVIDE          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    MULTIPLY        reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    DOT             reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    LPAREN          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    SEMICOLON       reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    RPAREN          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    COMMA           reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    RBRACKET        reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    RBRACE          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    CONTINUE        reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BREAK           reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    RETURN          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    DEFINE          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BITWISE_NOT     reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    NOT             reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    ID              reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    STRING_CONST    reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    CHAR_CONST      reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    FLOAT_CONST     reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    INT_CONST       reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BINARY_CONST    reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    OCTAL_CONST     reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    HEX_CONST       reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    OUTPUT          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    INPUT_PULLUP    reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    INPUT           reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    ANALOG_PIN      reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    HIGH            reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    LOW             reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    FALSE           reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    TRUE            reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BOOL_CONST      reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    SWITCH          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    IF              reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    FOR             reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    DO              reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    WHILE           reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    STATIC          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    CONST           reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    STRING          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    WORD            reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    LONG            reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    INT             reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    FLOAT           reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    CHAR            reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BYTE            reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    VOID            reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    UNSIGNED_LONG   reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    UNSIGNED_CHAR   reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    UNSIGNED_INT    reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    SIZE_T          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    SHORT           reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    DOUBLE          reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BOOLEAN         reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    BOOL            reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    DEFAULT         reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    CASE            reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
-    COLON           reduce using rule 89 (expression -> expression LPAREN parameter RPAREN .)
+    (89) expression -> expression LPAREN argument_list RPAREN .
+    BITWISE_OR_EQ   reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BITWISE_XOR_EQ  reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    DIV_EQ          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    MINUS_EQ        reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    SUM_EQ          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    MUL_EQ          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    MOD_EQ          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    OR              reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    AND             reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BITWISE_OR      reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BITWISE_XOR     reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BITWISE_AND     reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    NE              reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    EQ              reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    GE              reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    GT              reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    LE              reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    LT              reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BITWISE_LEFT_SHIFT reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BITWISE_RIGHT_SHIFT reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    MINUS           reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    PLUS            reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    MODULUS         reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    DIVIDE          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    MULTIPLY        reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    DOT             reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    LPAREN          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    SEMICOLON       reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    RPAREN          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    COMMA           reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    RBRACKET        reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    RBRACE          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    CONTINUE        reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BREAK           reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    RETURN          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    DEFINE          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BITWISE_NOT     reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    NOT             reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    ID              reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    STRING_CONST    reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    CHAR_CONST      reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    FLOAT_CONST     reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    INT_CONST       reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BINARY_CONST    reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    OCTAL_CONST     reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    HEX_CONST       reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    OUTPUT          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    INPUT_PULLUP    reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    INPUT           reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    ANALOG_PIN      reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    HIGH            reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    LOW             reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    FALSE           reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    TRUE            reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BOOL_CONST      reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    SWITCH          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    IF              reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    FOR             reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    DO              reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    WHILE           reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    STATIC          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    CONST           reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    STRING          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    WORD            reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    LONG            reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    INT             reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    FLOAT           reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    CHAR            reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BYTE            reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    VOID            reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    UNSIGNED_LONG   reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    UNSIGNED_CHAR   reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    UNSIGNED_INT    reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    SIZE_T          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    SHORT           reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    DOUBLE          reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BOOLEAN         reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    BOOL            reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    DEFAULT         reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    CASE            reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
+    COLON           reduce using rule 89 (expression -> expression LPAREN argument_list RPAREN .)
 
 
 state 215
+
+    (112) argument_list -> argument_list COMMA . expression
+    (57) expression -> . LPAREN expression RPAREN
+    (58) expression -> . expression BITWISE_OR_EQ expression
+    (59) expression -> . expression BITWISE_XOR_EQ expression
+    (60) expression -> . expression DIV_EQ expression
+    (61) expression -> . expression MINUS_EQ expression
+    (62) expression -> . expression SUM_EQ expression
+    (63) expression -> . expression MUL_EQ expression
+    (64) expression -> . expression MOD_EQ expression
+    (65) expression -> . expression OR expression
+    (66) expression -> . expression AND expression
+    (67) expression -> . expression BITWISE_OR expression
+    (68) expression -> . expression BITWISE_XOR expression
+    (69) expression -> . expression BITWISE_AND expression
+    (70) expression -> . expression NE expression
+    (71) expression -> . expression EQ expression
+    (72) expression -> . expression GE expression
+    (73) expression -> . expression GT expression
+    (74) expression -> . expression LE expression
+    (75) expression -> . expression LT expression
+    (76) expression -> . expression BITWISE_LEFT_SHIFT expression
+    (77) expression -> . expression BITWISE_RIGHT_SHIFT expression
+    (78) expression -> . expression MINUS expression
+    (79) expression -> . expression PLUS expression
+    (80) expression -> . expression MODULUS expression
+    (81) expression -> . expression DIVIDE expression
+    (82) expression -> . expression MULTIPLY expression
+    (83) expression -> . BITWISE_NOT expression
+    (84) expression -> . NOT expression
+    (85) expression -> . MINUS MINUS expression
+    (86) expression -> . PLUS PLUS expression
+    (87) expression -> . conversion
+    (88) expression -> . expression DOT ID
+    (89) expression -> . expression LPAREN argument_list RPAREN
+    (90) expression -> . expression LPAREN RPAREN
+    (91) expression -> . ID LBRACKET expression_list RBRACKET
+    (92) expression -> . ID
+    (93) expression -> . STRING_CONST
+    (94) expression -> . CHAR_CONST
+    (95) expression -> . FLOAT_CONST
+    (96) expression -> . INT_CONST
+    (97) expression -> . BINARY_CONST
+    (98) expression -> . OCTAL_CONST
+    (99) expression -> . HEX_CONST
+    (100) expression -> . OUTPUT
+    (101) expression -> . INPUT_PULLUP
+    (102) expression -> . INPUT
+    (103) expression -> . ANALOG_PIN
+    (104) expression -> . HIGH
+    (105) expression -> . LOW
+    (106) expression -> . FALSE
+    (107) expression -> . TRUE
+    (108) expression -> . BOOL_CONST
+    (114) conversion -> . type_convert LPAREN expression RPAREN
+    (115) conversion -> . STRING LPAREN expression RPAREN
+    (116) conversion -> . LPAREN type_convert RPAREN expression
+    (117) conversion -> . LPAREN UNSIGNED_LONG RPAREN expression
+    (118) conversion -> . LPAREN UNSIGNED_INT RPAREN expression
+    (119) type_convert -> . WORD
+    (120) type_convert -> . LONG
+    (121) type_convert -> . INT
+    (122) type_convert -> . FLOAT
+    (123) type_convert -> . CHAR
+    (124) type_convert -> . BYTE
+    LPAREN          shift and go to state 50
+    BITWISE_NOT     shift and go to state 53
+    NOT             shift and go to state 54
+    MINUS           shift and go to state 51
+    PLUS            shift and go to state 52
+    ID              shift and go to state 48
+    STRING_CONST    shift and go to state 56
+    CHAR_CONST      shift and go to state 57
+    FLOAT_CONST     shift and go to state 58
+    INT_CONST       shift and go to state 59
+    BINARY_CONST    shift and go to state 60
+    OCTAL_CONST     shift and go to state 61
+    HEX_CONST       shift and go to state 62
+    OUTPUT          shift and go to state 63
+    INPUT_PULLUP    shift and go to state 64
+    INPUT           shift and go to state 65
+    ANALOG_PIN      shift and go to state 66
+    HIGH            shift and go to state 67
+    LOW             shift and go to state 68
+    FALSE           shift and go to state 69
+    TRUE            shift and go to state 70
+    BOOL_CONST      shift and go to state 71
+    STRING          shift and go to state 73
+    WORD            shift and go to state 74
+    LONG            shift and go to state 75
+    INT             shift and go to state 76
+    FLOAT           shift and go to state 77
+    CHAR            shift and go to state 78
+    BYTE            shift and go to state 79
+
+    expression                     shift and go to state 235
+    conversion                     shift and go to state 55
+    type_convert                   shift and go to state 72
+
+state 216
 
     (116) conversion -> LPAREN type_convert RPAREN expression .
     (58) expression -> expression . BITWISE_OR_EQ expression
@@ -13750,7 +13904,7 @@ state 215
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
   ! shift/reduce conflict for BITWISE_OR_EQ resolved as shift
   ! shift/reduce conflict for BITWISE_XOR_EQ resolved as shift
@@ -13862,7 +14016,7 @@ state 215
     LPAREN          shift and go to state 114
 
 
-state 216
+state 217
 
     (117) conversion -> LPAREN UNSIGNED_LONG RPAREN expression .
     (58) expression -> expression . BITWISE_OR_EQ expression
@@ -13891,7 +14045,7 @@ state 216
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
   ! shift/reduce conflict for BITWISE_OR_EQ resolved as shift
   ! shift/reduce conflict for BITWISE_XOR_EQ resolved as shift
@@ -14003,7 +14157,7 @@ state 216
     LPAREN          shift and go to state 114
 
 
-state 217
+state 218
 
     (118) conversion -> LPAREN UNSIGNED_INT RPAREN expression .
     (58) expression -> expression . BITWISE_OR_EQ expression
@@ -14032,7 +14186,7 @@ state 217
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
   ! shift/reduce conflict for BITWISE_OR_EQ resolved as shift
   ! shift/reduce conflict for BITWISE_XOR_EQ resolved as shift
@@ -14144,7 +14298,7 @@ state 217
     LPAREN          shift and go to state 114
 
 
-state 218
+state 219
 
     (114) conversion -> type_convert LPAREN expression RPAREN .
     BITWISE_OR_EQ   reduce using rule 114 (conversion -> type_convert LPAREN expression RPAREN .)
@@ -14230,7 +14384,7 @@ state 218
     COLON           reduce using rule 114 (conversion -> type_convert LPAREN expression RPAREN .)
 
 
-state 219
+state 220
 
     (115) conversion -> STRING LPAREN expression RPAREN .
     BITWISE_OR_EQ   reduce using rule 115 (conversion -> STRING LPAREN expression RPAREN .)
@@ -14316,7 +14470,7 @@ state 219
     COLON           reduce using rule 115 (conversion -> STRING LPAREN expression RPAREN .)
 
 
-state 220
+state 221
 
     (40) assignment -> ID EQUAL expression .
     (58) expression -> expression . BITWISE_OR_EQ expression
@@ -14345,7 +14499,7 @@ state 220
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     SEMICOLON       reduce using rule 40 (assignment -> ID EQUAL expression .)
     BITWISE_OR_EQ   shift and go to state 88
@@ -14377,7 +14531,7 @@ state 220
     LPAREN          shift and go to state 114
 
 
-state 221
+state 222
 
     (33) sentence -> RETURN expression SEMICOLON .
     RBRACE          reduce using rule 33 (sentence -> RETURN expression SEMICOLON .)
@@ -14434,7 +14588,7 @@ state 221
     CASE            reduce using rule 33 (sentence -> RETURN expression SEMICOLON .)
 
 
-state 222
+state 223
 
     (21) define_macro -> DEFINE ID array_elements .
     RBRACE          reduce using rule 21 (define_macro -> DEFINE ID array_elements .)
@@ -14491,7 +14645,7 @@ state 222
     CASE            reduce using rule 21 (define_macro -> DEFINE ID array_elements .)
 
 
-state 223
+state 224
 
     (22) define_macro -> DEFINE ID EQUAL . expression
     (57) expression -> . LPAREN expression RPAREN
@@ -14526,7 +14680,7 @@ state 223
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -14587,11 +14741,11 @@ state 223
     CHAR            shift and go to state 78
     BYTE            shift and go to state 79
 
-    expression                     shift and go to state 234
+    expression                     shift and go to state 236
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
-state 224
+state 225
 
     (49) conditional_sentence -> SWITCH LPAREN expression . RPAREN LBRACE case_sentence_list RBRACE
     (58) expression -> expression . BITWISE_OR_EQ expression
@@ -14620,71 +14774,9 @@ state 224
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
-    RPAREN          shift and go to state 235
-    BITWISE_OR_EQ   shift and go to state 88
-    BITWISE_XOR_EQ  shift and go to state 89
-    DIV_EQ          shift and go to state 90
-    MINUS_EQ        shift and go to state 91
-    SUM_EQ          shift and go to state 92
-    MUL_EQ          shift and go to state 93
-    MOD_EQ          shift and go to state 94
-    OR              shift and go to state 95
-    AND             shift and go to state 96
-    BITWISE_OR      shift and go to state 97
-    BITWISE_XOR     shift and go to state 98
-    BITWISE_AND     shift and go to state 99
-    NE              shift and go to state 100
-    EQ              shift and go to state 101
-    GE              shift and go to state 102
-    GT              shift and go to state 103
-    LE              shift and go to state 104
-    LT              shift and go to state 105
-    BITWISE_LEFT_SHIFT shift and go to state 106
-    BITWISE_RIGHT_SHIFT shift and go to state 107
-    MINUS           shift and go to state 108
-    PLUS            shift and go to state 109
-    MODULUS         shift and go to state 110
-    DIVIDE          shift and go to state 111
-    MULTIPLY        shift and go to state 112
-    DOT             shift and go to state 113
-    LPAREN          shift and go to state 114
-
-
-state 225
-
-    (50) conditional_sentence -> IF LPAREN expression . RPAREN code_block
-    (51) conditional_sentence -> IF LPAREN expression . RPAREN code_block ELSE code_block
-    (58) expression -> expression . BITWISE_OR_EQ expression
-    (59) expression -> expression . BITWISE_XOR_EQ expression
-    (60) expression -> expression . DIV_EQ expression
-    (61) expression -> expression . MINUS_EQ expression
-    (62) expression -> expression . SUM_EQ expression
-    (63) expression -> expression . MUL_EQ expression
-    (64) expression -> expression . MOD_EQ expression
-    (65) expression -> expression . OR expression
-    (66) expression -> expression . AND expression
-    (67) expression -> expression . BITWISE_OR expression
-    (68) expression -> expression . BITWISE_XOR expression
-    (69) expression -> expression . BITWISE_AND expression
-    (70) expression -> expression . NE expression
-    (71) expression -> expression . EQ expression
-    (72) expression -> expression . GE expression
-    (73) expression -> expression . GT expression
-    (74) expression -> expression . LE expression
-    (75) expression -> expression . LT expression
-    (76) expression -> expression . BITWISE_LEFT_SHIFT expression
-    (77) expression -> expression . BITWISE_RIGHT_SHIFT expression
-    (78) expression -> expression . MINUS expression
-    (79) expression -> expression . PLUS expression
-    (80) expression -> expression . MODULUS expression
-    (81) expression -> expression . DIVIDE expression
-    (82) expression -> expression . MULTIPLY expression
-    (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
-    (90) expression -> expression . LPAREN RPAREN
-    RPAREN          shift and go to state 236
+    RPAREN          shift and go to state 237
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -14715,6 +14807,68 @@ state 225
 
 
 state 226
+
+    (50) conditional_sentence -> IF LPAREN expression . RPAREN code_block
+    (51) conditional_sentence -> IF LPAREN expression . RPAREN code_block ELSE code_block
+    (58) expression -> expression . BITWISE_OR_EQ expression
+    (59) expression -> expression . BITWISE_XOR_EQ expression
+    (60) expression -> expression . DIV_EQ expression
+    (61) expression -> expression . MINUS_EQ expression
+    (62) expression -> expression . SUM_EQ expression
+    (63) expression -> expression . MUL_EQ expression
+    (64) expression -> expression . MOD_EQ expression
+    (65) expression -> expression . OR expression
+    (66) expression -> expression . AND expression
+    (67) expression -> expression . BITWISE_OR expression
+    (68) expression -> expression . BITWISE_XOR expression
+    (69) expression -> expression . BITWISE_AND expression
+    (70) expression -> expression . NE expression
+    (71) expression -> expression . EQ expression
+    (72) expression -> expression . GE expression
+    (73) expression -> expression . GT expression
+    (74) expression -> expression . LE expression
+    (75) expression -> expression . LT expression
+    (76) expression -> expression . BITWISE_LEFT_SHIFT expression
+    (77) expression -> expression . BITWISE_RIGHT_SHIFT expression
+    (78) expression -> expression . MINUS expression
+    (79) expression -> expression . PLUS expression
+    (80) expression -> expression . MODULUS expression
+    (81) expression -> expression . DIVIDE expression
+    (82) expression -> expression . MULTIPLY expression
+    (88) expression -> expression . DOT ID
+    (89) expression -> expression . LPAREN argument_list RPAREN
+    (90) expression -> expression . LPAREN RPAREN
+    RPAREN          shift and go to state 238
+    BITWISE_OR_EQ   shift and go to state 88
+    BITWISE_XOR_EQ  shift and go to state 89
+    DIV_EQ          shift and go to state 90
+    MINUS_EQ        shift and go to state 91
+    SUM_EQ          shift and go to state 92
+    MUL_EQ          shift and go to state 93
+    MOD_EQ          shift and go to state 94
+    OR              shift and go to state 95
+    AND             shift and go to state 96
+    BITWISE_OR      shift and go to state 97
+    BITWISE_XOR     shift and go to state 98
+    BITWISE_AND     shift and go to state 99
+    NE              shift and go to state 100
+    EQ              shift and go to state 101
+    GE              shift and go to state 102
+    GT              shift and go to state 103
+    LE              shift and go to state 104
+    LT              shift and go to state 105
+    BITWISE_LEFT_SHIFT shift and go to state 106
+    BITWISE_RIGHT_SHIFT shift and go to state 107
+    MINUS           shift and go to state 108
+    PLUS            shift and go to state 109
+    MODULUS         shift and go to state 110
+    DIVIDE          shift and go to state 111
+    MULTIPLY        shift and go to state 112
+    DOT             shift and go to state 113
+    LPAREN          shift and go to state 114
+
+
+state 227
 
     (41) iteration_sentence -> FOR LPAREN SEMICOLON . expression SEMICOLON expression RPAREN code_block
     (42) iteration_sentence -> FOR LPAREN SEMICOLON . expression SEMICOLON RPAREN code_block
@@ -14751,7 +14905,7 @@ state 226
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -14782,7 +14936,7 @@ state 226
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    SEMICOLON       shift and go to state 237
+    SEMICOLON       shift and go to state 239
     LPAREN          shift and go to state 50
     BITWISE_NOT     shift and go to state 53
     NOT             shift and go to state 54
@@ -14813,32 +14967,32 @@ state 226
     CHAR            shift and go to state 78
     BYTE            shift and go to state 79
 
-    expression                     shift and go to state 238
+    expression                     shift and go to state 240
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
-state 227
+state 228
 
     (43) iteration_sentence -> FOR LPAREN simple_declaration . SEMICOLON expression SEMICOLON RPAREN code_block
     (44) iteration_sentence -> FOR LPAREN simple_declaration . SEMICOLON SEMICOLON RPAREN code_block
     (46) iteration_sentence -> FOR LPAREN simple_declaration . SEMICOLON expression SEMICOLON expression RPAREN code_block
-    SEMICOLON       shift and go to state 239
-
-
-state 228
-
-    (14) simple_declaration -> var_type . ID
-    (15) simple_declaration -> var_type . ID EQUAL expression
-    ID              shift and go to state 240
+    SEMICOLON       shift and go to state 241
 
 
 state 229
 
-    (47) iteration_sentence -> DO code_block WHILE . LPAREN expression RPAREN SEMICOLON
-    LPAREN          shift and go to state 241
+    (14) simple_declaration -> var_type . ID
+    (15) simple_declaration -> var_type . ID EQUAL expression
+    ID              shift and go to state 242
 
 
 state 230
+
+    (47) iteration_sentence -> DO code_block WHILE . LPAREN expression RPAREN SEMICOLON
+    LPAREN          shift and go to state 243
+
+
+state 231
 
     (56) code_block -> LBRACE sentence_list . RBRACE
     (29) sentence_list -> sentence_list . sentence
@@ -14886,7 +15040,7 @@ state 230
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -14938,24 +15092,24 @@ state 230
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
-    RBRACE          shift and go to state 242
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
+    RBRACE          shift and go to state 244
     CONTINUE        shift and go to state 129
     BREAK           shift and go to state 130
     RETURN          shift and go to state 131
@@ -15019,7 +15173,7 @@ state 230
     type_convert                   shift and go to state 72
     var_type                       shift and go to state 37
 
-state 231
+state 232
 
     (48) iteration_sentence -> WHILE LPAREN expression . RPAREN LBRACE code_block RBRACE
     (58) expression -> expression . BITWISE_OR_EQ expression
@@ -15048,9 +15202,9 @@ state 231
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
-    RPAREN          shift and go to state 243
+    RPAREN          shift and go to state 245
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -15080,7 +15234,7 @@ state 231
     LPAREN          shift and go to state 114
 
 
-state 232
+state 233
 
     (24) function -> var_type ID LPAREN function_args RPAREN LBRACE sentence_list RBRACE .
     STATIC          reduce using rule 24 (function -> var_type ID LPAREN function_args RPAREN LBRACE sentence_list RBRACE .)
@@ -15105,7 +15259,7 @@ state 232
     $end            reduce using rule 24 (function -> var_type ID LPAREN function_args RPAREN LBRACE sentence_list RBRACE .)
 
 
-state 233
+state 234
 
     (110) expression_list -> expression_list COMMA expression .
     (58) expression -> expression . BITWISE_OR_EQ expression
@@ -15134,12 +15288,11 @@ state 233
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
     RBRACE          reduce using rule 110 (expression_list -> expression_list COMMA expression .)
     COMMA           reduce using rule 110 (expression_list -> expression_list COMMA expression .)
     RBRACKET        reduce using rule 110 (expression_list -> expression_list COMMA expression .)
-    RPAREN          reduce using rule 110 (expression_list -> expression_list COMMA expression .)
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -15169,7 +15322,69 @@ state 233
     LPAREN          shift and go to state 114
 
 
-state 234
+state 235
+
+    (112) argument_list -> argument_list COMMA expression .
+    (58) expression -> expression . BITWISE_OR_EQ expression
+    (59) expression -> expression . BITWISE_XOR_EQ expression
+    (60) expression -> expression . DIV_EQ expression
+    (61) expression -> expression . MINUS_EQ expression
+    (62) expression -> expression . SUM_EQ expression
+    (63) expression -> expression . MUL_EQ expression
+    (64) expression -> expression . MOD_EQ expression
+    (65) expression -> expression . OR expression
+    (66) expression -> expression . AND expression
+    (67) expression -> expression . BITWISE_OR expression
+    (68) expression -> expression . BITWISE_XOR expression
+    (69) expression -> expression . BITWISE_AND expression
+    (70) expression -> expression . NE expression
+    (71) expression -> expression . EQ expression
+    (72) expression -> expression . GE expression
+    (73) expression -> expression . GT expression
+    (74) expression -> expression . LE expression
+    (75) expression -> expression . LT expression
+    (76) expression -> expression . BITWISE_LEFT_SHIFT expression
+    (77) expression -> expression . BITWISE_RIGHT_SHIFT expression
+    (78) expression -> expression . MINUS expression
+    (79) expression -> expression . PLUS expression
+    (80) expression -> expression . MODULUS expression
+    (81) expression -> expression . DIVIDE expression
+    (82) expression -> expression . MULTIPLY expression
+    (88) expression -> expression . DOT ID
+    (89) expression -> expression . LPAREN argument_list RPAREN
+    (90) expression -> expression . LPAREN RPAREN
+    RPAREN          reduce using rule 112 (argument_list -> argument_list COMMA expression .)
+    COMMA           reduce using rule 112 (argument_list -> argument_list COMMA expression .)
+    BITWISE_OR_EQ   shift and go to state 88
+    BITWISE_XOR_EQ  shift and go to state 89
+    DIV_EQ          shift and go to state 90
+    MINUS_EQ        shift and go to state 91
+    SUM_EQ          shift and go to state 92
+    MUL_EQ          shift and go to state 93
+    MOD_EQ          shift and go to state 94
+    OR              shift and go to state 95
+    AND             shift and go to state 96
+    BITWISE_OR      shift and go to state 97
+    BITWISE_XOR     shift and go to state 98
+    BITWISE_AND     shift and go to state 99
+    NE              shift and go to state 100
+    EQ              shift and go to state 101
+    GE              shift and go to state 102
+    GT              shift and go to state 103
+    LE              shift and go to state 104
+    LT              shift and go to state 105
+    BITWISE_LEFT_SHIFT shift and go to state 106
+    BITWISE_RIGHT_SHIFT shift and go to state 107
+    MINUS           shift and go to state 108
+    PLUS            shift and go to state 109
+    MODULUS         shift and go to state 110
+    DIVIDE          shift and go to state 111
+    MULTIPLY        shift and go to state 112
+    DOT             shift and go to state 113
+    LPAREN          shift and go to state 114
+
+
+state 236
 
     (22) define_macro -> DEFINE ID EQUAL expression .
     (58) expression -> expression . BITWISE_OR_EQ expression
@@ -15198,7 +15413,7 @@ state 234
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
   ! shift/reduce conflict for MINUS resolved as shift
   ! shift/reduce conflict for PLUS resolved as shift
@@ -15281,28 +15496,28 @@ state 234
     LPAREN          shift and go to state 114
 
 
-state 235
+state 237
 
     (49) conditional_sentence -> SWITCH LPAREN expression RPAREN . LBRACE case_sentence_list RBRACE
-    LBRACE          shift and go to state 244
+    LBRACE          shift and go to state 246
 
 
-state 236
+state 238
 
     (50) conditional_sentence -> IF LPAREN expression RPAREN . code_block
     (51) conditional_sentence -> IF LPAREN expression RPAREN . code_block ELSE code_block
     (56) code_block -> . LBRACE sentence_list RBRACE
     LBRACE          shift and go to state 208
 
-    code_block                     shift and go to state 245
+    code_block                     shift and go to state 247
 
-state 237
+state 239
 
     (45) iteration_sentence -> FOR LPAREN SEMICOLON SEMICOLON . RPAREN code_block
-    RPAREN          shift and go to state 246
+    RPAREN          shift and go to state 248
 
 
-state 238
+state 240
 
     (41) iteration_sentence -> FOR LPAREN SEMICOLON expression . SEMICOLON expression RPAREN code_block
     (42) iteration_sentence -> FOR LPAREN SEMICOLON expression . SEMICOLON RPAREN code_block
@@ -15332,9 +15547,9 @@ state 238
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
-    SEMICOLON       shift and go to state 247
+    SEMICOLON       shift and go to state 249
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -15364,7 +15579,7 @@ state 238
     LPAREN          shift and go to state 114
 
 
-state 239
+state 241
 
     (43) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON . expression SEMICOLON RPAREN code_block
     (44) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON . SEMICOLON RPAREN code_block
@@ -15401,7 +15616,7 @@ state 239
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -15432,7 +15647,7 @@ state 239
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    SEMICOLON       shift and go to state 248
+    SEMICOLON       shift and go to state 250
     LPAREN          shift and go to state 50
     BITWISE_NOT     shift and go to state 53
     NOT             shift and go to state 54
@@ -15463,11 +15678,11 @@ state 239
     CHAR            shift and go to state 78
     BYTE            shift and go to state 79
 
-    expression                     shift and go to state 249
+    expression                     shift and go to state 251
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
-state 240
+state 242
 
     (14) simple_declaration -> var_type ID .
     (15) simple_declaration -> var_type ID . EQUAL expression
@@ -15475,7 +15690,7 @@ state 240
     EQUAL           shift and go to state 41
 
 
-state 241
+state 243
 
     (47) iteration_sentence -> DO code_block WHILE LPAREN . expression RPAREN SEMICOLON
     (57) expression -> . LPAREN expression RPAREN
@@ -15510,7 +15725,7 @@ state 241
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -15571,11 +15786,11 @@ state 241
     CHAR            shift and go to state 78
     BYTE            shift and go to state 79
 
-    expression                     shift and go to state 250
+    expression                     shift and go to state 252
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
-state 242
+state 244
 
     (56) code_block -> LBRACE sentence_list RBRACE .
     WHILE           reduce using rule 56 (code_block -> LBRACE sentence_list RBRACE .)
@@ -15633,13 +15848,13 @@ state 242
     CASE            reduce using rule 56 (code_block -> LBRACE sentence_list RBRACE .)
 
 
-state 243
+state 245
 
     (48) iteration_sentence -> WHILE LPAREN expression RPAREN . LBRACE code_block RBRACE
-    LBRACE          shift and go to state 251
+    LBRACE          shift and go to state 253
 
 
-state 244
+state 246
 
     (49) conditional_sentence -> SWITCH LPAREN expression RPAREN LBRACE . case_sentence_list RBRACE
     (52) case_sentence_list -> . case_sentence_list case_sentence
@@ -15648,9 +15863,9 @@ state 244
     DEFAULT         reduce using rule 53 (case_sentence_list -> .)
     CASE            reduce using rule 53 (case_sentence_list -> .)
 
-    case_sentence_list             shift and go to state 252
+    case_sentence_list             shift and go to state 254
 
-state 245
+state 247
 
     (50) conditional_sentence -> IF LPAREN expression RPAREN code_block .
     (51) conditional_sentence -> IF LPAREN expression RPAREN code_block . ELSE code_block
@@ -15706,18 +15921,18 @@ state 245
     BOOL            reduce using rule 50 (conditional_sentence -> IF LPAREN expression RPAREN code_block .)
     DEFAULT         reduce using rule 50 (conditional_sentence -> IF LPAREN expression RPAREN code_block .)
     CASE            reduce using rule 50 (conditional_sentence -> IF LPAREN expression RPAREN code_block .)
-    ELSE            shift and go to state 253
+    ELSE            shift and go to state 255
 
 
-state 246
+state 248
 
     (45) iteration_sentence -> FOR LPAREN SEMICOLON SEMICOLON RPAREN . code_block
     (56) code_block -> . LBRACE sentence_list RBRACE
     LBRACE          shift and go to state 208
 
-    code_block                     shift and go to state 254
+    code_block                     shift and go to state 256
 
-state 247
+state 249
 
     (41) iteration_sentence -> FOR LPAREN SEMICOLON expression SEMICOLON . expression RPAREN code_block
     (42) iteration_sentence -> FOR LPAREN SEMICOLON expression SEMICOLON . RPAREN code_block
@@ -15753,7 +15968,7 @@ state 247
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -15784,7 +15999,7 @@ state 247
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    RPAREN          shift and go to state 256
+    RPAREN          shift and go to state 258
     LPAREN          shift and go to state 50
     BITWISE_NOT     shift and go to state 53
     NOT             shift and go to state 54
@@ -15815,17 +16030,17 @@ state 247
     CHAR            shift and go to state 78
     BYTE            shift and go to state 79
 
-    expression                     shift and go to state 255
+    expression                     shift and go to state 257
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
-state 248
+state 250
 
     (44) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON SEMICOLON . RPAREN code_block
-    RPAREN          shift and go to state 257
+    RPAREN          shift and go to state 259
 
 
-state 249
+state 251
 
     (43) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression . SEMICOLON RPAREN code_block
     (46) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression . SEMICOLON expression RPAREN code_block
@@ -15855,9 +16070,9 @@ state 249
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
-    SEMICOLON       shift and go to state 258
+    SEMICOLON       shift and go to state 260
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -15887,7 +16102,7 @@ state 249
     LPAREN          shift and go to state 114
 
 
-state 250
+state 252
 
     (47) iteration_sentence -> DO code_block WHILE LPAREN expression . RPAREN SEMICOLON
     (58) expression -> expression . BITWISE_OR_EQ expression
@@ -15916,9 +16131,9 @@ state 250
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
-    RPAREN          shift and go to state 259
+    RPAREN          shift and go to state 261
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -15948,35 +16163,35 @@ state 250
     LPAREN          shift and go to state 114
 
 
-state 251
+state 253
 
     (48) iteration_sentence -> WHILE LPAREN expression RPAREN LBRACE . code_block RBRACE
     (56) code_block -> . LBRACE sentence_list RBRACE
     LBRACE          shift and go to state 208
 
-    code_block                     shift and go to state 260
+    code_block                     shift and go to state 262
 
-state 252
+state 254
 
     (49) conditional_sentence -> SWITCH LPAREN expression RPAREN LBRACE case_sentence_list . RBRACE
     (52) case_sentence_list -> case_sentence_list . case_sentence
     (54) case_sentence -> . DEFAULT COLON sentence_list
     (55) case_sentence -> . CASE expression COLON sentence_list
-    RBRACE          shift and go to state 261
-    DEFAULT         shift and go to state 263
-    CASE            shift and go to state 264
+    RBRACE          shift and go to state 263
+    DEFAULT         shift and go to state 265
+    CASE            shift and go to state 266
 
-    case_sentence                  shift and go to state 262
+    case_sentence                  shift and go to state 264
 
-state 253
+state 255
 
     (51) conditional_sentence -> IF LPAREN expression RPAREN code_block ELSE . code_block
     (56) code_block -> . LBRACE sentence_list RBRACE
     LBRACE          shift and go to state 208
 
-    code_block                     shift and go to state 265
+    code_block                     shift and go to state 267
 
-state 254
+state 256
 
     (45) iteration_sentence -> FOR LPAREN SEMICOLON SEMICOLON RPAREN code_block .
     RBRACE          reduce using rule 45 (iteration_sentence -> FOR LPAREN SEMICOLON SEMICOLON RPAREN code_block .)
@@ -16033,7 +16248,7 @@ state 254
     CASE            reduce using rule 45 (iteration_sentence -> FOR LPAREN SEMICOLON SEMICOLON RPAREN code_block .)
 
 
-state 255
+state 257
 
     (41) iteration_sentence -> FOR LPAREN SEMICOLON expression SEMICOLON expression . RPAREN code_block
     (58) expression -> expression . BITWISE_OR_EQ expression
@@ -16062,9 +16277,9 @@ state 255
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
-    RPAREN          shift and go to state 266
+    RPAREN          shift and go to state 268
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -16094,23 +16309,23 @@ state 255
     LPAREN          shift and go to state 114
 
 
-state 256
+state 258
 
     (42) iteration_sentence -> FOR LPAREN SEMICOLON expression SEMICOLON RPAREN . code_block
     (56) code_block -> . LBRACE sentence_list RBRACE
     LBRACE          shift and go to state 208
 
-    code_block                     shift and go to state 267
+    code_block                     shift and go to state 269
 
-state 257
+state 259
 
     (44) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON SEMICOLON RPAREN . code_block
     (56) code_block -> . LBRACE sentence_list RBRACE
     LBRACE          shift and go to state 208
 
-    code_block                     shift and go to state 268
+    code_block                     shift and go to state 270
 
-state 258
+state 260
 
     (43) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON . RPAREN code_block
     (46) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON . expression RPAREN code_block
@@ -16146,7 +16361,7 @@ state 258
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -16177,7 +16392,7 @@ state 258
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    RPAREN          shift and go to state 270
+    RPAREN          shift and go to state 272
     LPAREN          shift and go to state 50
     BITWISE_NOT     shift and go to state 53
     NOT             shift and go to state 54
@@ -16208,23 +16423,23 @@ state 258
     CHAR            shift and go to state 78
     BYTE            shift and go to state 79
 
-    expression                     shift and go to state 269
+    expression                     shift and go to state 271
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
-state 259
+state 261
 
     (47) iteration_sentence -> DO code_block WHILE LPAREN expression RPAREN . SEMICOLON
-    SEMICOLON       shift and go to state 271
+    SEMICOLON       shift and go to state 273
 
 
-state 260
+state 262
 
     (48) iteration_sentence -> WHILE LPAREN expression RPAREN LBRACE code_block . RBRACE
-    RBRACE          shift and go to state 272
+    RBRACE          shift and go to state 274
 
 
-state 261
+state 263
 
     (49) conditional_sentence -> SWITCH LPAREN expression RPAREN LBRACE case_sentence_list RBRACE .
     RBRACE          reduce using rule 49 (conditional_sentence -> SWITCH LPAREN expression RPAREN LBRACE case_sentence_list RBRACE .)
@@ -16281,7 +16496,7 @@ state 261
     CASE            reduce using rule 49 (conditional_sentence -> SWITCH LPAREN expression RPAREN LBRACE case_sentence_list RBRACE .)
 
 
-state 262
+state 264
 
     (52) case_sentence_list -> case_sentence_list case_sentence .
     RBRACE          reduce using rule 52 (case_sentence_list -> case_sentence_list case_sentence .)
@@ -16289,13 +16504,13 @@ state 262
     CASE            reduce using rule 52 (case_sentence_list -> case_sentence_list case_sentence .)
 
 
-state 263
+state 265
 
     (54) case_sentence -> DEFAULT . COLON sentence_list
-    COLON           shift and go to state 273
+    COLON           shift and go to state 275
 
 
-state 264
+state 266
 
     (55) case_sentence -> CASE . expression COLON sentence_list
     (57) expression -> . LPAREN expression RPAREN
@@ -16330,7 +16545,7 @@ state 264
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -16391,11 +16606,11 @@ state 264
     CHAR            shift and go to state 78
     BYTE            shift and go to state 79
 
-    expression                     shift and go to state 274
+    expression                     shift and go to state 276
     conversion                     shift and go to state 55
     type_convert                   shift and go to state 72
 
-state 265
+state 267
 
     (51) conditional_sentence -> IF LPAREN expression RPAREN code_block ELSE code_block .
     RBRACE          reduce using rule 51 (conditional_sentence -> IF LPAREN expression RPAREN code_block ELSE code_block .)
@@ -16452,15 +16667,15 @@ state 265
     CASE            reduce using rule 51 (conditional_sentence -> IF LPAREN expression RPAREN code_block ELSE code_block .)
 
 
-state 266
+state 268
 
     (41) iteration_sentence -> FOR LPAREN SEMICOLON expression SEMICOLON expression RPAREN . code_block
     (56) code_block -> . LBRACE sentence_list RBRACE
     LBRACE          shift and go to state 208
 
-    code_block                     shift and go to state 275
+    code_block                     shift and go to state 277
 
-state 267
+state 269
 
     (42) iteration_sentence -> FOR LPAREN SEMICOLON expression SEMICOLON RPAREN code_block .
     RBRACE          reduce using rule 42 (iteration_sentence -> FOR LPAREN SEMICOLON expression SEMICOLON RPAREN code_block .)
@@ -16517,7 +16732,7 @@ state 267
     CASE            reduce using rule 42 (iteration_sentence -> FOR LPAREN SEMICOLON expression SEMICOLON RPAREN code_block .)
 
 
-state 268
+state 270
 
     (44) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON SEMICOLON RPAREN code_block .
     RBRACE          reduce using rule 44 (iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON SEMICOLON RPAREN code_block .)
@@ -16574,7 +16789,7 @@ state 268
     CASE            reduce using rule 44 (iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON SEMICOLON RPAREN code_block .)
 
 
-state 269
+state 271
 
     (46) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON expression . RPAREN code_block
     (58) expression -> expression . BITWISE_OR_EQ expression
@@ -16603,9 +16818,9 @@ state 269
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
-    RPAREN          shift and go to state 276
+    RPAREN          shift and go to state 278
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -16635,15 +16850,15 @@ state 269
     LPAREN          shift and go to state 114
 
 
-state 270
+state 272
 
     (43) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON RPAREN . code_block
     (56) code_block -> . LBRACE sentence_list RBRACE
     LBRACE          shift and go to state 208
 
-    code_block                     shift and go to state 277
+    code_block                     shift and go to state 279
 
-state 271
+state 273
 
     (47) iteration_sentence -> DO code_block WHILE LPAREN expression RPAREN SEMICOLON .
     RBRACE          reduce using rule 47 (iteration_sentence -> DO code_block WHILE LPAREN expression RPAREN SEMICOLON .)
@@ -16700,7 +16915,7 @@ state 271
     CASE            reduce using rule 47 (iteration_sentence -> DO code_block WHILE LPAREN expression RPAREN SEMICOLON .)
 
 
-state 272
+state 274
 
     (48) iteration_sentence -> WHILE LPAREN expression RPAREN LBRACE code_block RBRACE .
     RBRACE          reduce using rule 48 (iteration_sentence -> WHILE LPAREN expression RPAREN LBRACE code_block RBRACE .)
@@ -16757,7 +16972,7 @@ state 272
     CASE            reduce using rule 48 (iteration_sentence -> WHILE LPAREN expression RPAREN LBRACE code_block RBRACE .)
 
 
-state 273
+state 275
 
     (54) case_sentence -> DEFAULT COLON . sentence_list
     (27) sentence_list -> . sentence
@@ -16807,7 +17022,7 @@ state 273
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -16859,23 +17074,23 @@ state 273
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
   ! shift/reduce conflict for CONTINUE resolved as shift
   ! shift/reduce conflict for BREAK resolved as shift
   ! shift/reduce conflict for RETURN resolved as shift
@@ -16978,7 +17193,7 @@ state 273
     BOOLEAN         shift and go to state 31
     BOOL            shift and go to state 32
 
-    sentence_list                  shift and go to state 278
+    sentence_list                  shift and go to state 280
     sentence                       shift and go to state 128
     expression                     shift and go to state 132
     define_macro                   shift and go to state 133
@@ -16992,7 +17207,7 @@ state 273
     type_convert                   shift and go to state 72
     var_type                       shift and go to state 37
 
-state 274
+state 276
 
     (55) case_sentence -> CASE expression . COLON sentence_list
     (58) expression -> expression . BITWISE_OR_EQ expression
@@ -17021,9 +17236,9 @@ state 274
     (81) expression -> expression . DIVIDE expression
     (82) expression -> expression . MULTIPLY expression
     (88) expression -> expression . DOT ID
-    (89) expression -> expression . LPAREN parameter RPAREN
+    (89) expression -> expression . LPAREN argument_list RPAREN
     (90) expression -> expression . LPAREN RPAREN
-    COLON           shift and go to state 279
+    COLON           shift and go to state 281
     BITWISE_OR_EQ   shift and go to state 88
     BITWISE_XOR_EQ  shift and go to state 89
     DIV_EQ          shift and go to state 90
@@ -17053,7 +17268,7 @@ state 274
     LPAREN          shift and go to state 114
 
 
-state 275
+state 277
 
     (41) iteration_sentence -> FOR LPAREN SEMICOLON expression SEMICOLON expression RPAREN code_block .
     RBRACE          reduce using rule 41 (iteration_sentence -> FOR LPAREN SEMICOLON expression SEMICOLON expression RPAREN code_block .)
@@ -17110,15 +17325,15 @@ state 275
     CASE            reduce using rule 41 (iteration_sentence -> FOR LPAREN SEMICOLON expression SEMICOLON expression RPAREN code_block .)
 
 
-state 276
+state 278
 
     (46) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON expression RPAREN . code_block
     (56) code_block -> . LBRACE sentence_list RBRACE
     LBRACE          shift and go to state 208
 
-    code_block                     shift and go to state 280
+    code_block                     shift and go to state 282
 
-state 277
+state 279
 
     (43) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON RPAREN code_block .
     RBRACE          reduce using rule 43 (iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON RPAREN code_block .)
@@ -17175,7 +17390,7 @@ state 277
     CASE            reduce using rule 43 (iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON RPAREN code_block .)
 
 
-state 278
+state 280
 
     (54) case_sentence -> DEFAULT COLON sentence_list .
     (29) sentence_list -> sentence_list . sentence
@@ -17223,7 +17438,7 @@ state 278
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -17275,23 +17490,23 @@ state 278
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
     RBRACE          reduce using rule 54 (case_sentence -> DEFAULT COLON sentence_list .)
     DEFAULT         reduce using rule 54 (case_sentence -> DEFAULT COLON sentence_list .)
     CASE            reduce using rule 54 (case_sentence -> DEFAULT COLON sentence_list .)
@@ -17358,7 +17573,7 @@ state 278
     type_convert                   shift and go to state 72
     var_type                       shift and go to state 37
 
-state 279
+state 281
 
     (55) case_sentence -> CASE expression COLON . sentence_list
     (27) sentence_list -> . sentence
@@ -17408,7 +17623,7 @@ state 279
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -17460,23 +17675,23 @@ state 279
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
   ! shift/reduce conflict for CONTINUE resolved as shift
   ! shift/reduce conflict for BREAK resolved as shift
   ! shift/reduce conflict for RETURN resolved as shift
@@ -17580,7 +17795,7 @@ state 279
     BOOL            shift and go to state 32
 
     expression                     shift and go to state 132
-    sentence_list                  shift and go to state 281
+    sentence_list                  shift and go to state 283
     sentence                       shift and go to state 128
     define_macro                   shift and go to state 133
     assignment                     shift and go to state 134
@@ -17593,7 +17808,7 @@ state 279
     type_convert                   shift and go to state 72
     var_type                       shift and go to state 37
 
-state 280
+state 282
 
     (46) iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON expression RPAREN code_block .
     RBRACE          reduce using rule 46 (iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON expression RPAREN code_block .)
@@ -17650,7 +17865,7 @@ state 280
     CASE            reduce using rule 46 (iteration_sentence -> FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON expression RPAREN code_block .)
 
 
-state 281
+state 283
 
     (55) case_sentence -> CASE expression COLON sentence_list .
     (29) sentence_list -> sentence_list . sentence
@@ -17698,7 +17913,7 @@ state 281
     (86) expression -> . PLUS PLUS expression
     (87) expression -> . conversion
     (88) expression -> . expression DOT ID
-    (89) expression -> . expression LPAREN parameter RPAREN
+    (89) expression -> . expression LPAREN argument_list RPAREN
     (90) expression -> . expression LPAREN RPAREN
     (91) expression -> . ID LBRACKET expression_list RBRACKET
     (92) expression -> . ID
@@ -17750,23 +17965,23 @@ state 281
     (122) type_convert -> . FLOAT
     (123) type_convert -> . CHAR
     (124) type_convert -> . BYTE
-    (126) var_type -> . ID
-    (127) var_type -> . WORD
-    (128) var_type -> . VOID
-    (129) var_type -> . UNSIGNED_LONG
-    (130) var_type -> . UNSIGNED_CHAR
-    (131) var_type -> . UNSIGNED_INT
-    (132) var_type -> . STRING
-    (133) var_type -> . SIZE_T
-    (134) var_type -> . SHORT
-    (135) var_type -> . LONG
-    (136) var_type -> . INT
-    (137) var_type -> . FLOAT
-    (138) var_type -> . DOUBLE
-    (139) var_type -> . CHAR
-    (140) var_type -> . BYTE
-    (141) var_type -> . BOOLEAN
-    (142) var_type -> . BOOL
+    (125) var_type -> . ID
+    (126) var_type -> . WORD
+    (127) var_type -> . VOID
+    (128) var_type -> . UNSIGNED_LONG
+    (129) var_type -> . UNSIGNED_CHAR
+    (130) var_type -> . UNSIGNED_INT
+    (131) var_type -> . STRING
+    (132) var_type -> . SIZE_T
+    (133) var_type -> . SHORT
+    (134) var_type -> . LONG
+    (135) var_type -> . INT
+    (136) var_type -> . FLOAT
+    (137) var_type -> . DOUBLE
+    (138) var_type -> . CHAR
+    (139) var_type -> . BYTE
+    (140) var_type -> . BOOLEAN
+    (141) var_type -> . BOOL
     RBRACE          reduce using rule 55 (case_sentence -> CASE expression COLON sentence_list .)
     DEFAULT         reduce using rule 55 (case_sentence -> CASE expression COLON sentence_list .)
     CASE            reduce using rule 55 (case_sentence -> CASE expression COLON sentence_list .)
@@ -17884,6 +18099,7 @@ shift/reduce conflict for SHORT in state 81 resolved as shift
 shift/reduce conflict for DOUBLE in state 81 resolved as shift
 shift/reduce conflict for BOOLEAN in state 81 resolved as shift
 shift/reduce conflict for BOOL in state 81 resolved as shift
+shift/reduce conflict for RPAREN in state 114 resolved as shift
 shift/reduce conflict for CONTINUE in state 151 resolved as shift
 shift/reduce conflict for BREAK in state 151 resolved as shift
 shift/reduce conflict for RETURN in state 151 resolved as shift
@@ -17982,33 +18198,6 @@ shift/reduce conflict for SHORT in state 208 resolved as shift
 shift/reduce conflict for DOUBLE in state 208 resolved as shift
 shift/reduce conflict for BOOLEAN in state 208 resolved as shift
 shift/reduce conflict for BOOL in state 208 resolved as shift
-shift/reduce conflict for BITWISE_OR_EQ in state 215 resolved as shift
-shift/reduce conflict for BITWISE_XOR_EQ in state 215 resolved as shift
-shift/reduce conflict for DIV_EQ in state 215 resolved as shift
-shift/reduce conflict for MINUS_EQ in state 215 resolved as shift
-shift/reduce conflict for SUM_EQ in state 215 resolved as shift
-shift/reduce conflict for MUL_EQ in state 215 resolved as shift
-shift/reduce conflict for MOD_EQ in state 215 resolved as shift
-shift/reduce conflict for OR in state 215 resolved as shift
-shift/reduce conflict for AND in state 215 resolved as shift
-shift/reduce conflict for BITWISE_OR in state 215 resolved as shift
-shift/reduce conflict for BITWISE_XOR in state 215 resolved as shift
-shift/reduce conflict for BITWISE_AND in state 215 resolved as shift
-shift/reduce conflict for NE in state 215 resolved as shift
-shift/reduce conflict for EQ in state 215 resolved as shift
-shift/reduce conflict for GE in state 215 resolved as shift
-shift/reduce conflict for GT in state 215 resolved as shift
-shift/reduce conflict for LE in state 215 resolved as shift
-shift/reduce conflict for LT in state 215 resolved as shift
-shift/reduce conflict for BITWISE_LEFT_SHIFT in state 215 resolved as shift
-shift/reduce conflict for BITWISE_RIGHT_SHIFT in state 215 resolved as shift
-shift/reduce conflict for MINUS in state 215 resolved as shift
-shift/reduce conflict for PLUS in state 215 resolved as shift
-shift/reduce conflict for MODULUS in state 215 resolved as shift
-shift/reduce conflict for DIVIDE in state 215 resolved as shift
-shift/reduce conflict for MULTIPLY in state 215 resolved as shift
-shift/reduce conflict for DOT in state 215 resolved as shift
-shift/reduce conflict for LPAREN in state 215 resolved as shift
 shift/reduce conflict for BITWISE_OR_EQ in state 216 resolved as shift
 shift/reduce conflict for BITWISE_XOR_EQ in state 216 resolved as shift
 shift/reduce conflict for DIV_EQ in state 216 resolved as shift
@@ -18063,104 +18252,131 @@ shift/reduce conflict for DIVIDE in state 217 resolved as shift
 shift/reduce conflict for MULTIPLY in state 217 resolved as shift
 shift/reduce conflict for DOT in state 217 resolved as shift
 shift/reduce conflict for LPAREN in state 217 resolved as shift
-shift/reduce conflict for MINUS in state 234 resolved as shift
-shift/reduce conflict for PLUS in state 234 resolved as shift
-shift/reduce conflict for LPAREN in state 234 resolved as shift
-shift/reduce conflict for CONTINUE in state 273 resolved as shift
-shift/reduce conflict for BREAK in state 273 resolved as shift
-shift/reduce conflict for RETURN in state 273 resolved as shift
-shift/reduce conflict for DEFINE in state 273 resolved as shift
-shift/reduce conflict for LPAREN in state 273 resolved as shift
-shift/reduce conflict for BITWISE_NOT in state 273 resolved as shift
-shift/reduce conflict for NOT in state 273 resolved as shift
-shift/reduce conflict for MINUS in state 273 resolved as shift
-shift/reduce conflict for PLUS in state 273 resolved as shift
-shift/reduce conflict for ID in state 273 resolved as shift
-shift/reduce conflict for STRING_CONST in state 273 resolved as shift
-shift/reduce conflict for CHAR_CONST in state 273 resolved as shift
-shift/reduce conflict for FLOAT_CONST in state 273 resolved as shift
-shift/reduce conflict for INT_CONST in state 273 resolved as shift
-shift/reduce conflict for BINARY_CONST in state 273 resolved as shift
-shift/reduce conflict for OCTAL_CONST in state 273 resolved as shift
-shift/reduce conflict for HEX_CONST in state 273 resolved as shift
-shift/reduce conflict for OUTPUT in state 273 resolved as shift
-shift/reduce conflict for INPUT_PULLUP in state 273 resolved as shift
-shift/reduce conflict for INPUT in state 273 resolved as shift
-shift/reduce conflict for ANALOG_PIN in state 273 resolved as shift
-shift/reduce conflict for HIGH in state 273 resolved as shift
-shift/reduce conflict for LOW in state 273 resolved as shift
-shift/reduce conflict for FALSE in state 273 resolved as shift
-shift/reduce conflict for TRUE in state 273 resolved as shift
-shift/reduce conflict for BOOL_CONST in state 273 resolved as shift
-shift/reduce conflict for SWITCH in state 273 resolved as shift
-shift/reduce conflict for IF in state 273 resolved as shift
-shift/reduce conflict for FOR in state 273 resolved as shift
-shift/reduce conflict for DO in state 273 resolved as shift
-shift/reduce conflict for WHILE in state 273 resolved as shift
-shift/reduce conflict for STATIC in state 273 resolved as shift
-shift/reduce conflict for CONST in state 273 resolved as shift
-shift/reduce conflict for STRING in state 273 resolved as shift
-shift/reduce conflict for WORD in state 273 resolved as shift
-shift/reduce conflict for LONG in state 273 resolved as shift
-shift/reduce conflict for INT in state 273 resolved as shift
-shift/reduce conflict for FLOAT in state 273 resolved as shift
-shift/reduce conflict for CHAR in state 273 resolved as shift
-shift/reduce conflict for BYTE in state 273 resolved as shift
-shift/reduce conflict for VOID in state 273 resolved as shift
-shift/reduce conflict for UNSIGNED_LONG in state 273 resolved as shift
-shift/reduce conflict for UNSIGNED_CHAR in state 273 resolved as shift
-shift/reduce conflict for UNSIGNED_INT in state 273 resolved as shift
-shift/reduce conflict for SIZE_T in state 273 resolved as shift
-shift/reduce conflict for SHORT in state 273 resolved as shift
-shift/reduce conflict for DOUBLE in state 273 resolved as shift
-shift/reduce conflict for BOOLEAN in state 273 resolved as shift
-shift/reduce conflict for BOOL in state 273 resolved as shift
-shift/reduce conflict for CONTINUE in state 279 resolved as shift
-shift/reduce conflict for BREAK in state 279 resolved as shift
-shift/reduce conflict for RETURN in state 279 resolved as shift
-shift/reduce conflict for DEFINE in state 279 resolved as shift
-shift/reduce conflict for LPAREN in state 279 resolved as shift
-shift/reduce conflict for BITWISE_NOT in state 279 resolved as shift
-shift/reduce conflict for NOT in state 279 resolved as shift
-shift/reduce conflict for MINUS in state 279 resolved as shift
-shift/reduce conflict for PLUS in state 279 resolved as shift
-shift/reduce conflict for ID in state 279 resolved as shift
-shift/reduce conflict for STRING_CONST in state 279 resolved as shift
-shift/reduce conflict for CHAR_CONST in state 279 resolved as shift
-shift/reduce conflict for FLOAT_CONST in state 279 resolved as shift
-shift/reduce conflict for INT_CONST in state 279 resolved as shift
-shift/reduce conflict for BINARY_CONST in state 279 resolved as shift
-shift/reduce conflict for OCTAL_CONST in state 279 resolved as shift
-shift/reduce conflict for HEX_CONST in state 279 resolved as shift
-shift/reduce conflict for OUTPUT in state 279 resolved as shift
-shift/reduce conflict for INPUT_PULLUP in state 279 resolved as shift
-shift/reduce conflict for INPUT in state 279 resolved as shift
-shift/reduce conflict for ANALOG_PIN in state 279 resolved as shift
-shift/reduce conflict for HIGH in state 279 resolved as shift
-shift/reduce conflict for LOW in state 279 resolved as shift
-shift/reduce conflict for FALSE in state 279 resolved as shift
-shift/reduce conflict for TRUE in state 279 resolved as shift
-shift/reduce conflict for BOOL_CONST in state 279 resolved as shift
-shift/reduce conflict for SWITCH in state 279 resolved as shift
-shift/reduce conflict for IF in state 279 resolved as shift
-shift/reduce conflict for FOR in state 279 resolved as shift
-shift/reduce conflict for DO in state 279 resolved as shift
-shift/reduce conflict for WHILE in state 279 resolved as shift
-shift/reduce conflict for STATIC in state 279 resolved as shift
-shift/reduce conflict for CONST in state 279 resolved as shift
-shift/reduce conflict for STRING in state 279 resolved as shift
-shift/reduce conflict for WORD in state 279 resolved as shift
-shift/reduce conflict for LONG in state 279 resolved as shift
-shift/reduce conflict for INT in state 279 resolved as shift
-shift/reduce conflict for FLOAT in state 279 resolved as shift
-shift/reduce conflict for CHAR in state 279 resolved as shift
-shift/reduce conflict for BYTE in state 279 resolved as shift
-shift/reduce conflict for VOID in state 279 resolved as shift
-shift/reduce conflict for UNSIGNED_LONG in state 279 resolved as shift
-shift/reduce conflict for UNSIGNED_CHAR in state 279 resolved as shift
-shift/reduce conflict for UNSIGNED_INT in state 279 resolved as shift
-shift/reduce conflict for SIZE_T in state 279 resolved as shift
-shift/reduce conflict for SHORT in state 279 resolved as shift
-shift/reduce conflict for DOUBLE in state 279 resolved as shift
-shift/reduce conflict for BOOLEAN in state 279 resolved as shift
-shift/reduce conflict for BOOL in state 279 resolved as shift
+shift/reduce conflict for BITWISE_OR_EQ in state 218 resolved as shift
+shift/reduce conflict for BITWISE_XOR_EQ in state 218 resolved as shift
+shift/reduce conflict for DIV_EQ in state 218 resolved as shift
+shift/reduce conflict for MINUS_EQ in state 218 resolved as shift
+shift/reduce conflict for SUM_EQ in state 218 resolved as shift
+shift/reduce conflict for MUL_EQ in state 218 resolved as shift
+shift/reduce conflict for MOD_EQ in state 218 resolved as shift
+shift/reduce conflict for OR in state 218 resolved as shift
+shift/reduce conflict for AND in state 218 resolved as shift
+shift/reduce conflict for BITWISE_OR in state 218 resolved as shift
+shift/reduce conflict for BITWISE_XOR in state 218 resolved as shift
+shift/reduce conflict for BITWISE_AND in state 218 resolved as shift
+shift/reduce conflict for NE in state 218 resolved as shift
+shift/reduce conflict for EQ in state 218 resolved as shift
+shift/reduce conflict for GE in state 218 resolved as shift
+shift/reduce conflict for GT in state 218 resolved as shift
+shift/reduce conflict for LE in state 218 resolved as shift
+shift/reduce conflict for LT in state 218 resolved as shift
+shift/reduce conflict for BITWISE_LEFT_SHIFT in state 218 resolved as shift
+shift/reduce conflict for BITWISE_RIGHT_SHIFT in state 218 resolved as shift
+shift/reduce conflict for MINUS in state 218 resolved as shift
+shift/reduce conflict for PLUS in state 218 resolved as shift
+shift/reduce conflict for MODULUS in state 218 resolved as shift
+shift/reduce conflict for DIVIDE in state 218 resolved as shift
+shift/reduce conflict for MULTIPLY in state 218 resolved as shift
+shift/reduce conflict for DOT in state 218 resolved as shift
+shift/reduce conflict for LPAREN in state 218 resolved as shift
+shift/reduce conflict for MINUS in state 236 resolved as shift
+shift/reduce conflict for PLUS in state 236 resolved as shift
+shift/reduce conflict for LPAREN in state 236 resolved as shift
+shift/reduce conflict for CONTINUE in state 275 resolved as shift
+shift/reduce conflict for BREAK in state 275 resolved as shift
+shift/reduce conflict for RETURN in state 275 resolved as shift
+shift/reduce conflict for DEFINE in state 275 resolved as shift
+shift/reduce conflict for LPAREN in state 275 resolved as shift
+shift/reduce conflict for BITWISE_NOT in state 275 resolved as shift
+shift/reduce conflict for NOT in state 275 resolved as shift
+shift/reduce conflict for MINUS in state 275 resolved as shift
+shift/reduce conflict for PLUS in state 275 resolved as shift
+shift/reduce conflict for ID in state 275 resolved as shift
+shift/reduce conflict for STRING_CONST in state 275 resolved as shift
+shift/reduce conflict for CHAR_CONST in state 275 resolved as shift
+shift/reduce conflict for FLOAT_CONST in state 275 resolved as shift
+shift/reduce conflict for INT_CONST in state 275 resolved as shift
+shift/reduce conflict for BINARY_CONST in state 275 resolved as shift
+shift/reduce conflict for OCTAL_CONST in state 275 resolved as shift
+shift/reduce conflict for HEX_CONST in state 275 resolved as shift
+shift/reduce conflict for OUTPUT in state 275 resolved as shift
+shift/reduce conflict for INPUT_PULLUP in state 275 resolved as shift
+shift/reduce conflict for INPUT in state 275 resolved as shift
+shift/reduce conflict for ANALOG_PIN in state 275 resolved as shift
+shift/reduce conflict for HIGH in state 275 resolved as shift
+shift/reduce conflict for LOW in state 275 resolved as shift
+shift/reduce conflict for FALSE in state 275 resolved as shift
+shift/reduce conflict for TRUE in state 275 resolved as shift
+shift/reduce conflict for BOOL_CONST in state 275 resolved as shift
+shift/reduce conflict for SWITCH in state 275 resolved as shift
+shift/reduce conflict for IF in state 275 resolved as shift
+shift/reduce conflict for FOR in state 275 resolved as shift
+shift/reduce conflict for DO in state 275 resolved as shift
+shift/reduce conflict for WHILE in state 275 resolved as shift
+shift/reduce conflict for STATIC in state 275 resolved as shift
+shift/reduce conflict for CONST in state 275 resolved as shift
+shift/reduce conflict for STRING in state 275 resolved as shift
+shift/reduce conflict for WORD in state 275 resolved as shift
+shift/reduce conflict for LONG in state 275 resolved as shift
+shift/reduce conflict for INT in state 275 resolved as shift
+shift/reduce conflict for FLOAT in state 275 resolved as shift
+shift/reduce conflict for CHAR in state 275 resolved as shift
+shift/reduce conflict for BYTE in state 275 resolved as shift
+shift/reduce conflict for VOID in state 275 resolved as shift
+shift/reduce conflict for UNSIGNED_LONG in state 275 resolved as shift
+shift/reduce conflict for UNSIGNED_CHAR in state 275 resolved as shift
+shift/reduce conflict for UNSIGNED_INT in state 275 resolved as shift
+shift/reduce conflict for SIZE_T in state 275 resolved as shift
+shift/reduce conflict for SHORT in state 275 resolved as shift
+shift/reduce conflict for DOUBLE in state 275 resolved as shift
+shift/reduce conflict for BOOLEAN in state 275 resolved as shift
+shift/reduce conflict for BOOL in state 275 resolved as shift
+shift/reduce conflict for CONTINUE in state 281 resolved as shift
+shift/reduce conflict for BREAK in state 281 resolved as shift
+shift/reduce conflict for RETURN in state 281 resolved as shift
+shift/reduce conflict for DEFINE in state 281 resolved as shift
+shift/reduce conflict for LPAREN in state 281 resolved as shift
+shift/reduce conflict for BITWISE_NOT in state 281 resolved as shift
+shift/reduce conflict for NOT in state 281 resolved as shift
+shift/reduce conflict for MINUS in state 281 resolved as shift
+shift/reduce conflict for PLUS in state 281 resolved as shift
+shift/reduce conflict for ID in state 281 resolved as shift
+shift/reduce conflict for STRING_CONST in state 281 resolved as shift
+shift/reduce conflict for CHAR_CONST in state 281 resolved as shift
+shift/reduce conflict for FLOAT_CONST in state 281 resolved as shift
+shift/reduce conflict for INT_CONST in state 281 resolved as shift
+shift/reduce conflict for BINARY_CONST in state 281 resolved as shift
+shift/reduce conflict for OCTAL_CONST in state 281 resolved as shift
+shift/reduce conflict for HEX_CONST in state 281 resolved as shift
+shift/reduce conflict for OUTPUT in state 281 resolved as shift
+shift/reduce conflict for INPUT_PULLUP in state 281 resolved as shift
+shift/reduce conflict for INPUT in state 281 resolved as shift
+shift/reduce conflict for ANALOG_PIN in state 281 resolved as shift
+shift/reduce conflict for HIGH in state 281 resolved as shift
+shift/reduce conflict for LOW in state 281 resolved as shift
+shift/reduce conflict for FALSE in state 281 resolved as shift
+shift/reduce conflict for TRUE in state 281 resolved as shift
+shift/reduce conflict for BOOL_CONST in state 281 resolved as shift
+shift/reduce conflict for SWITCH in state 281 resolved as shift
+shift/reduce conflict for IF in state 281 resolved as shift
+shift/reduce conflict for FOR in state 281 resolved as shift
+shift/reduce conflict for DO in state 281 resolved as shift
+shift/reduce conflict for WHILE in state 281 resolved as shift
+shift/reduce conflict for STATIC in state 281 resolved as shift
+shift/reduce conflict for CONST in state 281 resolved as shift
+shift/reduce conflict for STRING in state 281 resolved as shift
+shift/reduce conflict for WORD in state 281 resolved as shift
+shift/reduce conflict for LONG in state 281 resolved as shift
+shift/reduce conflict for INT in state 281 resolved as shift
+shift/reduce conflict for FLOAT in state 281 resolved as shift
+shift/reduce conflict for CHAR in state 281 resolved as shift
+shift/reduce conflict for BYTE in state 281 resolved as shift
+shift/reduce conflict for VOID in state 281 resolved as shift
+shift/reduce conflict for UNSIGNED_LONG in state 281 resolved as shift
+shift/reduce conflict for UNSIGNED_CHAR in state 281 resolved as shift
+shift/reduce conflict for UNSIGNED_INT in state 281 resolved as shift
+shift/reduce conflict for SIZE_T in state 281 resolved as shift
+shift/reduce conflict for SHORT in state 281 resolved as shift
+shift/reduce conflict for DOUBLE in state 281 resolved as shift
+shift/reduce conflict for BOOLEAN in state 281 resolved as shift
+shift/reduce conflict for BOOL in state 281 resolved as shift

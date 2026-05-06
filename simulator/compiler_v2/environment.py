@@ -1,3 +1,12 @@
+import inspect
+import libraries.standard as std
+import libraries.keyboard as keyboard
+import libraries.libs as libs
+import libraries.string as string
+import libraries.servo as servo
+
+
+
 class Environment:
     def __init__(self,parent_env=None):
         self.variables = {} #Key: variable name, Value: variable type
@@ -7,6 +16,11 @@ class Environment:
         self.libraries = {} # key: library name, value: library module   
         self.built_in_functions = {} # key: function name, value: function object
         self.built_in_functions = {}
+        self.lib_functions = {} #key: lib.function_name, value: function object
+        
+
+        #Hacer registro de funciones built in
+        self.register_built_in()
 
         #Debugger related attributes
         if parent_env is not None:
@@ -93,7 +107,31 @@ class Environment:
     
     #TODO: Añadir todas las funciones built in
     def register_built_in(self):
-        pass
+        self.built_in_functions = {
+            name: func for name, func in inspect.getmembers(std, inspect.isfunction)
+            }
+        
+    def register_lib(self, lib):
+        if lib == "Servo":
+            self.lib_functions.update({
+                f"servo.{name}": func for name, func in inspect.getmembers(servo, inspect.isfunction)
+            })
+        if lib == "Keyboard":
+            self.lib_functions.update({
+                f"keyboard.{name}": func for name, func in inspect.getmembers(keyboard, inspect.isfunction)
+            })
+        if lib == "String":
+            self.lib_functions.update({
+                f"string.{name}": func for name, func in inspect.getmembers(string, inspect.isfunction)
+            })
+        if lib == "Libs":
+            self.lib_functions.update({
+                f"libs.{name}": func for name, func in inspect.getmembers(libs, inspect.isfunction)
+            })
+        
+
+        
+        
         
     def define_function(self, name, func):
         self.built_in_functions[name] = func

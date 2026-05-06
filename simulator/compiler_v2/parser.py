@@ -362,11 +362,11 @@ class ArduinoParser(Parser):
     
     @_('LOW')
     def expression(self, p):
-        return ('low', p.LOW)
+        return ta.Int(0)
     
     @_('HIGH')
     def expression(self, p):
-        return ('high', p.HIGH)
+        return ta.Int(1)
     
     @_('ANALOG_PIN')
     def expression(self, p):
@@ -374,15 +374,15 @@ class ArduinoParser(Parser):
     
     @_('INPUT')
     def expression(self, p):
-        return ('input', p.INPUT)
+        return ta.String('INPUT')
     
     @_('INPUT_PULLUP')
     def expression(self, p):
-        return ('input_pullup', p.INPUT_PULLUP)
+        return ta.String('INPUT_PULLUP')
     
     @_('OUTPUT')
     def expression(self, p):
-        return ('output', p.OUTPUT)
+        return  ta.String('OUTPUT')
     
     @_('HEX_CONST')
     def expression(self, p):
@@ -444,13 +444,16 @@ class ArduinoParser(Parser):
         return [p.expression]
     
 
+    #TODO: Revisar regla expr, creo que el error es el expression en vez de un tipo
+
     @_('expression LPAREN RPAREN')
     def expression(self, p):
         return ta.function_call(p.expression, None)
 
-    @_('expression LPAREN parameter RPAREN')
+    @_('expression LPAREN argument_list RPAREN')
     def expression(self, p):
-        return ta.function_call(p.expression, p.parameter)
+        return ta.function_call(p.expression, p.argument_list)
+    
 
     #TODO: No estan en la gramatica, SOLUCIONAR llamadas a funciones de libreria
     '''
@@ -475,11 +478,12 @@ class ArduinoParser(Parser):
 
     @_('argument_list COMMA expression')
     def argument_list(self, p):
-        return p.argument_list.add_argument(p.expression)    
+        return p.argument_list.add_argument(p.expression)
 
     @_('')
     def argument_list(self, p):
         return ta.argument_list([])
+    
     @_('conversion')
     def expression(self, p):
         return ('conversion', p.conversion)
@@ -635,9 +639,7 @@ class ArduinoParser(Parser):
         return p[0]
 
     # ç rules
-    @_('expression_list')
-    def parameter(self, p):
-        return p.expression_list
+    
 
    
     
@@ -712,23 +714,18 @@ if __name__ == '__main__':
     }   
     '''
     data = code = '''
-        int contador_global = 0;
-        int limite = 5;
+        void setup() {  // initialize digital pin 13 as an output.
+   pinMode(2, OUTPUT);
+}
 
-        void actualizarContador() {
-            int paso = 1;
-            contador_global = contador_global + paso;
-        }
+// the loop function runs over and over again forever
 
-        void setup() {
-            contador_global = 0;
-        }
-
-        void loop() {
-            if (contador_global < limite) {
-            actualizarContador();
-        }
-    }
+void loop() {
+   digitalWrite(2, HIGH); // turn the LED on (HIGH is the voltage level)
+   delay(1000); // wait for a second
+   digitalWrite(2, LOW); // turn the LED off by making the voltage LOW
+   delay(1000); // wait for a second
+}
         
     
     '''

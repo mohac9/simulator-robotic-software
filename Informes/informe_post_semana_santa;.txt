@@ -1,0 +1,34 @@
+int global1 = 4;
+int global2 = 4;
+int global3 = 4;
+
+int x;
+int i;
+int z;
+
+void setup() {
+  x = 1;
+  i = 0;
+  z = 4;
+}
+
+void loop() {
+  if (i < 10) {
+    i = i + 1; 
+  }
+  
+  z = z + global1 * global2;
+}
+
+
+Reunion anterior:
+Enseñar a Domingo la idea del depurador, aunque el código no era funcional
+Reunion actual:
+Enseñar funcionamiento debugger
+Enseñar código decir que ha sido rehecho, cambiando detalles importantes en la gestion de hilos
+Preguntar sobre como parar el debugger
+Test unitarios
+Trabajo futuro:
+Refactorizar switch_case para el método pause_continue,  implementar diccionario
+Memoria:
+Explicacion detallada del cuando se para el check_pause
