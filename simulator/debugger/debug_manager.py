@@ -52,13 +52,14 @@ class DebugManager:
 
     def send_command(self, command):
         self.debugger.cmd_processor(command)
-        self.init_pause.set()  # Desbloquea la ejecución del código
+        if command != 'stop':
+            self.init_pause.set()  # Desbloquea la ejecución del código
         
 
         
 
 
     def stop(self):
-        self.debugger.stop()
+        self.debugger.send_command('stop')
         self.is_executing = False
         self.application.controller.stop()

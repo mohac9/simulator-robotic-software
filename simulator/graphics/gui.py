@@ -412,6 +412,12 @@ class MainApplication(tk.Tk):
     def step_out(self):
         self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
         self.debug_manager.send_command('step_out')
+
+    def stop_debugging(self):
+        self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
+        self.debug_manager.send_command('stop')
+        self.debug_manager.start_execution(self.tracepoints)
+        
         
 
     def continue_execution(self):
@@ -473,11 +479,20 @@ class DebugPanel(tk.Frame):
             font=("Consolas", 10),
             command=self.application.step_out
         )
+        self.stop_button = tk.Button(
+            self.controls_frame,
+            text="Stop",
+            bg=BLUE,
+            fg=DARK_BLUE,
+            font=("Consolas", 10),
+            command=self.application.stop_debugging
+        )
 
         self.continue_button.pack(side=tk.LEFT, padx=2, pady=5)
         self.step_into_button.pack(side=tk.LEFT, padx=2, pady=5)
         self.step_over_button.pack(side=tk.LEFT, padx=2, pady=5)
         self.step_out_button.pack(side=tk.LEFT, padx=2, pady=5)
+        self.stop_button.pack(side=tk.LEFT, padx=2, pady=5)
 
         # Panel dividido para variables y stack
         self.debug_pane = tk.PanedWindow(

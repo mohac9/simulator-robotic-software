@@ -9,7 +9,12 @@ class DebugCommand(StrEnum):
     STEP_INTO = 'step_into'
     STEP_OVER = 'step_over'
     STEP_OUT = 'step_out'
+    STOP = 'stop'
     PAUSE = 'pause' #Uso interno
+
+#Clase de exceptión para abortar la ejecución del código desde el debugger
+class DebugAbortException(Exception):
+    pass
 
 
 class Debugger:
@@ -38,7 +43,8 @@ class Debugger:
         dic = {'continue': DebugCommand.CONTINUE,
                'step_into': DebugCommand.STEP_INTO,
                'step_into': DebugCommand.STEP_OVER,
-               'step_out': DebugCommand.STEP_OUT
+               'step_out': DebugCommand.STEP_OUT,
+                'stop': DebugCommand.STOP
                }
  
         self.debugger_mode = dic.get(cmd, None)
@@ -53,6 +59,7 @@ class Debugger:
             
     def execute_arduino_code(self,init_pause=False): 
         #Pausa inicial, espera al primer comando de ejecución para empezar a ejecutar el código
+        self.cmd_processor('pause')
         init_pause.wait()  
         try:
             self.is_executing = True
@@ -67,6 +74,8 @@ class Debugger:
                         time.sleep(0.01)
         except Exception as e:
             print(f'Error en ejecución: {e}')
+        except DebugAbortException as e:
+            print(f'Ejecución abortada')
 
                     
               
@@ -83,10 +92,6 @@ class Debugger:
     #Recibe un comando del intérprete, lo procesa y decide si se debe pausar la ejecución o no
 
 
-    def stop(self):
-        self.abort = True
-        self.pause_event.set()
-
     def pause(self,current_line, env):
         self.debugger_mode = DebugCommand.PAUSE
         self.pause_event.clear()
@@ -102,8 +107,7 @@ class Debugger:
         y = DebugCommand.STEP_INTO
 
         
-        if x == y:
-            print("Los valores son iguales")
+        
 
         if self.abort:
             raise Exception("Ejecución abortada por el usuario")
@@ -127,7 +131,7 @@ class Debugger:
         elif self.debugger_mode == DebugCommand.STEP_OUT:
             if env != self.current_env or env.parent is None or current_line in self.breakpoints:
                 self.pause(current_line, env)
+        elif self.debugger_mode == DebugCommand.STOP:
+             raise DebugAbortException("Ejecución abortada por el usuario")
 
-        if self.abort:
-            raise Exception("Ejecución abortada por el usuario")
         
