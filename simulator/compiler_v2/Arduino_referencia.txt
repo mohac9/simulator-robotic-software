@@ -138,6 +138,7 @@ expression
        | ID
        | '(' r_expr=expression ')'
        | member_acc=expression '.' id_acc=ID
+       id'.'id'(' args=parameter? ')'
        | array_name=ID ('[' indexes+=expression ']')+ #TODO Cambiar más adelante
        | f_call=expression '(' args=parameter? ')'
        | conv=conversion

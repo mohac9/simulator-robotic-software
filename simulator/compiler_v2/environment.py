@@ -4,6 +4,7 @@ import libraries.keyboard as keyboard
 import libraries.libs as libs
 import libraries.string as string
 import libraries.servo as servo
+import libraries.serial as serial
 
 
 
@@ -17,6 +18,8 @@ class Environment:
         self.built_in_functions = {} # key: function name, value: function object
         self.built_in_functions = {}
         self.lib_functions = {} #key: lib.function_name, value: function object
+
+        self.types ={}  #key: type name, value: get_methods()
         
 
         #Hacer registro de funciones built in
@@ -113,9 +116,30 @@ class Environment:
         
     def register_lib(self, lib):
         if lib == "Servo":
+            print("--- DIAGNÓSTICO DE SERVO ---")
+            print("Todos los atributos de la clase:", dir(servo.Servo))
+            
+            for name in dir(servo.Servo):
+                if not name.startswith('__'):
+                    attr = getattr(servo.Servo, name)
+                    es_callable = callable(attr)
+                    tipo = type(attr)
+                    print(f"Atributo: {name} | Es callable?: {es_callable} | Tipo: {tipo}")
+            print("----------------------------")
+
+            print(servo.Servo)        
+            prefijo = "servo"
             self.lib_functions.update({
-                f"servo.{name}": func for name, func in inspect.getmembers(servo, inspect.isfunction)
+                
+
+                f"{lib}.{name}".lower(): getattr(servo.Servo, name)
+                for name in dir(servo.Servo)
+                if not name.startswith('__') and callable(getattr(servo.Servo, name))
+
+                
             })
+
+        
         if lib == "Keyboard":
             self.lib_functions.update({
                 f"keyboard.{name}": func for name, func in inspect.getmembers(keyboard, inspect.isfunction)
@@ -129,7 +153,12 @@ class Environment:
                 f"libs.{name}": func for name, func in inspect.getmembers(libs, inspect.isfunction)
             })
         
+        if lib == "Serial":
+            self.lib_functions.update({
+                f"serial.{name}": func for name, func in inspect.getmembers(serial, inspect.isfunction)
+            })
 
+        print(f"Registered library '{lib}' with functions: {', '.join(name for name in self.lib_functions if name.startswith(lib + '.'))}")
         
         
         
@@ -138,5 +167,4 @@ class Environment:
 
 
     
-
 

@@ -1222,6 +1222,19 @@ class function_call(parserTypes):
         else:
             return signature
         
+    #Selecciona si es un metodo o una función de librería
+    def metodo(self,name,env):
+        name_obj,name_method = name.split('.')
+        if name_obj in env.variables:
+            name_lib =env.variables[name_obj]
+
+            key_method = name_lib + "." + name_method
+            obj_ = env.variables_contents[name_obj]
+
+            return key_method, obj_
+        return False
+
+
     def camel_case_to_snake_case(self, name):
         import re
         s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
@@ -1249,7 +1262,12 @@ class function_call(parserTypes):
         args = self.parameters.execute(env) if self.parameters else []
         python_args = [types_arduino_to_python(arg) for arg in args]
         lower_case_name = self.camel_case_to_snake_case(self.name)
-        return python_to_types_arduino(env.built_in_functions[lower_case_name](*python_args))
+        is_method = self.metodo(lower_case_name, env)
+        if is_method:
+            key_method,obj_ = is_method
+            lower_case_name = self.camel_case_to_snake_case(key_method)
+            python_args = [obj_] + python_args #Basicament obj_ es el self del método
+        return python_to_types_arduino(env.lib_functions[lower_case_name](*python_args))
         
         
        
