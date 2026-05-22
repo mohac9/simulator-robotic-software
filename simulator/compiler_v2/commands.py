@@ -42,13 +42,15 @@ class Compile(Command):
         try:
             code = self.controller.get_code()
             self.interpreter = ArduinoInterpreter(code)
-
+            self.interpreter.env.add_board(self.controller.robot_layer.robot.board)
             self.interpreter.run(self.interpreter.parser_object)
 
             self.interpreter.register_libraries(
             self.controller.robot_layer.robot.board,
             self.controller.console
             )
+          
+            
             #Si se esta en modo debug
             if hasattr(self.controller, 'debug_manager') and self.controller.debug_manager:
                 self.interpreter.env.debugger = self.controller.debug_manager.debugger

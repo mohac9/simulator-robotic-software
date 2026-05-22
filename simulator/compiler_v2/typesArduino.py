@@ -613,6 +613,7 @@ class declaration(parserTypes):
         
     def execute(self, env):
         declaration_types = ['simple_declaration', 'array_declaration', 'struct_declaration']
+        print(self.declaration)
         if self.declaration.__class__.__name__ not in declaration_types:
             raise RuntimeError(f"Invalid declaration type: {self.declaration.__class__.__name__}. Expected one of {declaration_types}.")
         self.declaration.execute(env)
@@ -652,11 +653,18 @@ class simple_declaration(parserTypes):
     def execute(self, env):
         if self.content is not None:
             content = self.content.execute(env)
-            content = type_conversion(content, self.var_type)
+            content = self.type_conversion(content, self.var_type)
             env.set_variable(self.name, self.var_type, content)
         else:
-            env.set_variable(self.name, self.var_type)
-            
+            if env.is_class(self.var_type):
+                env.set_instance(self.name, self.var_type)
+                print("ENTRO"*10)
+            else:
+                env.set_variable(self.name, self.var_type)
+                
+    
+
+
     def type_conversion(self,object, target_type):
         og_type = object.__class__.__name__.lower() # Original type of the object   
         if og_type == target_type:
@@ -1207,9 +1215,10 @@ def arduino_to_python_name(lib_module, arduino_name: str) -> str:
 
 
 class function_call(parserTypes):
-    def __init__(self, name, parameters):
+    def __init__(self, name, parameters, object_):
         self.name = name.__name__()
         self.parameters = parameters
+        self.object_ = object_
         print(f"Creating function call: {self.name} with parameters: {self.parameters}")
         
     def name_mangling(self, env = None):
@@ -1224,6 +1233,7 @@ class function_call(parserTypes):
         
     #Selecciona si es un metodo o una función de librería
     def metodo(self,name,env):
+        """
         name_obj,name_method = name.split('.')
         if name_obj in env.variables:
             name_lib =env.variables[name_obj]
@@ -1232,6 +1242,16 @@ class function_call(parserTypes):
             obj_ = env.variables_contents[name_obj]
 
             return key_method, obj_
+        """
+        if self.object_:
+            name_lib = self.object_.__type__(env)
+            print("\n"*10)
+            print(name_lib,name)
+            key_method = name_lib + "." + name
+            #obj_ = env.variables_contents[name_obj]
+
+            return key_method, self.object_
+
         return False
 
 
@@ -1247,9 +1267,11 @@ class function_call(parserTypes):
 
 
         lower_name = self.camel_case_to_snake_case(self.name)
+        print("-"*20)
+        print(lower_name, self.name)
         if lower_name in env.built_in_functions: #Funciona
             return self.execute_builtin_function(env,lower_name) 
-        elif '.' in self.name:
+        elif '.' in self.name or self.object_:
             return self.execute_library_function(env)
         else:
             return self.execute_user_function(env)
@@ -1265,9 +1287,10 @@ class function_call(parserTypes):
         is_method = self.metodo(lower_case_name, env)
         if is_method:
             key_method,obj_ = is_method
-            lower_case_name = self.camel_case_to_snake_case(key_method)
-            python_args = [obj_] + python_args #Basicament obj_ es el self del método
-        return python_to_types_arduino(env.lib_functions[lower_case_name](*python_args))
+            print(obj_.__name__())
+            objeto_param = env.variables_contents[obj_.__name__()]
+            python_args = [objeto_param] + python_args #Basicament obj_ es el self del método
+        return python_to_types_arduino(env.lib_functions[key_method](*python_args))
         
         
        
@@ -1294,51 +1317,6 @@ class function_call(parserTypes):
 
 
         
-
-
-        '''
-        print(f"Executing function call: {self.name} with parameters: {self.parameters}")
-        args = self.parameters.execute(env) if self.parameters else []
-        python_args = [types_arduino_to_python(arg) for arg in args]
-        if '.' in self.name:
-            lib_name, func_name = self.name.split('.')
-            lib = env.libraries.get(lib_name)
-            if lib is None:
-                raise RuntimeError(f"Librería '{lib_name}' no encontrada. Usa #include")
-            py_name = arduino_to_python_name(lib, func_name)
-            if hasattr(lib, py_name):
-                return getattr(lib, py_name)(*python_args)
-            elif hasattr(lib, lib_name):  
-                lib_class = getattr(lib, lib_name)
-                instance = lib_class()
-                if hasattr(instance, py_name):
-                    return getattr(instance, py_name)(*python_args)
-            raise RuntimeError(f"Método '{func_name}' no encontrado en librería '{lib_name}'")
-
-        elif hasattr(env, 'built_in_functions') and self.name in env.built_in_functions:
-            # Aquí pasamos los python_args ¡NO los args del AST!
-            return env.built_in_functions[self.name](*python_args)
-            
-        else:
-            signature = self.name_mangling(env)
-            function_object = env.get_function(signature)
-            new_env = function_object.scope_generator(env)
-            
-
-            if function_object.function_args is not None:
-                function_object.args_binding(args, new_env)
-                
-
-            if hasattr(env, 'call_stack'):
-                env.call_stack.append(self.name)
-                
-            try:
-                result = function_object.body_execution(new_env)
-                return result
-            finally:
-                if hasattr(env, 'call_stack'):
-                    env.call_stack.pop()
-    '''
 class argument_list(parserTypes):
     def __init__(self, expressions):
         self.expressions = expressions

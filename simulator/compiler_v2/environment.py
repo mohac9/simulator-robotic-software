@@ -1,15 +1,32 @@
 import inspect
-import libraries.standard as std
-import libraries.keyboard as keyboard
-import libraries.libs as libs
-import libraries.string as string
-import libraries.servo as servo
-import libraries.serial as serial
+
+try:
+    import libraries.standard as std
+    import libraries.keyboard as keyboard
+    import libraries.libs as libs
+    import libraries.string as string
+    import libraries.servo as servo
+    import libraries.serial as serial
+except ImportError:
+    import sys
+    from pathlib import Path
 
 
+    simulator_dir = Path(__file__).resolve().parent.parent
+
+    if str(simulator_dir) not in sys.path:
+        sys.path.insert(0, str(simulator_dir))
+
+    import libraries.standard as std
+    import libraries.keyboard as keyboard
+    import libraries.libs as libs
+    import libraries.string as string
+    import libraries.servo as servo
+    import libraries.serial as serial
 
 class Environment:
-    def __init__(self,parent_env=None):
+    def __init__(self,parent_env=None, board=None):
+        self.board = board if board is not None else (parent_env.board if parent_env else None)
         self.variables = {} #Key: variable name, Value: variable type
         self.variables_contents = {} #Key: variable name, Value: variable content
         self.parent_env = parent_env #May be eliminated in the future, not used yet
@@ -20,7 +37,7 @@ class Environment:
         self.lib_functions = {} #key: lib.function_name, value: function object
 
         self.types ={}  #key: type name, value: get_methods()
-        
+        self.registered_classes = {} #key: type class, value:class
 
         #Hacer registro de funciones built in
         self.register_built_in()
@@ -33,6 +50,11 @@ class Environment:
             self.call_stack = []
             self.debugger = None
 
+    def add_board(self,board):
+        print("-"*20)
+        print(self.board,board)
+        self.board = board
+
     #Auxilliary functions
     def get_name_from_signature(self,signature):
         return signature.split('#')[0]
@@ -42,11 +64,28 @@ class Environment:
     def set_variable(self, name, var_type, content=None):
         if name in self.variables:
             raise RuntimeError(f"Variable '{name}' already defined.")
+        
         self.variables[name] = var_type
         self.variables_contents[name] = content
         
 
+    def is_class(self, var_type):
+        print("*"*10)
+        print(self.registered_classes)
+        return var_type in self.registered_classes
+
+    def set_instance(self,name,var_type):
+        if name in self.variables:
+            raise RuntimeError(f"Variable '{name}' already defined.")
         
+        class_object = self.registered_classes[var_type]
+        print("Existe board /n"*10)
+        print(self.board)
+        instance = class_object(self.board)
+
+        self.variables[name] = var_type
+        self.variables_contents[name] = instance
+    
     def get_variable_type(self,name):
         return  self.variables[name]
     
@@ -115,24 +154,16 @@ class Environment:
             }
         
     def register_lib(self, lib):
-        if lib == "Servo":
-            print("--- DIAGNÓSTICO DE SERVO ---")
-            print("Todos los atributos de la clase:", dir(servo.Servo))
-            
-            for name in dir(servo.Servo):
-                if not name.startswith('__'):
-                    attr = getattr(servo.Servo, name)
-                    es_callable = callable(attr)
-                    tipo = type(attr)
-                    print(f"Atributo: {name} | Es callable?: {es_callable} | Tipo: {tipo}")
-            print("----------------------------")
-
-            print(servo.Servo)        
+        f"El lib es {lib}"
+        if lib == "Servo":       
             prefijo = "servo"
+
+            self.registered_classes["Servo"] = servo.Servo
             self.lib_functions.update({
                 
+                
 
-                f"{lib}.{name}".lower(): getattr(servo.Servo, name)
+                f"{lib}.{name}": getattr(servo.Servo, name)
                 for name in dir(servo.Servo)
                 if not name.startswith('__') and callable(getattr(servo.Servo, name))
 
@@ -158,6 +189,7 @@ class Environment:
                 f"serial.{name}": func for name, func in inspect.getmembers(serial, inspect.isfunction)
             })
 
+        #self.lib_functions = {str (k).lower():self.lib_functions[k] for k in self.lib_functions}
         print(f"Registered library '{lib}' with functions: {', '.join(name for name in self.lib_functions if name.startswith(lib + '.'))}")
         
         

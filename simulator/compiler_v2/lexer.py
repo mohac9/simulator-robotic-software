@@ -422,13 +422,30 @@ class ArduinoLexer(Lexer):
 
 if __name__ == '__main__':
     
-    data = '''
-    Serial.begin(9600); 
-    i = 0;
-    while (i < 5) {
-        Serial.println(i);
-        i++;
-    } 
+    data =     data = code = '''
+    #include <Servo.h>
+ 
+Servo servoLeft;
+Servo servoRight;
+ 
+int pinServoLeft = 8;
+int pinServoRight = 9;
+ 
+int STOP = 90;
+int FORWARD = 180;
+int BACKWARD = 0;
+ 
+int WAIT = 3000;
+ 
+void setup(){
+  servoLeft.attach(pinServoLeft);
+  servoRight.attach(pinServoRight);
+}
+ 
+void loop(){
+
+}  
+    
     '''
     
     lexer = ArduinoLexer()

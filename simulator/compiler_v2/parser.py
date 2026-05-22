@@ -9,6 +9,7 @@ except ImportError:
     # When run directly as a script
     from lexer import ArduinoLexer
     import typesArduino as ta
+     
 
 
 
@@ -448,11 +449,15 @@ class ArduinoParser(Parser):
 
     @_('expression LPAREN RPAREN')
     def expression(self, p):
-        return ta.function_call(p.expression, None)
+        return ta.function_call(p.expression, None,None)
 
     @_('expression LPAREN argument_list RPAREN')
     def expression(self, p):
-        return ta.function_call(p.expression, p.argument_list)
+        return ta.function_call(p.expression, p.argument_list,None)
+
+    @_('expression DOT expression LPAREN argument_list RPAREN')
+    def expression(self, p):
+        return ta.function_call(p.expression1, p.argument_list, p.expression0)
     
 
     #TODO: No estan en la gramatica, SOLUCIONAR llamadas a funciones de libreria
@@ -467,9 +472,12 @@ class ArduinoParser(Parser):
         return ta.function_call(f"{p.ID0}.{p.ID1}", p.parameter)
     '''
     #añadir regla extra
+    '''
     @_('expression DOT ID')#I dont now if its correct 
     def expression(self, p):
-        return ta.member_access(p.expression, p.ID)
+        return ta.function_call(p.ID, p.expression)
+    '''
+
     #caso extra acceder a un miembro de expresion
 
     @_('expression')
@@ -692,41 +700,28 @@ def print_tree_v2(node, indent=0):
 
 if __name__ == '__main__':
     data = code = '''
-    #include <Arduino.h>
-    int led13 = 13; 
-    double inicioCuentaTiempo; 
+    #include <Servo.h>
  
-    void setup() { 
-        Serial.begin(9600); // Iniciar el Serial 
-        pinMode(led13, OUTPUT); 
-  
-        // Instante de tiempo que empieza a contar! 
-        inicioCuentaTiempo = millis(); 
-    } 
+Servo servoLeft;
+Servo servoRight;
  
-    void loop() { 
-    if (millis() - inicioCuentaTiempo  >= 5000){ 
-        // Tiempo actual - inicio Cuenta tiempo >= 5000 
-        // Han pasado 5 segundos, enciendo el led 
-        digitalWrite(led13, HIGH); 
-        
-    } 
-    }   
-    '''
-    data = code = '''
-        void setup() {  // initialize digital pin 13 as an output.
-   pinMode(2, OUTPUT);
+int pinServoLeft = 8;
+int pinServoRight = 9;
+ 
+int STOP = 90;
+int FORWARD = 180;
+int BACKWARD = 0;
+ 
+int WAIT = 3000;
+ 
+void setup(){
+  servoLeft.attach(pinServoLeft);
+  servoRight.attach(pinServoRight);
 }
+ 
+void loop(){
 
-// the loop function runs over and over again forever
-
-void loop() {
-   digitalWrite(2, HIGH); // turn the LED on (HIGH is the voltage level)
-   delay(1000); // wait for a second
-   digitalWrite(2, LOW); // turn the LED off by making the voltage LOW
-   delay(1000); // wait for a second
-}
-        
+}  
     
     '''
     lexer = ArduinoLexer()
