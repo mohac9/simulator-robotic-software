@@ -42,6 +42,9 @@ class Environment:
         #Hacer registro de funciones built in
         self.register_built_in()
 
+        #Dict with the hardware components
+        self.hardware_elements = {} #key: hw_name, value:object
+
         #Debugger related attributes
         if parent_env is not None:
             self.call_stack = self.parent_env.call_stack
@@ -74,17 +77,26 @@ class Environment:
         print(self.registered_classes)
         return var_type in self.registered_classes
 
+    #Changed to modify the hd of the arduino robot
     def set_instance(self,name,var_type):
+        
         if name in self.variables:
             raise RuntimeError(f"Variable '{name}' already defined.")
         
         class_object = self.registered_classes[var_type]
-        print("Existe board /n"*10)
-        print(self.board)
+        
+        
         instance = class_object(self.board)
+
+        #instance = self.hardware_elements[name]
 
         self.variables[name] = var_type
         self.variables_contents[name] = instance
+        
+        
+
+
+        
     
     def get_variable_type(self,name):
         return  self.variables[name]
@@ -196,6 +208,10 @@ class Environment:
         
     def define_function(self, name, func):
         self.built_in_functions[name] = func
+
+    def add_hw_element(self,key,object):
+        self.hardware_elements[key] = object
+
 
 
     

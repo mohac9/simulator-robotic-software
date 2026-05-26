@@ -6,6 +6,8 @@ import libraries.standard as standard
 import libraries.serial as serial
 import robot_components.robot_state as state
 
+import graphics.layers as la
+
 from .interpreter import ArduinoInterpreter
 import output.console as console
 
@@ -43,11 +45,16 @@ class Compile(Command):
             code = self.controller.get_code()
             self.interpreter = ArduinoInterpreter(code)
             self.interpreter.env.add_board(self.controller.robot_layer.robot.board)
+            #Añadir en el entorno de forma forzada los servos ya construidos
+            self.link_elements_to_env()
+
+            print(f"El objeto board que se le da al interprete es el siguiente: {self.controller.robot_layer.robot.board}")
             self.interpreter.run(self.interpreter.parser_object)
 
             self.interpreter.register_libraries(
             self.controller.robot_layer.robot.board,
             self.controller.console
+
             )
           
             
@@ -62,13 +69,25 @@ class Compile(Command):
                 return False
             return True
 
+        
+
         except Exception as e:
                 print(f'la excepción es {e}')
                 traceback.print_exc()
                 self.controller.console.write_error(
                 console.Error("Error de compilación", 0, 0, "El sketch no se ha podido compilar correctamente"))
                 return False
-        
+
+    #This method adds the objects that were already created in robot
+    def link_elements_to_env(self):
+        #Add servos depending of the type of robot that is given
+        if isinstance(self.controller.robot_layer,la.MobileRobotLayer):
+            #The names used are the only possibilities to init them, I know is a bit rough but this should work. If you need more elements add them here 
+            self.interpreter.env.add_hw_element("servoIzq",self.controller.robot_layer.robot.servo_left)
+            self.interpreter.env.add_hw_element("servoDer",self.controller.robot_layer.robot.servo_right)
+        if isinstance(self.controller.robot_layer,la.LinearActuatorLayer):
+            self.self.interpreter.env.add_hw_element("servo",self.controller.robot_layer.robot.servo)
+          
         
     def compile(self,code):
         try:
@@ -171,9 +190,9 @@ class Loop(Command):
                         break
                         
                 if loop_func:
-                    print("Ejecutando loop()")
+                    #print("Ejecutando loop()")
                     loop_func.body_execution(interpreter.env)
-                    print("Se ha ejecutado loop() correctamente")
+                    #print("Se ha ejecutado loop() correctamente")
                 else:
                     self.controller.console.write_warning(
                         console.Warning("Aviso", 0, 0, "No se ha encontrado la función loop()")

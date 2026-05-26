@@ -455,7 +455,6 @@ class Object(BaseType):
         if self.name not in env.variables:
             raise RuntimeError(f"Variable '{self.name}' is not defined.")
         contents = env.get_variable_contents(self.name)
-        print(f"Executing Object: {self.name} with contents: {contents}")
         return env.get_variable_contents(self.name) 
     
 #May be separated in another file
@@ -481,7 +480,6 @@ class binary_operation(parserTypes):
         self.children_list = [left, right]
     
     def execute(self,env):
-        print(self.left)
         
         left_value = self.left.execute(env)
         right_value = self.right.execute(env)
@@ -493,11 +491,7 @@ class binary_operation(parserTypes):
             type_hierarchy = {'Bool': 0, 'Int': 1, 'Float': 2, 'String': 3}
             left_rank = type_hierarchy.get(left_type, -1)
             right_rank = type_hierarchy.get(right_type, -1)
-            print(f"Rank left:{left_rank}")
-            print(f"Rank right:{right_rank}")
-
-            print(f"Value left:{left_value}")
-            print(f"Value right:{right_value}")
+            
 
             if left_rank > right_rank:
                 right_value = type_conversion(right_value,left_type)
@@ -505,7 +499,7 @@ class binary_operation(parserTypes):
                 left_value = type_conversion(left_value,right_type)
 
         result = self.operation(left_value, right_value)
-        print(f"Executing binary operation: {self.left} {self.operation.__name__} {self.right} = {result}")
+        
         return result
     
     def __str__(self):
@@ -522,7 +516,7 @@ class binary_operation(parserTypes):
 def type_conversion(object, target_type):
     original_type = object.__class__.__name__.lower() 
     target_type = target_type.lower()
-    print(f"Original type: {original_type}, Target type: {target_type}")
+    
     number_types = {"int", "float", "double", "bool"}
     if original_type == target_type:
         return object
@@ -613,7 +607,6 @@ class declaration(parserTypes):
         
     def execute(self, env):
         declaration_types = ['simple_declaration', 'array_declaration', 'struct_declaration']
-        print(self.declaration)
         if self.declaration.__class__.__name__ not in declaration_types:
             raise RuntimeError(f"Invalid declaration type: {self.declaration.__class__.__name__}. Expected one of {declaration_types}.")
         self.declaration.execute(env)
@@ -658,7 +651,7 @@ class simple_declaration(parserTypes):
         else:
             if env.is_class(self.var_type):
                 env.set_instance(self.name, self.var_type)
-                print("ENTRO"*10)
+               
             else:
                 env.set_variable(self.name, self.var_type)
                 
@@ -752,7 +745,6 @@ class program_code_list(parserTypes):
         return f"ProgramCodeList({len(self.code_list)} elements)"
     
     def append(self, code):
-        print(code)
         if not isinstance(code, program_code):
             raise RuntimeError(f"Expected a 'program_code' type, got {code.__class__.__name__}.")
         self.code_list.append(code)
@@ -856,7 +848,8 @@ class include(parserTypes):
         try:
             env.register_lib(self.library_name)
         except ImportError as e:
-            print(f"Error importing library '{self.library_name}': {e}") 
+            print("Error no encontrada libreria")
+             
 
     def __str__(self):
         return f"Include({self.library_name})"
@@ -1019,7 +1012,7 @@ class while_loop(parserTypes):
     def __init__(self,expression,code):
         self.expression = expression
         self.code_block = code
-        self.children = [self.expression,self.code_block]
+        self.children_list = [self.expression,self.code_block]
         
     def execute(self,env):
         condition = self.expression.execute(env)
@@ -1035,6 +1028,9 @@ class while_loop(parserTypes):
                     raise RuntimeError(f"Condition must be of type 'Bool', got {condition.__type__()}.")
         except BreakException:
             print("Break statement encountered, exiting while loop.")
+    
+    def __str__(self):
+        return f"WhileLoop(expression={self.expression}, code_block={self.code_block})"
         
 class do_while_loop(parserTypes):
     def __init__(self, code_block, expression):
@@ -1058,6 +1054,16 @@ class do_while_loop(parserTypes):
     def __str__(self):
         return f"DoWhileLoop(code_block={self.code_block}, expression={self.expression})"
     
+class code_block(parserTypes):
+    def __init__(self,sentence_list):
+        self.sentence_list = sentence_list
+        self.children_list = [sentence_list]
+    def execute(self,env):
+        self.sentence_list.execute(env)
+    def __str__(self):
+        return f"Code_block(sentences={self.sentence_list})"
+
+
 #Functions and related classes
 class void():
     def __init__(self):
@@ -1150,7 +1156,7 @@ class function(parserTypes):
             
         except returnException as ret:
             ret_type = type(ret).__type__(ret).lower() if hasattr(ret, '__type__') else 'Void'
-            print(f"Return type: {ret_type}, Expected type: {self.type}")
+            
             if self.type.lower() != ret_type:
                 converted_value = type_conversion(ret.value, self.type)
                 return converted_value
@@ -1219,7 +1225,6 @@ class function_call(parserTypes):
         self.name = name.__name__()
         self.parameters = parameters
         self.object_ = object_
-        print(f"Creating function call: {self.name} with parameters: {self.parameters}")
         
     def name_mangling(self, env = None):
         signature = f'{self.name}#'
@@ -1245,8 +1250,6 @@ class function_call(parserTypes):
         """
         if self.object_:
             name_lib = self.object_.__type__(env)
-            print("\n"*10)
-            print(name_lib,name)
             key_method = name_lib + "." + name
             #obj_ = env.variables_contents[name_obj]
 
@@ -1261,14 +1264,11 @@ class function_call(parserTypes):
         return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
     def execute(self, env):
-        #Comprobar si es función de una librería, built-in function o función definida por el usuario
-        #print(f"Executing function call: {self.name} with parameters: {self.parameters}")
-        #print(env.built_in_functions.keys())
+       
 
 
         lower_name = self.camel_case_to_snake_case(self.name)
-        print("-"*20)
-        print(lower_name, self.name)
+        
         if lower_name in env.built_in_functions: #Funciona
             return self.execute_builtin_function(env,lower_name) 
         elif '.' in self.name or self.object_:
@@ -1287,7 +1287,7 @@ class function_call(parserTypes):
         is_method = self.metodo(lower_case_name, env)
         if is_method:
             key_method,obj_ = is_method
-            print(obj_.__name__())
+           
             objeto_param = env.variables_contents[obj_.__name__()]
             python_args = [objeto_param] + python_args #Basicament obj_ es el self del método
         return python_to_types_arduino(env.lib_functions[key_method](*python_args))
@@ -1329,7 +1329,7 @@ class argument_list(parserTypes):
     def execute(self, env):
         result = []
         for expr in self.expressions:
-            print(f"Executing argument expression: {expr}")
+            
             result.append(expr.execute(env))
         return result
     

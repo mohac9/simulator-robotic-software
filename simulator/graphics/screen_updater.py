@@ -16,3 +16,4 @@ def refresh():
         layer.move(view.keys_used, view.move_WASD)
         view.update_idletasks()
         last_update = time.time_ns() / 1000000
+        

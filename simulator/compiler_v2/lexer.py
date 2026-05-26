@@ -56,7 +56,7 @@ class ArduinoLexer(Lexer):
         'ID': 'ID'
         
     }
-    tokens = { 'ID', 'INT_CONST', 'STRING', 'CHAR', 'CHAR_CONST', 'BOOL_CONST','EQUAL','SEMICOLON', 'NOT_EQUAL','INCLUDE', 'STRING_CONST', 'CONST', 'STATIC',
+    tokens = { 'ID', 'INT_CONST', 'STRING', 'CHAR', 'CHAR_CONST', 'BOOL_CONST','EQUAL','SEMICOLON', 'EQ','NOT_EQUAL','INCLUDE', 'STRING_CONST', 'CONST', 'STATIC',
               'LBRACKET', 'RBRACKET','LBRACE', 'RBRACE','COMMA','DEFINE','LPAREN','RPAREN','BREAK','RETURN',
               'CONTINUE', 'WHILE','DO','FOR','CASE','COLON','DEFAULT','IF','SWITCH','ELSE'
               ,'AND','OR','NOT','EQ','NE','LT','LE','GT','GE','PLUS','MINUS','MULTIPLY','DIVIDE','MODULUS',
@@ -150,6 +150,11 @@ class ArduinoLexer(Lexer):
         self.lineno += 1
         self.index = 0
         pass
+
+    #EQ es el operador de igualdad
+    @_(R'==')
+    def EQ(self,t):
+        return t
     
     @_(r'=')
     def EQUAL(self, t):
@@ -423,28 +428,12 @@ class ArduinoLexer(Lexer):
 if __name__ == '__main__':
     
     data =     data = code = '''
-    #include <Servo.h>
- 
-Servo servoLeft;
-Servo servoRight;
- 
-int pinServoLeft = 8;
-int pinServoRight = 9;
- 
-int STOP = 90;
-int FORWARD = 180;
-int BACKWARD = 0;
- 
-int WAIT = 3000;
- 
-void setup(){
-  servoLeft.attach(pinServoLeft);
-  servoRight.attach(pinServoRight);
-}
- 
-void loop(){
-
-}  
+void loop() {
+    while(1){
+        a = b;
+    }
+    
+  } 
     
     '''
     

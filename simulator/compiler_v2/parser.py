@@ -37,8 +37,8 @@ class ArduinoParser(Parser):
     
     
     #Grammar rules
+    #region TOPLEVEL rules
     
-    #Top level rules
     @_('LBRACE RBRACE')
     def program(self, p):
         return ta.program([], [])
@@ -82,7 +82,7 @@ class ArduinoParser(Parser):
     def program_code(self, p):
         return ta.program_code(p.function)    
     
-    
+    #endregion
     '''
     @_('define_macro')
     def program_code(self, p):
@@ -94,7 +94,7 @@ class ArduinoParser(Parser):
         return ta.program_code(p.sentence_list)
     '''
     
-    #Declaration rules
+    #region Declaration Rules
     @_('simple_declaration')
     def declaration(self, p):
         return ta.declaration(p.simple_declaration)
@@ -133,8 +133,9 @@ class ArduinoParser(Parser):
     def array_declaration(self, p):
         return ('array_declare', p.var_type, p.ID, p.array_index, None)
     
+    #endregion
     
-    #Array rules
+    #region Array rules
     @_('LBRACKET expression RBRACKET')
     def array_index(self, p):
         return ('array_index', p.expression)
@@ -143,7 +144,9 @@ class ArduinoParser(Parser):
     def array_elements(self, p):
         return ('array_elements', p.expression_list)
     
-    #Macro rules
+    #endregion
+
+    #region Macro rules
     @_('DEFINE ID EQUAL expression')
     def define_macro(self, p):
         return ('macro_definition', p.ID, p.expression)
@@ -151,8 +154,8 @@ class ArduinoParser(Parser):
     @_('DEFINE ID array_elements')
     def define_macro(self, p):
         return ('macro_definition', p.ID, p.array_elements)
-    
-    #Function rules @dataclasses
+    #endregion
+    #region Function rules @dataclasses
     @_('var_type ID LPAREN function_args RPAREN LBRACE sentence_list RBRACE')
     def function(self, p):
         return ta.function(p.var_type, p.ID, p.function_args, p.sentence_list)
@@ -169,7 +172,10 @@ class ArduinoParser(Parser):
     @_('declaration')
     def function_args(self, p):
         return ta.function_args([p.declaration])
-    
+    #endregion
+
+    #region Sentences
+
     @_('sentence_list sentence') 
     def sentence_list(self, p):
         new_sentences = p.sentence_list.sentences.copy()
@@ -249,15 +255,16 @@ class ArduinoParser(Parser):
         node = ta.sentence(ta.continue_statement())
         node.lineno = p.lineno
         return node
-    
-    #Assignment rules
+    #endregion
+
+    #region Assignment rules
     @_('ID EQUAL expression')
     def assignment(self, p):
         return ta.assignment(p.ID, p.expression)
-        
-    
-    #Iterative and conditional sentences
-    @_('WHILE LPAREN expression RPAREN LBRACE code_block RBRACE')
+    #endregion
+
+    #region Iterative and conditional sentences
+    @_('WHILE LPAREN expression RPAREN code_block ')
     def iteration_sentence(self, p):
         return ta.while_loop(p.expression,p.code_block)
         
@@ -303,6 +310,10 @@ class ArduinoParser(Parser):
     def conditional_sentence(self, p):
         return ta.if_statement(p.expression, p.code_block)
 
+    @_('IF LPAREN expression RPAREN code_block  ELSE conditional_sentence ')
+    def conditional_sentence(self, p):
+        return ta.if_statement(p.expression, p.code_block, p.conditional_sentence)
+
     #May be necessary to add a if else
 
     @_('SWITCH LPAREN expression RPAREN LBRACE case_sentence_list RBRACE')
@@ -336,7 +347,7 @@ class ArduinoParser(Parser):
     #Code block
     @_('LBRACE sentence_list RBRACE')
     def code_block(self, p):
-        return p.sentence_list
+        return ta.code_block(p.sentence_list)
        
     '''
     @_('LBRACE RBRACE') #I'm not sure of this one
@@ -344,10 +355,10 @@ class ArduinoParser(Parser):
         return ta.sentence_list([])
     '''
     
+    #endregion
     
     
-    
-
+    #region Expressions
         
     #Expression rules
     @_('BOOL_CONST')
@@ -460,23 +471,7 @@ class ArduinoParser(Parser):
         return ta.function_call(p.expression1, p.argument_list, p.expression0)
     
 
-    #TODO: No estan en la gramatica, SOLUCIONAR llamadas a funciones de libreria
-    '''
-    @_('ID DOT ID LPAREN RPAREN')
-    def expression(self, p):
-        return ta.function_call(f"{p.ID0}.{p.ID1}", None)
-    '''
-    '''
-    @_('ID DOT ID LPAREN parameter RPAREN')
-    def expression(self, p):
-        return ta.function_call(f"{p.ID0}.{p.ID1}", p.parameter)
-    '''
-    #añadir regla extra
-    '''
-    @_('expression DOT ID')#I dont now if its correct 
-    def expression(self, p):
-        return ta.function_call(p.ID, p.expression)
-    '''
+    
 
     #caso extra acceder a un miembro de expresion
 
@@ -502,8 +497,7 @@ class ArduinoParser(Parser):
 
     @_('MINUS MINUS expression %prec UMINUS')
     def expression(self, p):
-        return ta.unary_operation(p.expression, ta.Number.__prev__)
-        
+        return ta.unary_operation(p.expression, ta.Number.__prev__) 
 
     @_('NOT expression')
     def expression(self, p):
@@ -512,6 +506,9 @@ class ArduinoParser(Parser):
     @_('BITWISE_NOT expression')
     def expression(self, p):
         return ta.unary_operation(p.expression, ta.Number.__bitwise_not__)
+
+
+    #Binary expr
 
     @_('expression MULTIPLY expression')
     def expression(self, p):
@@ -579,11 +576,11 @@ class ArduinoParser(Parser):
 
     @_('expression AND expression')
     def expression(self, p):
-        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__and__)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Bool.__and__)
 
     @_('expression OR expression')
     def expression(self, p):
-        return ta.binary_operation(p.expression0, p.expression1, ta.Number.__or__)
+        return ta.binary_operation(p.expression0, p.expression1, ta.Bool.__or__)
 
 
     @_('expression MOD_EQ expression')
@@ -614,8 +611,9 @@ class ArduinoParser(Parser):
     def expression(self, p):
         return ta.binary_operation(p.expression0, p.expression1, ta.Number.__bitwise_or_eq__)
 
+    #endregion
 
-    # Conversion rules
+    #region Conversion rules
     @_('LPAREN UNSIGNED_INT RPAREN expression')
     def conversion(self, p):
         return ('conversion', 'unsigned int', p.expression)
@@ -646,7 +644,7 @@ class ArduinoParser(Parser):
     def type_convert(self, p):
         return p[0]
 
-    # ç rules
+    #endregion
     
 
    
@@ -692,6 +690,7 @@ def print_tree_v2(node, indent=0):
             print_tree_v2(child, indent + 2)
     else:
         print(' ' * (indent + 2), 'No children')
+        pass
     
     
 
@@ -700,29 +699,21 @@ def print_tree_v2(node, indent=0):
 
 if __name__ == '__main__':
     data = code = '''
-    #include <Servo.h>
- 
-Servo servoLeft;
-Servo servoRight;
- 
-int pinServoLeft = 8;
-int pinServoRight = 9;
- 
-int STOP = 90;
-int FORWARD = 180;
-int BACKWARD = 0;
- 
-int WAIT = 3000;
- 
-void setup(){
-  servoLeft.attach(pinServoLeft);
-  servoRight.attach(pinServoRight);
-}
- 
-void loop(){
-
-}  
+void espiral() {
+  boolean perdido = true;
+  double tiempoEspiral = 500;
+  
+  while (perdido) {
+    if (digitalRead(pinIrIzq) == LINEA || digitalRead(pinIrDer) == LINEA) {
+      perdido = false;
+      break;
+    }
     
+    if (!(digitalRead(pinExDer) == NO_LINEA && digitalRead(pinExIzq) == NO_LINEA)) {
+      tiempoEspiral = tiempoEspiral + 500;
+    }
+  }
+}
     '''
     lexer = ArduinoLexer()
     

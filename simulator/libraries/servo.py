@@ -73,6 +73,7 @@ class Servo:
             servo.min = min
             servo.max = max
             return self.OK
+        
         return self.ERROR
 
     def write(self, angle):
@@ -87,6 +88,7 @@ class Servo:
             angle: the value to write [0-180]
         """
         self.servo.value = angle
+        
 
     def write_microseconds(self, us):
         """
