@@ -152,7 +152,7 @@ class ArduinoLexer(Lexer):
         pass
 
     #EQ es el operador de igualdad
-    @_(R'==')
+    @_(r'==')
     def EQ(self,t):
         return t
     
@@ -430,7 +430,7 @@ if __name__ == '__main__':
     data =     data = code = '''
 void loop() {
     while(1){
-        a = b;
+        a = 10;
     }
     
   } 

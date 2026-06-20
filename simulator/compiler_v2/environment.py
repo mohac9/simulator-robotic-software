@@ -33,7 +33,6 @@ class Environment:
         self.functions = {} # key: Signature(name + args) , value: function object
         self.libraries = {} # key: library name, value: library module   
         self.built_in_functions = {} # key: function name, value: function object
-        self.built_in_functions = {}
         self.lib_functions = {} #key: lib.function_name, value: function object
 
         self.types ={}  #key: type name, value: get_methods()
@@ -87,6 +86,7 @@ class Environment:
         
         
         instance = class_object(self.board)
+        print(f"Se ha declarado la instancia:{instance} de tipo:{type(instance)}")
 
         #instance = self.hardware_elements[name]
 
@@ -140,6 +140,7 @@ class Environment:
         self.libraries[name] = library_module
 
         
+    #TODO: Eliminar, si despues de la comprobación se comprueba que no se usa en ningun lado, eliminar
     def call_library_function(self, library_name, function_name, args):
         """Call a function from a registered library"""
         if library_name in self.libraries:

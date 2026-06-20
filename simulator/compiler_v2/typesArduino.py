@@ -1130,7 +1130,7 @@ class function(parserTypes):
             types = self.function_args.get_param_types()
             return f"{self.function_name}#" + "#".join(types) + "#"
         else:
-             return f"{self.function_name}#" #Dont now if I should mantain the las #
+             return f"{self.function_name}#" 
 
     def execute(self,env):
         env.set_function(self.name_mangling(), self)
@@ -1238,20 +1238,9 @@ class function_call(parserTypes):
         
     #Selecciona si es un metodo o una función de librería
     def metodo(self,name,env):
-        """
-        name_obj,name_method = name.split('.')
-        if name_obj in env.variables:
-            name_lib =env.variables[name_obj]
-
-            key_method = name_lib + "." + name_method
-            obj_ = env.variables_contents[name_obj]
-
-            return key_method, obj_
-        """
         if self.object_:
             name_lib = self.object_.__type__(env)
             key_method = name_lib + "." + name
-            #obj_ = env.variables_contents[name_obj]
 
             return key_method, self.object_
 
@@ -1265,11 +1254,9 @@ class function_call(parserTypes):
 
     def execute(self, env):
        
-
-
         lower_name = self.camel_case_to_snake_case(self.name)
         
-        if lower_name in env.built_in_functions: #Funciona
+        if lower_name in env.built_in_functions: 
             return self.execute_builtin_function(env,lower_name) 
         elif '.' in self.name or self.object_:
             return self.execute_library_function(env)

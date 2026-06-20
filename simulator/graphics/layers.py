@@ -148,7 +148,7 @@ class MobileRobotLayer(Layer):
         """
         v = 0  # Velocity
         da = 0  # Angle
-        print(f"El angulo es: {da}, y la velocidad es de: {v}")
+        #print(f"El angulo es: {da}, y la velocidad es de: {v}")
 
         if using_keys:
             v, da = self.__move_keys(move_WASD)

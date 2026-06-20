@@ -68,7 +68,7 @@ class Debugger:
                 print("Se ejecuto correctamente el comando de compilación")
                 if self.controller.setup_command.execute():
                     print("Se ejecuto correctamente el comando de setup")
-                    for i in range(60*1000):#Iteraciones del bucle loop
+                    for i in range(60*1000):#Iteraciones del bucle loop limitadas
                         self.controller.loop_command.execute()
                         print(f"Iteración {i} del loop")
                         time.sleep(0.01)

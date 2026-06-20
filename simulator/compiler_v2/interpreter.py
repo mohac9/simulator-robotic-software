@@ -38,23 +38,13 @@ class ArduinoInterpreter:
 
         # This part is responsible with the communication with the debugger
         self.line = 0
-        
-        
-        
-    #Todo: Delete visit if not used in any part
-    def visit(self,node,env): 
-        node.execute(env)
-        
     
     
     
     
-    def run(self,node):
-        #self.env = environment.Environment()
-        
+    def run(self,node):    
         node.execute(self.env)
         
-        pass
 
     def register_libraries(self, board=None, console=None):
         import libraries.standard as standard
