@@ -452,8 +452,6 @@ class Object(BaseType):
         return self.name
     
     def execute(self, env):
-        if self.name not in env.variables:
-            raise RuntimeError(f"Variable '{self.name}' is not defined.")
         contents = env.get_variable_contents(self.name)
         return env.get_variable_contents(self.name) 
     
@@ -584,13 +582,6 @@ class assignment(parserTypes):
         return var_type
     
     def execute(self, env):
-
-
-        if self.name not in env.variables:
-            raise RuntimeError(f"Variable '{self.name}' is not defined.")
-        
-
-
         var_type = env.get_variable_type(self.name)
         execute_value = self.value.execute(env)
         converted_value = type_conversion(execute_value, var_type)
@@ -713,7 +704,14 @@ class program(parserTypes):
         self.children_list = [include_list, program_code_list]
         
     def execute(self, env):
-        # Antes de ejecutarlo self.program_code_list 
+        #Execute includes
+        self.include_list.execute(env)
+        #Execute definitions
+        self.program_code_list.execute(env)
+
+        #Version vieja, se realiza el cambio por una versión más sencilla delegando
+        #al interprete funcionalidad
+        '''
         for code in self.program_code_list.code_list: 
             if isinstance(code, function):
                 if code.name == "setup": #Comprobar si es correcta la signature de setup
@@ -726,6 +724,7 @@ class program(parserTypes):
         self.include_list.execute(env)
         # Then execute the program code
         self.program_code_list.execute(env)
+        '''
     
     def children(self):
         return self.children_list
@@ -799,7 +798,7 @@ class sentence(parserTypes):
     def execute(self, env):
         print(f"[AST] Ejecutando instrucción en línea: {self.lineno}")
         #Solo si el debugger esta activo, se checkea y se pausa, sino se ejecuta directamente
-        if hasattr(env, 'debugger') and env.debugger:
+        if env.debugger:
             print(f"[AST] ¡Depurador detectado! Comprobando pausa...")
             env.debugger.check_pause(self.lineno, env)
         return self.sentence.execute(env)

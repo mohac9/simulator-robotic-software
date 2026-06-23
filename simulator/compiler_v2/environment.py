@@ -44,13 +44,16 @@ class Environment:
         #Dict with the hardware components
         self.hardware_elements = {} #key: hw_name, value:object
 
+        
+
         #Debugger related attributes
+        self.debugger = None
         if parent_env is not None:
             self.call_stack = self.parent_env.call_stack
             self.debugger = getattr(self.parent_env, 'debugger', None)
         else:
             self.call_stack = []
-            self.debugger = None
+            #self.debugger = None
 
     def add_board(self,board):
         print("-"*20)
@@ -99,13 +102,30 @@ class Environment:
         
     
     def get_variable_type(self,name):
-        return  self.variables[name]
+        if name in self.variables:
+            return  self.variables[name]
+        
+        if self.parent_env is not None:
+            return self.parent_env.get_variable_type(name)
+        raise RuntimeError(f"Variable '{name}' not defined.")
+
+
     
     def get_variable_contents(self,name):
-        return self.variables_contents[name]
-    
+        if name in self.variables_contents:
+            return self.variables_contents[name]
+        if self.parent_env is not None:
+            return self.parent_env.get_variable_contents(name)
+        raise RuntimeError(f"Variable '{name}' not defined.")
+
     def modify_variable(self,name,content):
-        self.variables_contents[name] = content
+        if name in self.variables_contents:
+            self.variables_contents[name] = content
+            return
+        if self.parent_env is not None:
+            self.parent_env.modify_variable(name,content)
+            return
+        raise RuntimeError(f"Variable '{name}' not defined before the assignment.")
         
     def cast_type(self,name,new_type):
         self.variables[name] = name
@@ -212,6 +232,12 @@ class Environment:
 
     def add_hw_element(self,key,object):
         self.hardware_elements[key] = object
+
+    #Debugger setter
+    def activate_debug_mode(self,debugger):
+        self.debugger = debugger
+    
+        
 
 
 

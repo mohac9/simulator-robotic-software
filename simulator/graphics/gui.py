@@ -351,10 +351,12 @@ class MainApplication(tk.Tk):
     def toggle_debug_panel(self):
         if self.debug_panel_visible:
             self.hide_debug_panel()
-            if hasattr(self, 'debug_manager') and self.debug_manager.is_executing:
+            self.controller.compile_command.debug_manager = None
+            if self.debug_manager.is_executing:
                 self.debug_manager.stop()
         else:
             self.show_debug_panel()
+            self.controller.compile_command.debug_manager = self.debug_manager
             if hasattr(self, 'debug_manager'):
                 self.console_frame.console.config(state=tk.NORMAL)
                 self.console_frame.console.insert(tk.END, "\n[Depurador] Iniciado...\n")

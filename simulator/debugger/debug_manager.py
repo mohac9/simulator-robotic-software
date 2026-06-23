@@ -51,6 +51,8 @@ class DebugManager:
     #Botones del thread de depuración
 
     def send_command(self, command):
+        print("***"*100)
+        print(command)
         self.debugger.cmd_processor(command)
         if command != 'stop':
             self.init_pause.set()  # Desbloquea la ejecución del código

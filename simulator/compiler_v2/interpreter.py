@@ -41,9 +41,24 @@ class ArduinoInterpreter:
     
     
     
+    #Method that initialices the c++ code
+    def run_init(self):    
+        self.parser_object.execute(self.env)
     
-    def run(self,node):    
-        node.execute(self.env)
+    #Method that executes the setup function
+    def run_setup(self):
+        setup_function = self.env.functions.get("setup#")
+        if setup_function:
+            new_env = setup_function.scope_generator(self.env)
+            setup_function.body_execution(new_env) #This is because setup in reality is a setup function, but to actually execute its contens we need to execute its body
+    
+
+    def run_loop_once(self):
+        loop_function = self.env.functions.get("loop#")
+        if loop_function:
+            new_env = loop_function.scope_generator(self.env)
+            loop_function.body_execution(new_env)
+
         
 
     def register_libraries(self, board=None, console=None):
@@ -86,6 +101,7 @@ class ArduinoInterpreter:
         parser.print_tree_v2(self.parser_object)
         parser.print_tree(self.parser_object)
         print(self.parser_object)
+
 
 
 if __name__ == '__main__':

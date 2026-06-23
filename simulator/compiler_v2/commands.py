@@ -18,6 +18,7 @@ class Command:
     def __init__(self, controller):
         self.controller = controller
         self.ready = False
+        
 
     def execute(self):
         """
@@ -36,9 +37,10 @@ class Command:
 
 
 class Compile(Command):
-    def __init__(self, controller):
+    def __init__(self, controller,debug_manager=None):
         super().__init__(controller)
         self.interpreter = None
+        self.debug_manager = debug_manager
 
     def execute(self):
         try:
@@ -47,9 +49,12 @@ class Compile(Command):
             self.interpreter.env.add_board(self.controller.robot_layer.robot.board)
             #Añadir en el entorno de forma forzada los servos ya construidos
             self.link_elements_to_env()
-
+            #Debugger gets injected into the environment before the first AST node is even executed
+            if self.controller.debug_manager:
+                print(f"INYECCION EXITOSA DEL MANEJADOR DEL DEPURADOR:{self.debug_manager} *** CON DEPURADOR: {self.debug_manager.debugger}")
+                self.interpreter.env.activate_debug_mode(self.debug_manager.debugger) 
             print(f"El objeto board que se le da al interprete es el siguiente: {self.controller.robot_layer.robot.board}")
-            self.interpreter.run(self.interpreter.parser_object)
+            self.interpreter.run_init()
 
             self.interpreter.register_libraries(
             self.controller.robot_layer.robot.board,
@@ -58,9 +63,7 @@ class Compile(Command):
             )
           
             
-            #Si se esta en modo debug
-            if hasattr(self.controller, 'debug_manager') and self.controller.debug_manager:
-                self.interpreter.env.debugger = self.controller.debug_manager.debugger
+            
             
             if self.interpreter.had_runtime_error:
                 self.controller.console.print_error(
@@ -134,19 +137,9 @@ class Setup(Command):
             and not standard.state.exec_time_ms > curr_time_ns / 1000000
         ):
             try:
-                setup_func = None
-                for func in interpreter.env.get_all_functions():
-                    if func['signature'].startswith('setup'):
-                        setup_func = func['function_object']
-                        break
-                if setup_func:
-                    print("Ejecutando setup()")
-                    setup_func.body_execution(interpreter.env)
-                    print("Se ha ejecutado setup() correctamente")
-                else:
-                    self.controller.console.write_warning(
-                    console.Warning("Aviso", 0, 0, "No se ha encontrado la función setup()")
-                )
+                interpreter.run_setup()
+                print("Se ha ejecutado setup() correctamente")
+
                 return True
             
             except Exception as e:
@@ -183,23 +176,7 @@ class Loop(Command):
             #and not standard.state.exited and self.controller.executing
         ):
             try:
-                loop_func = None
-                for func in interpreter.env.get_all_functions():
-                    if func['signature'].startswith('loop'):
-                        loop_func = func['function_object']
-                        break
-                        
-                if loop_func:
-                    #print("Ejecutando loop()")
-                    loop_func.body_execution(interpreter.env)
-                    #print("Se ha ejecutado loop() correctamente")
-                else:
-                    self.controller.console.write_warning(
-                        console.Warning("Aviso", 0, 0, "No se ha encontrado la función loop()")
-                    )
-                    self.controller.executing = False
-                    return False
-                    
+                interpreter.run_loop_once()  
                 return True
                 
             except Exception as e:

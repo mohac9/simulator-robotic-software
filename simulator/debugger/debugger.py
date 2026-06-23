@@ -42,7 +42,7 @@ class Debugger:
     def cmd_processor(self,cmd):
         dic = {'continue': DebugCommand.CONTINUE,
                'step_into': DebugCommand.STEP_INTO,
-               'step_into': DebugCommand.STEP_OVER,
+               'step_over': DebugCommand.STEP_OVER,
                'step_out': DebugCommand.STEP_OUT,
                 'stop': DebugCommand.STOP
                }
@@ -51,7 +51,9 @@ class Debugger:
         if self.debugger_mode is None:
             print(f"Comando desconocido: {cmd}")
             return
-        
+        print("El cmd es")
+        print(cmd)
+        print("*"*20)
         self.pause_event.set()
         
 
@@ -59,6 +61,7 @@ class Debugger:
             
     def execute_arduino_code(self,init_pause=False): 
         #Pausa inicial, espera al primer comando de ejecución para empezar a ejecutar el código
+        print("Realiza la pausa")
         self.cmd_processor('pause')
         init_pause.wait()  
         try:
@@ -123,6 +126,7 @@ class Debugger:
             if current_line in self.breakpoints:
                 self.pause(current_line, env)
         elif self.debugger_mode == DebugCommand.STEP_INTO:
+            print("Se realiza la parada del step_into")
             self.pause(current_line, env)
         elif self.debugger_mode == DebugCommand.STEP_OVER:
             if env == self.current_env or current_line in self.breakpoints:
