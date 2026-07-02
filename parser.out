@@ -146,9 +146,9 @@ Rule 142   var_type -> BOOL
 
 Unused terminals:
 
-    NOT_EQUAL
     SIGNED_INT
     BITWISE_EQ
+    NOT_EQUAL
 
 Terminals, with rules where they appear:
 
