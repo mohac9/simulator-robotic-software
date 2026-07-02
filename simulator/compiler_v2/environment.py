@@ -51,6 +51,8 @@ class Environment:
         if parent_env is not None:
             self.call_stack = self.parent_env.call_stack
             self.debugger = getattr(self.parent_env, 'debugger', None)
+            self.lib_functions = self.parent_env.lib_functions
+            self.registered_classes = self.parent_env.registered_classes
         else:
             self.call_stack = []
             #self.debugger = None
@@ -86,9 +88,12 @@ class Environment:
             raise RuntimeError(f"Variable '{name}' already defined.")
         
         class_object = self.registered_classes[var_type]
-        
-        
-        instance = class_object(self.board)
+
+        init_params = list(inspect.signature(class_object.__init__).parameters)[1:]
+        if init_params and init_params[0] == 'board':
+            instance = class_object(self.board)
+        else:
+            instance = class_object()
         print(f"Se ha declarado la instancia:{instance} de tipo:{type(instance)}")
 
         #instance = self.hardware_elements[name]
@@ -205,12 +210,18 @@ class Environment:
 
         
         if lib == "Keyboard":
+            self.registered_classes["Keypad"] = keyboard.Keypad
             self.lib_functions.update({
-                f"keyboard.{name}": func for name, func in inspect.getmembers(keyboard, inspect.isfunction)
+                f"Keypad.{name}": getattr(keyboard.Keypad, name)
+                for name in dir(keyboard.Keypad)
+                if not name.startswith('__') and callable(getattr(keyboard.Keypad, name))
             })
         if lib == "String":
+            self.registered_classes["String"] = string.String
             self.lib_functions.update({
-                f"string.{name}": func for name, func in inspect.getmembers(string, inspect.isfunction)
+                f"String.{name}": getattr(string.String, name)
+                for name in dir(string.String)
+                if not name.startswith('__') and callable(getattr(string.String, name))
             })
         if lib == "Libs":
             self.lib_functions.update({

@@ -72,8 +72,15 @@ class Debugger:
                 if self.controller.setup_command.execute():
                     print("Se ejecuto correctamente el comando de setup")
                     for i in range(60*1000):#Iteraciones del bucle loop limitadas
-                        self.controller.loop_command.execute()
+                        loop_ok = self.controller.loop_command.execute()
                         print(f"Iteración {i} del loop")
+                        # Si loop() ha fallado (devuelve False) o algo puso
+                        # controller.executing a False, se para aquí en vez
+                        # de seguir llamando a loop() a ciegas otras miles
+                        # de veces.
+                        if not loop_ok or not getattr(self.controller, 'executing', True):
+                            print("Se detiene la ejecución del bucle porque loop() ha fallado o se ha parado la ejecución")
+                            break
                         time.sleep(0.01)
         except Exception as e:
             print(f'Error en ejecución: {e}')
@@ -97,6 +104,7 @@ class Debugger:
 
     def pause(self,current_line, env):
         self.debugger_mode = DebugCommand.PAUSE
+        self.current_env = env
         self.pause_event.clear()
         self.pause_callback(current_line, env)
         self.pause_event.wait()
@@ -131,9 +139,8 @@ class Debugger:
         elif self.debugger_mode == DebugCommand.STEP_OVER:
             if env == self.current_env or current_line in self.breakpoints:
                 self.pause(current_line, env)
-            self.current_env = env
         elif self.debugger_mode == DebugCommand.STEP_OUT:
-            if env != self.current_env or env.parent is None or current_line in self.breakpoints:
+            if env != self.current_env or env.parent_env is None or current_line in self.breakpoints:
                 self.pause(current_line, env)
         elif self.debugger_mode == DebugCommand.STOP:
              raise DebugAbortException("Ejecución abortada por el usuario")

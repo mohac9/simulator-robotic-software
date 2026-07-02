@@ -50,7 +50,7 @@ class Compile(Command):
             #Añadir en el entorno de forma forzada los servos ya construidos
             self.link_elements_to_env()
             #Debugger gets injected into the environment before the first AST node is even executed
-            if self.controller.debug_manager:
+            if self.debug_manager:
                 print(f"INYECCION EXITOSA DEL MANEJADOR DEL DEPURADOR:{self.debug_manager} *** CON DEPURADOR: {self.debug_manager.debugger}")
                 self.interpreter.env.activate_debug_mode(self.debug_manager.debugger) 
             print(f"El objeto board que se le da al interprete es el siguiente: {self.controller.robot_layer.robot.board}")

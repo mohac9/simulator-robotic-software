@@ -385,12 +385,11 @@ class MainApplication(tk.Tk):
         self.show_debug_panel()
 
         if hasattr(env, 'variables_contents'):
-            self.update_debug_variables(env.variables_contents)
+            self.update_debug_variables(self._accumulate_variables(env))
         elif hasattr(env, 'get_all_variables'):
             self.update_debug_variables(env.get_all_variables())
 
-        if hasattr(env, 'call_stack'):
-            self.update_debug_stack(env.call_stack)
+        self.update_debug_stack(env)
         editor = self.editor_frame.text
 
         editor.tag_remove("linea_pausada", "1.0", tk.END)
@@ -426,13 +425,26 @@ class MainApplication(tk.Tk):
         self.editor_frame.text.tag_remove("linea_pausada", "1.0", "end")
         self.debug_manager.send_command('continue')
 
+    def _accumulate_variables(self, env):
+        chain = []
+        current = env
+        while current is not None:
+            chain.append(current)
+            current = getattr(current, "parent_env", None)
+        chain.reverse()
+
+        acumuladas = {}
+        for frame_env in chain:
+            acumuladas.update(getattr(frame_env, "variables_contents", {}))
+        return acumuladas
+
     def update_debug_variables(self, variables):
         if self.debug_panel_visible:
             self.debug_panel.update_variables(variables)
 
-    def update_debug_stack(self, stack):
+    def update_debug_stack(self, env):
         if self.debug_panel_visible:
-            self.debug_panel.update_stack(stack)
+            self.debug_panel.update_stack(env)
         
         
 class DebugPanel(tk.Frame):
@@ -540,21 +552,20 @@ class DebugPanel(tk.Frame):
             font=("Consolas", 12, "bold")
         )
 
-        self.stack_listbox = tk.Listbox(
+        self.stack_tree = ttk.Treeview(
             self.stack_frame,
-            bg="white",
-            fg="black",
-            font=("Consolas", 10)
+            show="tree"
         )
+        self.stack_tree.column("#0", width=220)
 
         stack_scrollbar = tk.Scrollbar(
             self.stack_frame,
             orient=tk.VERTICAL,
-            command=self.stack_listbox.yview
+            command=self.stack_tree.yview
         )
-        self.stack_listbox.configure(yscrollcommand=stack_scrollbar.set)
+        self.stack_tree.configure(yscrollcommand=stack_scrollbar.set)
 
-        self.stack_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.stack_tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         stack_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Agregar los frames al panel dividido
@@ -571,14 +582,36 @@ class DebugPanel(tk.Frame):
         for var_name, var_value in variables.items():
             self.variables_tree.insert("", "end", text=var_name, values=(str(var_value),))
 
-    def update_stack(self, stack):
-        """Actualiza el stack de funciones"""
-        # Limpiar la lista
-        self.stack_listbox.delete(0, tk.END)
-        
-        # Agregar funciones del stack
-        for i, function in enumerate(stack):
-            self.stack_listbox.insert(tk.END, f"{i}: {function}")
+    def update_stack(self, env):
+        for item in self.stack_tree.get_children():
+            self.stack_tree.delete(item)
+
+        if env is None:
+            return
+
+        chain = []
+        current = env
+        while current is not None:
+            chain.append(current)
+            current = getattr(current, "parent_env", None)
+        chain.reverse()
+
+        parent_id = ""
+        for i, frame_env in enumerate(chain):
+            is_current = (i == len(chain) - 1)
+            nombre = "Global" if i == 0 else f"Frame {i}"
+            n_vars = len(getattr(frame_env, "variables_contents", {}))
+            etiqueta = f"{nombre} ({n_vars} var.)"
+            if is_current:
+                etiqueta += "  ◀ actual"
+
+            parent_id = self.stack_tree.insert(
+                parent_id, "end", text=etiqueta, open=True
+            )
+
+        if parent_id:
+            self.stack_tree.see(parent_id)
+            self.stack_tree.selection_set(parent_id)
         
     def  __load_images(self):
         pass

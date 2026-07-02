@@ -277,28 +277,28 @@ class ArduinoParser(Parser):
     #Es la implementación que menos codigo hay que picar en typesArduino
     @_('FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON expression RPAREN code_block')
     def iteration_sentence(self, p):
-        return ta.for_loop(p.simple_declaration,p.expression0, p.expression1)
-    
+        return ta.for_loop(p.simple_declaration,p.expression0, p.expression1, p.code_block)
+
     @_('FOR LPAREN  SEMICOLON  SEMICOLON  RPAREN code_block')
     def iteration_sentence(self, p):
-        return ta.for_loop(None, None, None)
-    
+        return ta.for_loop(None, None, None, p.code_block)
+
     @_('FOR LPAREN simple_declaration SEMICOLON  SEMICOLON  RPAREN code_block')
     def iteration_sentence(self, p):
-        return ta.for_loop(p.simple_declaration, None, None)
-    
+        return ta.for_loop(p.simple_declaration, None, None, p.code_block)
+
     @_('FOR LPAREN simple_declaration SEMICOLON expression SEMICOLON  RPAREN code_block')
     def iteration_sentence(self, p):
-        return ta.for_loop(p.simple_declaration, p.expression, None)
+        return ta.for_loop(p.simple_declaration, p.expression, None, p.code_block)
 
-    
+
     @_('FOR LPAREN  SEMICOLON expression SEMICOLON  RPAREN code_block')
     def iteration_sentence(self, p):
-        return ta.for_loop(None, p.expression, None)
-    
+        return ta.for_loop(None, p.expression, None, p.code_block)
+
     @_('FOR LPAREN  SEMICOLON expression SEMICOLON expression RPAREN code_block')
     def iteration_sentence(self, p):
-        return ta.for_loop(None, p.expression, p.expression1)
+        return ta.for_loop(None, p.expression, p.expression1, p.code_block)
 
     
     #Conditional sentences

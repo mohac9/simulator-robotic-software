@@ -24,6 +24,14 @@ class DebugManager:
         self.application.controller.debug_manager = self
         self.is_executing = True
 
+        import graphics.screen_updater as screen_updater
+        screen_updater.layer = self.application.controller.robot_layer
+        screen_updater.view = self.application
+
+        robot_layer = self.application.controller.robot_layer
+        if robot_layer is not None and not robot_layer.is_drawing:
+            robot_layer.execute()
+
         self.command_queue = queue.Queue()
         self.env_queue = queue.Queue()
 
@@ -62,6 +70,6 @@ class DebugManager:
 
 
     def stop(self):
-        self.debugger.send_command('stop')
+        self.send_command('stop')
         self.is_executing = False
         self.application.controller.stop()

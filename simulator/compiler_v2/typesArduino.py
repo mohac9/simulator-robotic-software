@@ -439,10 +439,6 @@ class Object(BaseType):
 
     
     def __type__(self,env=None):
-        if self.name not in env.variables:
-            raise RuntimeError(f"Variable '{self.name}' is not defined.")
-        if self.name not in env.variables:
-            raise RuntimeError(f"Variable '{self.name}' is not defined.")
         return env.get_variable_type(self.name)
     
     def __str__(self):
@@ -870,12 +866,9 @@ class if_statement(parserTypes):
             raise RuntimeError(f"Condition must be of type 'Bool', got {condition_result.__type__()}.")
         
         if condition_result.__value__():
-            # Execute the body if the condition is true
             self.body.execute(env)
         elif self.else_body:
-            # Execute the else body if the condition is false
-            if self.else_body.__type__() is not None:
-                self.else_body.execute(env)
+            self.else_body.execute(env)
                 
     def __str__(self):
         return f"IfStatement(condition={self.condition}, body={self.body},else_body={self.else_body})"
@@ -975,33 +968,24 @@ class for_loop(parserTypes):
             self.condition = Bool(True)  # Default condition if not provided
 
     def execute(self, env):
-        #Check types
-        if self.condition.__type__() != 'Bool':
-            raise RuntimeError(f"Condition must be of type 'Bool', got {self.condition.__type__()}.")
-        
-        if self.init.__class__.__name__ != 'assignment' and self.init is not None:
-            raise RuntimeError(f"Initialization must be an assignment, got {self.init.__class__.__name__}.")
-
-        if self.init.__type__(env) != 'Int' and self.init is not None: #This may be any number type, but for now we will use Int
-            raise RuntimeError(f"Initialization must be of type 'Number', got {self.init.__type__(env)}.")
-        
-        # Execute the initialization
         if self.init is not None:
             self.init.execute(env)
-        while True:
-            # Check the loop condition
-            condition_result = self.condition.execute(env)
-            if condition_result.__type__() != 'Bool':
-                raise RuntimeError(f"Condition must be of type 'Bool', got {condition_result.__type__()}.")
 
-            if not condition_result.__value__():
-                break
+        try:
+            while True:
+                condition_result = self.condition.execute(env)
+                if condition_result.__type__() != 'Bool':
+                    raise RuntimeError(f"Condition must be of type 'Bool', got {condition_result.__type__()}.")
 
-            # Execute the body
-            self.body.execute(env)
+                if not condition_result.__value__():
+                    break
 
-            # Execute the increment
-            self.increment.execute(env)
+                self.body.execute(env)
+
+                if self.increment is not None:
+                    self.increment.execute(env)
+        except BreakException:
+            print("Break statement encountered, exiting for loop.")
     
     def __str__(self):
         return f"ForLoop(init={self.init}, condition={self.condition}, increment={self.increment}, body={self.body})"
@@ -1274,7 +1258,7 @@ class function_call(parserTypes):
         if is_method:
             key_method,obj_ = is_method
            
-            objeto_param = env.variables_contents[obj_.__name__()]
+            objeto_param = env.get_variable_contents(obj_.__name__())
             python_args = [objeto_param] + python_args #Basicament obj_ es el self del método
         return python_to_types_arduino(env.lib_functions[key_method](*python_args))
         

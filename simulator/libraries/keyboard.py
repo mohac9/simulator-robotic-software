@@ -24,12 +24,17 @@ def get_not_implemented():
 
 class Keypad:
 
-    def __init__(self, keymap, pin_rows, pin_columns,
-                 size_rows, size_columns):
+    def __init__(self, board=None, keymap=None, pin_rows=None,
+                 pin_columns=None, size_rows=None, size_columns=None):
         """
         Constructor for Keypad class
         """
-        self.board = None
+        self.board = board
+        self.keymap = keymap
+        self.pin_rows = pin_rows
+        self.pin_columns = pin_columns
+        self.size_rows = size_rows
+        self.size_columns = size_columns
 
     def set_board(self, board: boards.Board):
         """
