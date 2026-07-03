@@ -74,10 +74,6 @@ class Debugger:
                     for i in range(60*1000):#Iteraciones del bucle loop limitadas
                         loop_ok = self.controller.loop_command.execute()
                         print(f"Iteración {i} del loop")
-                        # Si loop() ha fallado (devuelve False) o algo puso
-                        # controller.executing a False, se para aquí en vez
-                        # de seguir llamando a loop() a ciegas otras miles
-                        # de veces.
                         if not loop_ok or not getattr(self.controller, 'executing', True):
                             print("Se detiene la ejecución del bucle porque loop() ha fallado o se ha parado la ejecución")
                             break

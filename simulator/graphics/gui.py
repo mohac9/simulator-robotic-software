@@ -41,7 +41,7 @@ class MainApplication(tk.Tk):
             self.vertical_pane, orient=tk.HORIZONTAL, sashpad=5, sashrelief="solid", bg=BLUE)
         self.drawing_frame = DrawingFrame(
             self.horizontal_pane, self, bg=BLUE)
-        self.editor_frame = EditorFrame(self.horizontal_pane, bg=BLUE)
+        self.editor_frame = EditorFrame(self.horizontal_pane, self, bg=BLUE)
         self.console_frame = ConsoleFrame(
             self.vertical_pane, self, bg=DARK_BLUE)
 
@@ -1271,6 +1271,7 @@ class EditorFrame(tk.Frame):
     def __init__(self, parent, application: MainApplication = None, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
+        self.application = application
         self.text = self.TextEditor(self, bd=1, relief=tk.SOLID, wrap="none", font=("consolas", 12), undo=True,
                                     autoseparators=True)
         self.line_bar = self.LineNumberBar(

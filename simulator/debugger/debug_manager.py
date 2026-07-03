@@ -23,6 +23,7 @@ class DebugManager:
 
         self.application.controller.debug_manager = self
         self.is_executing = True
+        self.application.controller.executing = True
 
         import graphics.screen_updater as screen_updater
         screen_updater.layer = self.application.controller.robot_layer
@@ -49,7 +50,6 @@ class DebugManager:
                     screen_updater.refresh()
                 except Exception as e:
                     pass
-            # Tkinter vuelve a llamar a esta función en 16ms (~60FPS)
             self.application.identifier = self.application.after(16, self._gui_drawing_loop)
 
     def update_breakpoints(self,tracepoints_set):

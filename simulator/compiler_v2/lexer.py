@@ -26,6 +26,7 @@ class ArduinoLexer(Lexer):
         'if': 'IF',
         'else': 'ELSE',
         'while': 'WHILE',
+        'do': 'DO',
         'for': 'FOR',
         'return': 'RETURN',
         'break': 'BREAK',
